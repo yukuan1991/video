@@ -56,6 +56,14 @@ public:
     ribbon_push (Args && ... p) : QPushButton (std::forward<Args> (p)...) {}
 };
 
+class ribbon_menu : public QMenu
+{
+    Q_OBJECT
+public:
+    template<typename ... Args>
+    ribbon_menu (Args && ... p) : QMenu (std::forward<Args> (p)...) {}
+};
+
 class ribbon_tool : public QToolButton
 {
     Q_OBJECT
@@ -69,6 +77,14 @@ class ribbon_bar : public QTabBar
     Q_OBJECT
 public:
     ribbon_bar (QWidget * parent = nullptr) : QTabBar (parent) {}
+};
+
+class ribbon_edit : public QLineEdit
+{
+    Q_OBJECT
+public:
+    template<typename ... Args>
+    ribbon_edit (Args && ... p) : QLineEdit (std::forward<Args> (p)...) {}
 };
 
 class layout_horizontal : public QHBoxLayout
@@ -105,21 +121,7 @@ private:
     int w_ = -1;
 };
 
-class ribbon_button : public QPushButton
-{
-    Q_OBJECT
-public:
-    template<typename ... Args>
-    ribbon_button (Args && ... p) : QPushButton (std::forward<Args> (p)...) {}
-};
 
-class ribbon_menu : public QMenu
-{
-    Q_OBJECT
-public:
-    template<typename ... Args>
-    ribbon_menu (Args && ... p) : QMenu (std::forward<Args> (p)...) {}
-};
 
 class ribbon_menu_item : public QWidget
 {
@@ -159,10 +161,3 @@ protected:
 private:
 };
 
-class ribbon_edit : public QLineEdit
-{
-    Q_OBJECT
-public:
-    template<typename ... Args>
-    ribbon_edit (Args && ... p) : QLineEdit (std::forward<Args> (p)...) {}
-};

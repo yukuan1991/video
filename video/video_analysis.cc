@@ -40,12 +40,12 @@ video_analysis::~video_analysis()
 
 
 
-void video_analysis::on_video_open(const QString & video)
+void video_analysis::set_video_file(const QString & video)
 {
     current_video_ = video;
     ui->video_player->set_file (current_video_);
     file_opening_ = true;
-    on_button_modify_clicked ();
+    modify_invalid ();
 }
 
 
@@ -104,12 +104,6 @@ bool video_analysis::eventFilter(QObject *, QEvent *event)
     return false;
 }
 
-
-void video_analysis::save_widget_config(std::map<std::string,std::string>& map_setting)
-{
-    map_setting["open_play"] = play_open_action_->isChecked() ? "1" : "0";
-    map_setting["mark_pause"] = pause_marked_action_->isChecked() ? "1" : "0";
-}
 
 void video_analysis::load_json(const json &data)
 {
@@ -188,7 +182,7 @@ void video_analysis::on_button_sec_forward_clicked()
     {
         current_position = boost::lexical_cast<float> ( ui->combo_second->currentText().toStdString());
     }
-    catch(...)
+    catch (...)
     {
         QMessageBox::information(this,"错误","second只能输入数字");
         return;
@@ -205,7 +199,7 @@ void video_analysis::on_spinbox_rate_valueChanged(double arg1)
     ui->video_player->set_speed(arg1);
 }
 
-void video_analysis::on_button_modify_clicked()
+void video_analysis::modify_invalid ()
 {
     ui->video_player->stop_video();
     if(current_video_.isEmpty())
@@ -271,38 +265,14 @@ void video_analysis::on_button_mark_clicked()
 
 void video_analysis::on_marked(long long msec)
 {
-    if (pause_marked_action_->isChecked ())
-    {
-        ui->video_player->pause_video ();
-    }
+    //if (pause_marked_action_->isChecked ())
+    //{
+    //    ui->video_player->pause_video ();
+    //}
 
     ui->form->mark (msec);
 }
 
-
-
-
-void video_analysis::load_config(const std::map<std::string,std::string>& map_config)
-{
-    auto iter = map_config.find ("play_when_open");
-    if(iter != map_config.end())
-    {
-        play_open_action_->setChecked (iter->second == "YES" ? true : false);
-    }
-
-    iter = map_config.find("mark_after_pause");
-    if(iter != map_config.end())
-    {
-        pause_marked_action_->setChecked (iter->second == "YES" ? true : false);
-    }
-}
-
-
-void video_analysis::config (std::map<std::string, std::string>& config)
-{
-    config ["mark_after_pause"] = pause_marked_action_->isChecked () ? "YES" : "NO";
-    config ["play_when_open"] = play_open_action_->isChecked () ? "YES" : "NO";
-}
 
 void video_analysis::on_button_setting_rows_clicked()
 {
@@ -330,7 +300,7 @@ void video_analysis::on_button_paste_clicked()
 }
 
 
-void video_analysis::on_new_construction_clicked()
+void video_analysis::set_task_count ()
 {
     QInputDialog dlg;
     dlg.setWindowTitle ("新建");

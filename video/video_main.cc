@@ -43,6 +43,27 @@ void video_main::create_analysis()
     auto w = create_window ();
 }
 
+video_analysis *video_main::current_sub_window ()
+{
+    const auto active = ui->mdi->currentSubWindow ();
+    if (active == nullptr)
+    {
+        return nullptr;
+    }
+    auto w = dynamic_cast<video_analysis *> (active->widget ());
+
+    return w;
+}
+
+void video_main::invalid_timespan()
+{
+    auto w = current_sub_window ();
+    if (w != nullptr)
+    {
+        w->modify_invalid ();
+    }
+}
+
 void video_main::video_import()
 {
     const QString type = tr ("Video Files (*.mp4 *.mpg *.mod *.mov *.mkv *.wmv *.avi)");
@@ -52,24 +73,29 @@ void video_main::video_import()
         return;
     }
 
-    const auto active = ui->mdi->activeSubWindow ();
-    if (active == nullptr)
-    {
-        return;
-    }
-    auto w = dynamic_cast<video_analysis *> (active->widget ());
+    auto w = current_sub_window ();
 
     if (w == nullptr)
     {
         return;
     }
 
-
-
+    w->set_video_file (file);
 }
 
 void video_main::init_conn()
 {
     connect (ui->video_ribbon, &ribbon::create_new, this, &video_main::create_analysis);
     connect (ui->video_ribbon, &ribbon::import_data, this, &video_main::video_import);
+    connect (ui->video_ribbon, &ribbon::change_task_count, this, &video_main::change_task_count);
+    connect (ui->video_ribbon, &ribbon::invalid_timespan, this, &video_main::invalid_timespan);
+}
+
+void video_main::change_task_count()
+{
+    auto w = current_sub_window ();
+    if (w != nullptr)
+    {
+        w->set_task_count ();
+    }
 }

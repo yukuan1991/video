@@ -22,9 +22,13 @@ private:
 
     not_null<video_analysis*> create_window ();
     void create_analysis ();
+    video_analysis * current_sub_window ();
+
+    void invalid_timespan ();
 
     void video_import ();
     void init_conn ();
+    void change_task_count ();
 private:
     Ui::video_main *ui;
 };
