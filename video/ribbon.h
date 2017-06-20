@@ -48,12 +48,12 @@ private:
 
 
 
-class ribbon_push : public QPushButton
+class ribbon_button : public QPushButton
 {
     Q_OBJECT
 public:
     template<typename ... Args>
-    ribbon_push (Args && ... p) : QPushButton (std::forward<Args> (p)...) {}
+    ribbon_button (Args && ... p) : QPushButton (std::forward<Args> (p)...) {}
 };
 
 class ribbon_menu : public QMenu

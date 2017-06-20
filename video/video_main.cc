@@ -5,6 +5,8 @@
 #include <QStyle>
 #include <QDebug>
 #include <QFileDialog>
+#include <functional>
+
 
 using namespace std;
 
@@ -55,6 +57,15 @@ video_analysis *video_main::current_sub_window ()
     return w;
 }
 
+void video_main::apply_to_current(analysis_slot slot)
+{
+    auto w = current_sub_window ();
+    if (w != nullptr)
+    {
+        (w->*slot) ();
+    }
+}
+
 void video_main::invalid_timespan()
 {
     auto w = current_sub_window ();
@@ -87,8 +98,10 @@ void video_main::init_conn()
 {
     connect (ui->video_ribbon, &ribbon::create_new, this, &video_main::create_analysis);
     connect (ui->video_ribbon, &ribbon::import_data, this, &video_main::video_import);
-    connect (ui->video_ribbon, &ribbon::change_task_count, this, &video_main::change_task_count);
-    connect (ui->video_ribbon, &ribbon::invalid_timespan, this, &video_main::invalid_timespan);
+    //connect (ui->video_ribbon, &ribbon::change_task_count, this, &video_main::change_task_count);
+    connect (ui->video_ribbon, &ribbon::change_task_count, [this] { apply_to_current (&video_analysis::set_task_count); });
+    connect (ui->video_ribbon, &ribbon::invalid_timespan, [this] { apply_to_current (&video_analysis::modify_invalid); });
+    connect (ui->video_ribbon, &ribbon::paste, [this] { apply_to_current (&video_analysis::on_paste); });
 }
 
 void video_main::change_task_count()

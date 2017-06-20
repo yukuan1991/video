@@ -294,7 +294,7 @@ void video_analysis::on_button_setting_rows_clicked()
 
 
 
-void video_analysis::on_button_paste_clicked()
+void video_analysis::on_paste()
 {
     ui->form->on_paste ();
 }

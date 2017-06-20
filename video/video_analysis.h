@@ -31,6 +31,14 @@ public:
     void modify_invalid();
     void set_task_count ();
 
+    void on_paste ();
+
+    void on_copy ();
+
+    void on_cut ();
+
+    void on_del ();
+
 private slots:
     void on_combo_second_activated(int index);
 
@@ -50,13 +58,6 @@ private slots:
 
     void on_button_setting_rows_clicked();
 
-    void on_button_paste_clicked();
-
-    void on_copy ();
-
-    void on_cut ();
-
-    void on_del ();
 private:
 
     void init_video_widget (const json& video_detail);

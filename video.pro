@@ -38,7 +38,8 @@ SOURCES += \
     video/video_form_split.cc \
     video/video_widget.cc \
     model/json_model.cc \
-    view/table_view.cpp
+    view/table_view.cpp \
+    video/video_chart.cc
 
 HEADERS += \
     video/first_dlg.h \
@@ -53,14 +54,16 @@ HEADERS += \
     video/video_widget.h \
     video/video_player.hpp \
     model/json_model.h \
-    view/table_view.h
+    view/table_view.h \
+    video/video_chart.h
 
 FORMS += \
     video/first_dlg.ui \
     video/form_widget.ui \
     video/video_analysis.ui \
     video/video_main.ui \
-    video/video_widget.ui
+    video/video_widget.ui \
+    video/video_chart.ui
 
 LIBS += -lboost_filesystem
 LIBS += -lboost_system

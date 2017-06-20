@@ -77,6 +77,7 @@ signals:
     void line_exists (bool yes_or_no);
     void bar_move (int value);
     void total_time_changed (const QString& sum);
+    void data_changed ();
 
 private:
     Ui::form_widget *ui;

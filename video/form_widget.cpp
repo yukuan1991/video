@@ -18,11 +18,11 @@ form_widget::form_widget(QWidget *parent) :
     set_views ();
     set_scrolls ();
 
-    connect (src_model_.get (), &video_form_model::dataChanged, [=]{
+    connect (src_model_.get (), &video_form_model::dataChanged, [this]{
         auto sum = src_model_->get_std_sum ();
         emit total_time_changed (sum);
     });
-
+    connect (src_model_.get (), &video_form_model::dataChanged, this, &form_widget::data_changed);
 }
 
 form_widget::~form_widget()

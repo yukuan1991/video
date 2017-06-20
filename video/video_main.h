@@ -19,11 +19,12 @@ public:
     ~video_main();
     QMdiArea * area ();
 private:
-
+    using analysis_slot = void (video_analysis::*) ();
     not_null<video_analysis*> create_window ();
     void create_analysis ();
     video_analysis * current_sub_window ();
 
+    void apply_to_current (analysis_slot);
     void invalid_timespan ();
 
     void video_import ();
