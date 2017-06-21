@@ -628,6 +628,8 @@ action_ratio form_widget::get_ratio() const
     {
 
     }
+
+    return ret;
 }
 
 
