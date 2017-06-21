@@ -239,7 +239,7 @@ std::unique_ptr<QWidget> ribbon::ui_report()
     constexpr auto len = 40;
 
     auto export_button = make_button (QPixmap ("png/导出.png").scaled (len - 5, len), "PDF文档");
-
+    connect (export_button.get (), &QToolButton::clicked, this, &ribbon::export_data);
     upper_layout->addWidget (export_button.release ());
 
     block1_layout->addLayout (upper_layout.release ());

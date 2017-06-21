@@ -13,6 +13,7 @@
 #include <json.hpp>
 #include <QModelIndex>
 #include <optional>
+#include "video/utils.hpp"
 
 using json = nlohmann::json;
 
@@ -20,7 +21,7 @@ namespace Ui {
 class form_widget;
 }
 
-class form_widget : public QWidget
+class form_widget final : public QWidget
 {
     Q_OBJECT
 public:
@@ -48,6 +49,7 @@ public:
     void load_result (const json& result);
     void set_editable (bool b);
 
+    action_ratio get_ratio () const;
 private:
     void set_views ();
     void set_des_view ();

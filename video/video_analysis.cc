@@ -11,10 +11,18 @@
 #include <boost/lexical_cast.hpp>
 #include <boost/scope_exit.hpp>
 #include <base/qt/ui.hpp>
+#include <QChart>
+#include <QPieSeries>
+#include <QPieSlice>
 
-video_analysis::video_analysis(QWidget *parent) :
-    QWidget(parent),
-    ui(new Ui::video_analysis)
+using namespace QtCharts;
+
+video_analysis::video_analysis(QWidget *parent)
+    :QWidget(parent)
+    ,ui(new Ui::video_analysis)
+    ,operation_type_ (new QPieSeries)
+    ,efficiency_ (new QPieSeries)
+
 {
     ui->setupUi(this);
 
@@ -31,6 +39,8 @@ video_analysis::video_analysis(QWidget *parent) :
 
     set_children_filter (this);
     ui->button_mark->setIcon (QIcon ("icon/mark.png"));
+
+    init_chart ();
 }
 
 video_analysis::~video_analysis()
@@ -71,6 +81,49 @@ void video_analysis::init_video_widget(const json &video_detail)
         vec.emplace_back (time);
     }
     ui->video_player->set_invalid (vec);
+}
+
+void video_analysis::init_chart()
+{
+    const auto chart = new QChart;
+    ui->pie->setChart (chart);
+
+    chart->addSeries (operation_type_);
+    chart->addSeries (efficiency_);
+    chart->createDefaultAxes ();
+
+    chart->setAnimationOptions (QChart::AllAnimations);
+    ui->pie->setRenderHint (QPainter::Antialiasing);
+
+    operation_type_->setHorizontalPosition (0.75);
+    efficiency_->setHorizontalPosition (0.25);
+    operation_type_->setVerticalPosition (0.6);
+    efficiency_->setVerticalPosition (0.6);
+    chart->setTitle ("增值/非增值 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;操作类型");
+
+
+    for (int i = 0; i < 2; i ++)
+    {
+        auto slice = new QPieSlice;
+
+        connect (slice, &QPieSlice::hovered, [slice] (bool b){ slice->setLabelVisible (b); });
+        connect (slice, &QPieSlice::hovered, [slice] (bool b){ slice->setExploded (b); });
+        slice->setExplodeDistanceFactor (0.05);
+
+        efficiency_->append (slice);
+    }
+
+    for (int i = 0; i < 4; i ++)
+    {
+        auto slice = new QPieSlice;
+
+        connect (slice, &QPieSlice::hovered, [slice] (bool b){ slice->setLabelVisible (b); });
+        connect (slice, &QPieSlice::hovered, [slice] (bool b){ slice->setExploded (b); });
+        slice->setExplodeDistanceFactor (0.05);
+
+        operation_type_->append (slice);
+    }
+
 }
 
 bool video_analysis::eventFilter(QObject *, QEvent *event)
@@ -334,3 +387,50 @@ void video_analysis::on_del()
 {
     ui->form->on_del ();
 }
+
+void video_analysis::refresh_chart (action_ratio ratio)
+{
+    {
+        const auto slices = operation_type_->slices ();
+
+        {
+            auto slice = slices.at (0);
+            slice->setLabel ("加工 " + QString::number (ratio.processing) + "%");
+            slice->setValue (ratio.processing);
+        }
+
+        {
+            auto slice = slices.at (1);
+            slice->setLabel ("检查 " + QString::number (ratio.checking) + "%");
+            slice->setValue (ratio.checking);
+        }
+
+        {
+            auto slice = slices.at (2);
+            slice->setLabel ("搬运 " + QString::number (ratio.moving) + "%");
+            slice->setValue (ratio.moving);
+        }
+
+        {
+            auto slice = slices.at (3);
+            slice->setLabel ("等待 " + QString::number (ratio.waiting) + "%");
+            slice->setValue (ratio.waiting);
+        }
+    }
+
+    {
+        const auto slices = efficiency_->slices ();
+        {
+            auto slice = slices.at (0);
+            slice->setLabel ("增值 " + QString::number (ratio.processing) + "%");
+            slice->setValue (ratio.processing);
+        }
+
+        {
+            auto slice = slices.at (1);
+            slice->setLabel ("非增值 " + QString::number (100 - ratio.processing) + "%");
+            slice->setValue (100 - ratio.processing);
+        }
+    }
+}
+

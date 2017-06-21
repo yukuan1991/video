@@ -2,8 +2,8 @@
 #include "QDebug"
 #include <QColor>
 #include <QBrush>
-#include <boost/scope_exit.hpp>
 #include <QFont>
+#include <base/lang/scope.hpp>
 
 json_model::json_model(QObject *parent)
     : QAbstractTableModel(parent)
@@ -115,7 +115,7 @@ bool json_model::setData(const QModelIndex &index, const QVariant &value, int ro
         return false;
     }
 
-    BOOST_SCOPE_EXIT_ALL (&)
+    SCOPE_EXIT
     {
         emit dataChanged (this->index (0, 0), this->index (rowCount () - 1, columnCount () - 1));
     };

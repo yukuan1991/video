@@ -181,13 +181,25 @@
       </layout>
      </item>
      <item>
-      <widget class="QWidget" name="chart" native="true"/>
+      <widget class="QTabWidget" name="chart">
+       <property name="currentIndex">
+        <number>1</number>
+       </property>
+       <widget class="QWidget" name="stats">
+        <attribute name="title">
+         <string>统计数据</string>
+        </attribute>
+       </widget>
+       <widget class="QtCharts::QChartView" name="pie">
+        <attribute name="title">
+         <string>饼状图</string>
+        </attribute>
+       </widget>
+      </widget>
      </item>
     </layout>
    </item>
   </layout>
-  <zorder>spinbox_rate</zorder>
-  <zorder>chart</zorder>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
@@ -207,6 +219,12 @@
    <class>form_widget</class>
    <extends>QWidget</extends>
    <header>video/form_widget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QtCharts::QChartView</class>
+   <extends>QWidget</extends>
+   <header>QChartView.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

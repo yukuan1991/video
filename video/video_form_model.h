@@ -19,7 +19,6 @@ public:
     QVariant get_header_info (const QModelIndex&, int) const;
     QString get_std_sum ();
 
-
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
     bool setData (const QModelIndex& index, const QVariant& value, int role = Qt::EditRole) override;
     Qt::ItemFlags flags (const QModelIndex &index) const noexcept override;

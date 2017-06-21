@@ -8,7 +8,11 @@
 #include <memory>
 #include <vector>
 #include "json.hpp"
+#include "video/utils.hpp"
 
+namespace QtCharts {
+class QPieSeries;
+}
 
 namespace Ui {
 class video_analysis;
@@ -39,6 +43,8 @@ public:
 
     void on_del ();
 
+    void refresh_chart (action_ratio ratio);
+
 private slots:
     void on_combo_second_activated(int index);
 
@@ -61,6 +67,7 @@ private slots:
 private:
 
     void init_video_widget (const json& video_detail);
+    void init_chart ();
 
 protected:
     bool eventFilter (QObject* obj, QEvent* event) override;
@@ -83,6 +90,10 @@ private:
     QString current_file_path_;
 
     bool file_opening_;
+
+
+    QtCharts::QPieSeries* operation_type_;
+    QtCharts::QPieSeries* efficiency_;
 };
 
 

@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui avwidgets
+QT       += core gui avwidgets charts
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 CONFIG -= c++11
@@ -55,7 +55,8 @@ HEADERS += \
     video/video_player.hpp \
     model/json_model.h \
     view/table_view.h \
-    video/video_chart.h
+    video/video_chart.h \
+    video/utils.hpp
 
 FORMS += \
     video/first_dlg.ui \

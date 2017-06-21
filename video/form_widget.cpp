@@ -6,6 +6,7 @@
 #include <QScrollBar>
 #include <QDir>
 #include <boost/lexical_cast.hpp>
+#include <QHeaderView>
 
 using namespace std;
 
@@ -615,6 +616,17 @@ void form_widget::set_editable(bool b)
         ui->table_data->setEditTriggers (QAbstractItemView::NoEditTriggers);
         ui->table_des->setEditTriggers (QAbstractItemView::NoEditTriggers);
         ui->table_result->setEditTriggers (QAbstractItemView::NoEditTriggers);
+    }
+}
+
+
+action_ratio form_widget::get_ratio() const
+{
+    action_ratio ret;
+    auto header = ui->table_result->horizontalHeader ();
+    for (int i = 0; i < header->count (); i ++)
+    {
+
     }
 }
 
