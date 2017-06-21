@@ -50,6 +50,8 @@ public:
     void set_editable (bool b);
 
     action_ratio get_ratio () const;
+protected:
+    void paintEvent(QPaintEvent *) override;
 private:
     void set_views ();
     void set_des_view ();

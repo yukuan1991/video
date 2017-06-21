@@ -7,6 +7,7 @@
 #include <QDir>
 #include <boost/lexical_cast.hpp>
 #include <QHeaderView>
+#include <QPainter>
 
 using namespace std;
 
@@ -630,6 +631,14 @@ action_ratio form_widget::get_ratio() const
     }
 
     return ret;
+}
+
+void form_widget::paintEvent(QPaintEvent *)
+{
+    QStyleOption opt;
+    opt.init(this);
+    QPainter p(this);
+    style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
 }
 
 
