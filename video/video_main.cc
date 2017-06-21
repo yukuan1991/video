@@ -10,12 +10,14 @@
 
 using namespace std;
 
-video_main::video_main(QWidget *parent) :
-    QWidget(parent),
-    ui(new Ui::video_main)
+video_main::video_main(QWidget *parent)
+    :QWidget(parent)
+    ,ui(new Ui::video_main)
 {
     ui->setupUi(this);
-
+    //ui->mdi->setTabShape (QTabWidget::Triangular);
+    ui->mdi->setViewMode (QMdiArea::TabbedView);
+    ui->mdi->setDocumentMode (false);
     init_conn ();
 }
 

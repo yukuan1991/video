@@ -2,6 +2,7 @@
 
 #include <QWidget>
 #include <base/lang/not_null.h>
+#include <string>
 
 namespace Ui {
 class video_main;
@@ -13,7 +14,6 @@ class video_analysis;
 class video_main final : public QWidget
 {
     Q_OBJECT
-
 public:
     explicit video_main(QWidget *parent = 0);
     ~video_main();

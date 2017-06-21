@@ -128,7 +128,7 @@ void progress_label::clear_invalid_area()
     unsigned j = 0;
     for (unsigned i = 0; i < color_start_.size (); i ++)
     {
-        if (right_click_pos_ >= color_start_[i])
+        if (right_click_pos_ >= static_cast<qint64> (color_start_[i]))
         {
             j = i;
         }

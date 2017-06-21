@@ -85,21 +85,29 @@ void video_analysis::init_video_widget(const json &video_detail)
 
 void video_analysis::init_chart()
 {
-    const auto chart = new QChart;
-    ui->pie->setChart (chart);
+    const auto effic_chart = new QChart;
+    const auto op_type_chart = new QChart;
 
-    chart->addSeries (operation_type_);
-    chart->addSeries (efficiency_);
-    chart->createDefaultAxes ();
+    ui->efficiency_view->setChart (effic_chart);
+    ui->operation_type_view->setChart (op_type_chart);
 
-    chart->setAnimationOptions (QChart::AllAnimations);
-    ui->pie->setRenderHint (QPainter::Antialiasing);
+    ui->efficiency_view->setRenderHint (QPainter::Antialiasing);
+    ui->operation_type_view->setRenderHint (QPainter::Antialiasing);
 
-    operation_type_->setHorizontalPosition (0.75);
-    efficiency_->setHorizontalPosition (0.25);
-    operation_type_->setVerticalPosition (0.6);
-    efficiency_->setVerticalPosition (0.6);
-    chart->setTitle ("增值/非增值 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;操作类型");
+    op_type_chart->addSeries (operation_type_);
+    effic_chart->addSeries (efficiency_);
+
+    effic_chart->setAnimationOptions (QChart::AllAnimations);
+    op_type_chart->setAnimationOptions (QChart::AllAnimations);
+
+    operation_type_->setVerticalPosition (0.55);
+    efficiency_->setVerticalPosition (0.55);
+
+    efficiency_->setPieSize (0.5);
+    operation_type_->setPieSize (0.5);
+
+    effic_chart->setTitle ("增值/非增值");
+    op_type_chart->setTitle ("操作类型");
 
 
     for (int i = 0; i < 2; i ++)
@@ -392,7 +400,6 @@ void video_analysis::refresh_chart (action_ratio ratio)
 {
     {
         const auto slices = operation_type_->slices ();
-
         {
             auto slice = slices.at (0);
             slice->setLabel ("加工 " + QString::number (ratio.processing) + "%");
