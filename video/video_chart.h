@@ -15,7 +15,7 @@ public:
     explicit video_chart(QWidget *parent = 0);
     ~video_chart();
 protected:
-    void paintEvent(QPaintEvent *) override;
+//    void paintEvent(QPaintEvent *) override;
 private:
     Ui::video_chart *ui;
 };

@@ -14,10 +14,10 @@ video_chart::~video_chart()
     delete ui;
 }
 
-void video_chart::paintEvent(QPaintEvent *)
-{
-    QStyleOption opt;
-    opt.init(this);
-    QPainter p(this);
-    style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
-}
+//void video_chart::paintEvent(QPaintEvent *)
+//{
+//    QStyleOption opt;
+//    opt.init(this);
+//    QPainter p(this);
+//    style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
+//}

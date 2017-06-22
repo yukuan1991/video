@@ -27,7 +27,7 @@ public:
     static constexpr uint32_t OPERATION_COPY = 0b10;
 protected:
     void keyPressEvent (QKeyEvent* event) override;
-    void paintEvent(QPaintEvent *) override;
+//    void paintEvent(QPaintEvent *) override;
 private:
     std::vector<std::vector<std::string>> get_clip_structure ();
     std::tuple<int, int, int, int> get_rect (bool* ok = nullptr);

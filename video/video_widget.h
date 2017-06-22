@@ -81,7 +81,7 @@ private:
 
 
 protected:
-    void paintEvent(QPaintEvent *) override;
+//    void paintEvent(QPaintEvent *) override;
 signals:
     /// 视频播放速度改变
     void speed_changed(float);

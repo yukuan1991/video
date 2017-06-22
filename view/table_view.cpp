@@ -199,13 +199,13 @@ void table_view::keyPressEvent(QKeyEvent *event)
     QTableView::keyPressEvent (event);
 }
 
-void table_view::paintEvent(QPaintEvent *)
-{
-    QStyleOption opt;
-    opt.init(this);
-    QPainter p(this);
-    style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
-}
+//void table_view::paintEvent(QPaintEvent *)
+//{
+//    QStyleOption opt;
+//    opt.init(this);
+//    QPainter p(this);
+//    style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
+//}
 
 std::vector<std::vector<std::string>> table_view::get_clip_structure()
 {
