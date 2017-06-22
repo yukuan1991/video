@@ -5,6 +5,7 @@
 #include <QStringList>
 #include "model/json_model.h"
 #include <optional>
+#include "video/utils.hpp"
 
 class video_form_model final: public json_model
 {
@@ -24,6 +25,7 @@ public:
     Qt::ItemFlags flags (const QModelIndex &index) const noexcept override;
     void resize (unsigned len) override;
     void clear ();
+    std::optional<action_ratio> ratio () const;
 private:
     QVariant get_des_header (const QModelIndex&, int) const;
     QVariant get_data_header (const QModelIndex&, int) const;

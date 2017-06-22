@@ -164,6 +164,73 @@ void video_form_model::clear()
     this->resize (rowCount ());
 }
 
+optional<action_ratio> video_form_model::ratio() const
+{
+    std::array<qreal, 4> arr {{0, 0, 0, 0}};
+
+    qreal & processing = arr.at (0);
+    qreal & checking = arr.at (1);
+    qreal & moving = arr.at (2);
+    qreal & waiting = arr.at (3);
+
+    for (int i = 0; i < this->rowCount (); i ++)
+    {
+        bool b;
+        const auto time = get_value_by_key (i, "标准工时").toDouble (&b);
+
+        if (!b)
+        {
+            continue;
+        }
+
+        const auto type = get_value_by_key (i, "操作类型").toString ();
+        if (type == "加工")
+        {
+            processing += time;
+        }
+        else if (type == "搬运")
+        {
+            moving += time;
+        }
+        else if (type == "检查")
+        {
+            checking += time;
+        }
+        else if (type == "等待")
+        {
+            waiting += time;
+        }
+        else
+        {
+            assert (false);
+        }
+    }
+
+    const auto total = accumulate (begin (arr), end (arr), static_cast<qreal> (0), plus<qreal> ());
+    qDebug () << "total -> " << total;
+    if (total < 0.00001)
+    {
+        return {};
+    }
+    const auto ratio = 100.0 / total;
+    qDebug () << "ratio -> " << ratio;
+
+    for (auto & it : arr)
+    {
+        it *= ratio;
+        qDebug () << "it -> " << it;
+    }
+
+    action_ratio ret;
+
+    ret.processing = processing;
+    ret.checking = checking;
+    ret.moving = moving;
+    ret.waiting = waiting;
+
+    return ret;
+}
+
 QVariant video_form_model::get_result_table(const QModelIndex &index) const
 {
     auto op_header = get_header (index);
