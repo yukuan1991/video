@@ -17,9 +17,7 @@ video_main::video_main(QWidget *parent)
     ,ui(new Ui::video_main)
 {
     ui->setupUi(this);
-    //ui->mdi->setTabShape (QTabWidget::Triangular);
     ui->mdi->setViewMode (QMdiArea::TabbedView);
-    //ui->mdi->setDocumentMode (false);
     init_conn ();
 }
 
@@ -127,14 +125,7 @@ void video_main::init_conn()
     connect (ui->video_ribbon, &ribbon::change_task_count, [this] { apply_to_current (&video_analysis::set_task_count); });
     connect (ui->video_ribbon, &ribbon::invalid_timespan, [this] { apply_to_current (&video_analysis::modify_invalid); });
     connect (ui->video_ribbon, &ribbon::paste, [this] { apply_to_current (&video_analysis::on_paste); });
-    connect (ui->video_ribbon, &ribbon::export_data, [this] {
-        auto w = current_sub_window ();
-        if (w != nullptr)
-        {
-            w->refresh_chart ({10, 20, 30, 40});
-        }
-    });
-
+    connect (ui->video_ribbon, &ribbon::save, [this] { apply_to_current (&video_analysis::export_data); });
 }
 
 void video_main::change_task_count()

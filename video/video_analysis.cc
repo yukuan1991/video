@@ -15,6 +15,7 @@
 #include <QPieSeries>
 #include <QPieSlice>
 #include <QStyleFactory>
+#include <base/io/file/file.hpp>
 
 using namespace QtCharts;
 
@@ -454,5 +455,11 @@ void video_analysis::refresh_chart (action_ratio ratio)
             slice->setValue (100 - ratio.processing);
         }
     }
+}
+
+void video_analysis::export_data()
+{
+    auto j = ui->form->export_data ();
+    file::write_buffer ("123.txt", j.dump (4));
 }
 

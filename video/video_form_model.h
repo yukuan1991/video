@@ -52,7 +52,7 @@ private:
     bool paste_data_table (const QModelIndex& index, const QVariant& value);
 
 private:
-    int row_count_ = max_rows;
+    int row_count_ = 0;
     double stdtime_sum_ = 0;
 };
 

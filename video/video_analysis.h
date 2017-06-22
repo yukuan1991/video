@@ -45,6 +45,8 @@ public:
 
     void refresh_chart (action_ratio ratio);
 
+    void export_data ();
+
 private slots:
     void on_combo_second_activated(int index);
 
