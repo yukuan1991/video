@@ -79,9 +79,6 @@ private:
     /// 重用播放区域
     void reboot_section ();
 
-
-protected:
-//    void paintEvent(QPaintEvent *) override;
 signals:
     /// 视频播放速度改变
     void speed_changed(float);

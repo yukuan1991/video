@@ -71,7 +71,6 @@ private:
 
 protected:
     bool eventFilter (QObject* obj, QEvent* event) override;
-//    void paintEvent(QPaintEvent *) override;
 private:
     Ui::video_analysis *ui;
 

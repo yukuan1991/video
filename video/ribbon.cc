@@ -99,6 +99,7 @@ std::unique_ptr<QWidget> ribbon::ui_edit ()
     block1_layout->setSpacing (1);
 
     auto upper_layout = make_unique<QHBoxLayout> ();
+    upper_layout->setContentsMargins(10, 0, 10, 0);
     upper_layout->setSpacing (10);
 
     constexpr auto len = 39;
@@ -141,6 +142,7 @@ std::unique_ptr<QWidget> ribbon::ui_edit ()
     auto block2_layout = make_unique<QVBoxLayout> ();
 
     upper_layout = make_unique<QHBoxLayout> ();
+    upper_layout->setContentsMargins(10, 0, 10, 0);
 
     {
         auto btn = make_button (QPixmap ("png/作业项数.png").scaled (len, len), "改变作业项数");
@@ -151,12 +153,12 @@ std::unique_ptr<QWidget> ribbon::ui_edit ()
     block2_layout->addLayout (upper_layout.release ());
 
     label = new QLabel ("第二类");
-    label->setMaximumWidth (120);
-    label->setMinimumWidth (120);
+//    label->setMaximumWidth (90);
+//    label->setMinimumWidth (90);
     label->setAlignment (Qt::AlignHCenter | Qt::AlignBottom);
     block2_layout->addWidget (label);
 
-    block2_layout->setSizeConstraint (QLayout::SetFixedSize);
+//    block2_layout->setSizeConstraint (QLayout::SetFixedSize);
     layout->addLayout (block2_layout.release (), 0);
 
     line = new QFrame(widget.get ());
@@ -177,13 +179,15 @@ std::unique_ptr<QWidget> ribbon::ui_video()
     auto layout = make_unique<QHBoxLayout> ();
 
     layout->setContentsMargins (1, 1, 1, 1);
-    layout->setSpacing (10);
+    layout->setSpacing (1);
 
     auto block1_layout = make_unique<QVBoxLayout> ();
     block1_layout->setContentsMargins (1, 1, 1, 1);
     block1_layout->setSpacing (1);
 
     auto upper_layout = make_unique<QHBoxLayout> ();
+    upper_layout->setContentsMargins(10, 0, 10, 0);
+    upper_layout->setSpacing(10);
 
     constexpr auto len = 39;
 
@@ -207,6 +211,7 @@ std::unique_ptr<QWidget> ribbon::ui_video()
     block2_layout->setSpacing (1);
 
     upper_layout = make_unique<QHBoxLayout> ();
+    upper_layout->setContentsMargins(10, 0, 10, 0);
 
     btn = make_button (QPixmap ("png/无效时间.png").scaled (len, len), "无效时间");
     connect (btn.get (), &QToolButton::clicked, this, &ribbon::invalid_timespan);
@@ -242,8 +247,10 @@ std::unique_ptr<QWidget> ribbon::ui_report()
     block1_layout->setSpacing (1);
 
     auto upper_layout = make_unique<QHBoxLayout> ();
+    upper_layout->setContentsMargins(10, 0, 10, 0);
+    upper_layout->setSpacing(10);
 
-    constexpr auto len = 40;
+    constexpr auto len = 39;
 
     auto export_button = make_button (QPixmap ("png/导出.png").scaled (len - 5, len), "PDF文档");
     connect (export_button.get (), &QToolButton::clicked, this, &ribbon::export_data);
@@ -280,6 +287,9 @@ std::unique_ptr<QWidget> ribbon::ui_settings()
         block1_layout->setSpacing (1);
 
         auto upper_layout = make_unique<QHBoxLayout> ();
+        upper_layout->setSpacing(10);
+        upper_layout->setContentsMargins(10, 0, 10, 0);
+
 
         constexpr auto len = 39;
 
@@ -306,6 +316,8 @@ std::unique_ptr<QWidget> ribbon::ui_settings()
         block_layout->setSpacing (1);
 
         auto upper_layout = make_unique<QHBoxLayout> ();
+        upper_layout->setSpacing(10);
+        upper_layout->setContentsMargins(10, 0, 10, 0);
 
         constexpr auto len = 39;
 
@@ -332,6 +344,9 @@ std::unique_ptr<QWidget> ribbon::ui_settings()
         block_layout->setSpacing (1);
 
         auto upper_layout = make_unique<QHBoxLayout> ();
+        upper_layout->setSpacing(10);
+        upper_layout->setContentsMargins(10, 0, 10, 0);
+
 
         constexpr auto len = 39;
 

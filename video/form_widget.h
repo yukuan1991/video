@@ -53,10 +53,6 @@ public:
     action_ratio get_ratio () const;
     std::optional<action_ratio> ratio () const;
 
-protected:
-//    void paintEvent(QPaintEvent *) override;
-
-
 private:
     void set_views ();
     void set_des_view ();

@@ -176,15 +176,6 @@ bool video_analysis::eventFilter(QObject *, QEvent *event)
     return false;
 }
 
-//void video_analysis::paintEvent(QPaintEvent *)
-//{
-//    QStyleOption opt;
-//    opt.init(this);
-//    QPainter p(this);
-//    style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
-//}
-
-
 void video_analysis::load_json(const json &data)
 {
     auto iter_sheet = data.find ("表");
