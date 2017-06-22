@@ -219,6 +219,7 @@ json form_widget::task_data()
     QModelIndex index;
     QVariant vat;
 
+    qDebug () << "row count -> " << src_model_->rowCount ();
     for (int i = 0; i < src_model_->rowCount (); ++i)
     {
         index = src_model_->index (i,1);
@@ -628,7 +629,6 @@ std::optional<action_ratio> form_widget::ratio() const
 
 json form_widget::export_data()
 {
-
     json video_data = json::object ();
 
     json task = task_data ();

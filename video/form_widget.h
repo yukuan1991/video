@@ -1,6 +1,4 @@
-﻿#ifndef FORM_WIDGET_H
-#define FORM_WIDGET_H
-
+﻿#pragma once
 #include <QWidget>
 #include "video/video_delegate.h"
 #include <QTableView>
@@ -14,6 +12,7 @@
 #include <QModelIndex>
 #include <optional>
 #include "video/utils.hpp"
+
 
 using json = nlohmann::json;
 
@@ -96,5 +95,3 @@ private:
     std::vector<QTableView*> views_;
     table_view* current_view_ = nullptr;
 };
-
-#endif // FORM_WIDGET_H
