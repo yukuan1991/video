@@ -80,7 +80,7 @@ void ribbon::setup_menu()
     menu->addAction (action.release ());
 
     action =  make_action (QPixmap ("png/退出.png"), "退出");
-    connect (action.get (), &QAction::triggered, this, &ribbon::close);
+    connect (action.get (), &QAction::triggered, this, &ribbon::quit);
     menu->addAction (action.release ());
 
     menu->setContentsMargins(10, 0, 0, 0);

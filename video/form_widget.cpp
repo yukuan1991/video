@@ -445,26 +445,26 @@ json form_widget::info_pandect(const json& data, const std::string& video_path)
     return {};
 }
 
-void form_widget::save_task(const QString &filename, const std::map<QString, QString> &info, const json &data)
-{
-    //const auto station_iter = info.find ("产品");
-    //assert (station_iter != info.end ());
-    //auto station_dir = station_iter->second;
-
-    //const auto process_iter = info.find ("工艺");
-    //assert (process_iter != info.end ());
-    //auto process_dir = process_iter->second;
-
-    //QDir dir {PRODUCT_PATH};
-
-    //bool is_ok;
-    //is_ok = dir.cd (station_dir); assert (is_ok);
-    //is_ok = dir.cd (process_dir); assert (is_ok);
-    //auto save_path = dir.absoluteFilePath(filename);
-
-    //auto transcode_path = unicode_to_system (save_path.toStdString());
-    //krys::write_buffer (transcode_path, data.dump (4));
-}
+//void form_widget::save_task(const QString &filename, const std::map<QString, QString> &info, const json &data)
+//{
+//    const auto station_iter = info.find ("产品");
+//    assert (station_iter != info.end ());
+//    auto station_dir = station_iter->second;
+//
+//    const auto process_iter = info.find ("工艺");
+//    assert (process_iter != info.end ());
+//    auto process_dir = process_iter->second;
+//
+//    QDir dir {PRODUCT_PATH};
+//
+//    bool is_ok;
+//    is_ok = dir.cd (station_dir); assert (is_ok);
+//    is_ok = dir.cd (process_dir); assert (is_ok);
+//    auto save_path = dir.absoluteFilePath(filename);
+//
+//    auto transcode_path = unicode_to_system (save_path.toStdString());
+//    krys::write_buffer (transcode_path, data.dump (4));
+//}
 
 void form_widget::set_scrolls()
 {
@@ -642,44 +642,44 @@ json form_widget::export_data()
     return video_data;
 }
 
-void form_widget::save_file(const std::map<QString, QString> &dlg_info, std::vector <unsigned long long >& invalid_vec)
-{
-    try
-    {
-        auto iter = dlg_info.find ("作业内容");
-        assert (iter!=dlg_info.end());
-        auto filename = iter->second;
-        json extra_info = map_to_json (dlg_info);
-
-        auto video_table_data = export_data ();
-
-        json sheet = json::object();
-        sheet ["视频分析法详细信息"] = video_table_data;
-        json& detail = sheet ["视频分析法详细信息"];
-        assert (detail.is_object ());
-
-        const auto iter_path = dlg_info.find ("视频路径"); assert (iter_path!=dlg_info.end ());
-        auto path = iter_path->second.toStdString ();
-        detail ["视频路径"] = path;
-        detail ["无效时间段"] = invalid_vec;
-        sheet ["信息总览"] = info_pandect (video_table_data, path);
-
-        const auto iter_circulation = dlg_info.find ("循环"); assert (iter_circulation!=dlg_info.end ());
-        bool is_ok = false;
-        detail ["循环"] = iter_circulation->second.toInt (&is_ok); assert (is_ok);
-        json working_procedure = json::object ();
-        working_procedure ["表"] = sheet;
-        working_procedure ["附加信息"] = extra_info;
-        working_procedure ["文件来源"] = "产品工时";
-
-        save_task (filename, dlg_info, working_procedure);
-
-    }
-    catch (std::exception &e)
-    {
-        qDebug () << __LINE__ << e.what();
-    }
-}
+//void form_widget::save_file(const std::map<QString, QString> &dlg_info, std::vector <unsigned long long >& invalid_vec)
+//{
+//    try
+//    {
+//        auto iter = dlg_info.find ("作业内容");
+//        assert (iter!=dlg_info.end());
+//        auto filename = iter->second;
+//        json extra_info = map_to_json (dlg_info);
+//
+//        auto video_table_data = export_data ();
+//
+//        json sheet = json::object();
+//        sheet ["视频分析法详细信息"] = video_table_data;
+//        json& detail = sheet ["视频分析法详细信息"];
+//        assert (detail.is_object ());
+//
+//        const auto iter_path = dlg_info.find ("视频路径"); assert (iter_path!=dlg_info.end ());
+//        auto path = iter_path->second.toStdString ();
+//        detail ["视频路径"] = path;
+//        detail ["无效时间段"] = invalid_vec;
+//        sheet ["信息总览"] = info_pandect (video_table_data, path);
+//
+//        const auto iter_circulation = dlg_info.find ("循环"); assert (iter_circulation!=dlg_info.end ());
+//        bool is_ok = false;
+//        detail ["循环"] = iter_circulation->second.toInt (&is_ok); assert (is_ok);
+//        json working_procedure = json::object ();
+//        working_procedure ["表"] = sheet;
+//        working_procedure ["附加信息"] = extra_info;
+//        working_procedure ["文件来源"] = "产品工时";
+//
+//        //save_task (filename, dlg_info, working_procedure);
+//
+//    }
+//    catch (std::exception &e)
+//    {
+//        qDebug () << __LINE__ << e.what();
+//    }
+//}
 
 
 void form_widget::set_row(int num)

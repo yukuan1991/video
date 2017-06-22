@@ -8,6 +8,8 @@
 #include <QFileInfo>
 #include <functional>
 #include <QMessageBox>
+#include <base/io/file/file.hpp>
+#include <base/utils/charset.hpp>
 
 
 using namespace std;
@@ -44,6 +46,7 @@ not_null<video_analysis *> video_main::create_window()
 void video_main::create_analysis()
 {
     auto w = create_window ();
+    w->set_task_count ();
 }
 
 video_analysis *video_main::current_sub_window ()
@@ -125,7 +128,8 @@ void video_main::init_conn()
     connect (ui->video_ribbon, &ribbon::change_task_count, [this] { apply_to_current (&video_analysis::set_task_count); });
     connect (ui->video_ribbon, &ribbon::invalid_timespan, [this] { apply_to_current (&video_analysis::modify_invalid); });
     connect (ui->video_ribbon, &ribbon::paste, [this] { apply_to_current (&video_analysis::on_paste); });
-    connect (ui->video_ribbon, &ribbon::save, [this] { apply_to_current (&video_analysis::export_data); });
+    connect (ui->video_ribbon, &ribbon::save, this, &video_main::on_save);
+    connect (ui->video_ribbon, &ribbon::quit, this, &video_main::close);
 }
 
 void video_main::change_task_count()
@@ -134,5 +138,16 @@ void video_main::change_task_count()
     if (w != nullptr)
     {
         w->set_task_count ();
+    }
+}
+
+void video_main::on_save()
+{
+    if (auto w = current_sub_window ();
+            w != nullptr)
+    {
+        const auto path = QFileDialog::getSaveFileName(this, "文件保存", ".", "Video Analysis File (*.vaf");
+        const auto data = w->dump ();
+        file::write_buffer (::utf_to_sys (path.toStdString ()).data (), data.dump (4));
     }
 }

@@ -40,23 +40,23 @@ public: // functions
     auto play_video() { player_->play(); }
 
     /// 文件路径
-    auto file() { return player_->file(); }
+    QString file() const noexcept { return player_->file(); }
     /// 载入文件
     auto set_file(const QString& file) { player_->stop (); return player_->setFile(file); }
 
     /// 设置视频播放进度
     auto set_position(long long int pos) { player_->seek(pos);}
     /// 获取播放进度
-    auto position() { return player_->position();}
+    auto position() const noexcept { return player_->position();}
 
     ///静音属性
     auto set_mute(bool b) { player_->audio()->setMute(b);}
     ///是否已经静音
-    auto is_mute() { return player_->audio()->isMute();}
+    auto is_mute() const noexcept { return player_->audio()->isMute();}
 
     ///音量
-    auto set_volume(float percent) { player_->audio()->setVolume(percent);}
-    auto volume() { return player_->audio()->volume();}
+    auto set_volume(float percent) noexcept { player_->audio()->setVolume(percent);}
+    auto volume() const noexcept { return player_->audio()->volume();}
 
     /// 停止视频播放
     auto stop_video() { player_->stop();}
@@ -67,25 +67,25 @@ public: // functions
 
 
     auto set_speed(float f) { player_->setSpeed(f); }
-    auto speed() { return player_->speed(); }
+    auto speed() const noexcept { return player_->speed(); }
 
     /// 起始位置
     void set_start_position (long long int pos) { player_->setStartPosition (pos);}
-    long long int start_position () { return player_->startPosition ();}
+    long long int start_position () const noexcept { return player_->startPosition ();}
 
     /// 返回当前播放器的状态
-    auto state() { return player_->state(); }
+    auto state() const noexcept { return player_->state(); }
 
     /// 是否可搜寻
-    bool is_seekable() { return player_->isSeekable(); }
+    bool is_seekable() const noexcept { return player_->isSeekable(); }
 
     /// 播放时长
-    long long int duration () { return player_->duration ();}
+    long long int duration () const noexcept { return player_->duration ();}
 
     /// 通知时间变更的间隔
-    int notify_interval () {return player_->notifyInterval ();}
+    int notify_interval () const noexcept { return player_->notifyInterval ();}
     /// 设置通知时间变更的间隔
-    void set_notify_interval (int msec) { player_->setNotifyInterval (msec); }
+    void set_notify_interval (int msec) noexcept { player_->setNotifyInterval (msec); }
 
     /// 卸载媒体
     void unload () { /*player_->unload ();*/ }

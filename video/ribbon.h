@@ -28,7 +28,7 @@ signals:
     void open ();
     void save ();
     void save_as ();
-    void close ();
+    void quit ();
 
     void import_data ();
     void invalid_timespan ();

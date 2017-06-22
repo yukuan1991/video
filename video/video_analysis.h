@@ -29,7 +29,7 @@ public:
     ~video_analysis();
 
     void push_reaction (const QString& data);
-    void load_json (const json& data);
+    void load (const json& data);
 
     void set_video_file (const QString &video);
     void modify_invalid();
@@ -45,7 +45,7 @@ public:
 
     void refresh_chart (action_ratio ratio);
 
-    void export_data ();
+    json dump ();
 
 private slots:
     void on_combo_second_activated(int index);

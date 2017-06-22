@@ -87,7 +87,8 @@ void video_analysis::init_video_widget(const json &video_detail)
     auto& invalid = *iter_invalid;
     qint64 time;
     std::vector <qint64> vec;
-    for (unsigned i=0; i<invalid.size (); ++i)
+    vec.reserve (invalid.size ());
+    for (unsigned i=0; i < invalid.size (); ++i)
     {
         time = invalid.at (i);
         vec.emplace_back (time);
@@ -177,14 +178,10 @@ bool video_analysis::eventFilter(QObject *, QEvent *event)
     return false;
 }
 
-void video_analysis::load_json(const json &data)
+void video_analysis::load (const json &data)
 {
-    auto iter_sheet = data.find ("表");
-    assert (iter_sheet != data.end () and iter_sheet->is_object ());
-    auto iter_video_analysis = iter_sheet->find ("视频分析法详细信息");
-    assert (iter_video_analysis != iter_sheet->end () and iter_video_analysis->is_object ());
-    auto iter_circulation = iter_video_analysis->find ("循环");
-    assert (iter_circulation != iter_video_analysis->end () and iter_circulation->is_number_integer ());
+    const auto iter_video_analysis = &data;
+    assert (iter_video_analysis->is_object ());
     auto iter_task = iter_video_analysis->find ("作业内容");
     assert (iter_task != iter_video_analysis->end () and iter_task->is_array ());
     auto iter_data = iter_video_analysis->find ("观测时间");
@@ -192,7 +189,7 @@ void video_analysis::load_json(const json &data)
     auto iter_result = iter_video_analysis->find ("结果");
     assert (iter_result != iter_video_analysis->end () and iter_result->is_array ());
 
-    ui->form->set_row (iter_task->size ());
+    ui->form->set_row (static_cast<int> (iter_task->size ()));
     ui->form->load_task (*iter_task);
     ui->form->load_data (*iter_data);
     ui->form->load_result (*iter_result);
@@ -448,8 +445,12 @@ void video_analysis::refresh_chart (action_ratio ratio)
     }
 }
 
-void video_analysis::export_data()
+json video_analysis::dump()
 {
-    auto j = ui->form->export_data ();
+    json data;
+    data ["form"] = ui->form->export_data ();
+    data ["video-file"] = ui->video_player->file ().toStdString ();
+
+    return data;
 }
 

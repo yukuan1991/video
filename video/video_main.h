@@ -30,6 +30,8 @@ private:
     void video_import ();
     void init_conn ();
     void change_task_count ();
+
+    void on_save ();
 private:
     Ui::video_main *ui;
 };

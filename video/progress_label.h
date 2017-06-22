@@ -29,7 +29,7 @@ public:
     void set_position (qint64 pos);
 
     /// 无效时间
-    bool add_invalid (const std::pair<unsigned long long, unsigned long long>& p);
+    bool add_invalid (const std::pair<qint64, qint64> &p);
     const auto& retrieve_invalid () { return boundaries_; }
     void set_invalid (const std::vector<qint64>& data) { boundaries_ = data; repaint ();}
 
@@ -59,8 +59,8 @@ private:
     qint64 total_ = 0;
     qint64 pos_ = 0;
     std::vector<qint64> boundaries_;
-    std::vector<unsigned long long> color_start_;
-    std::vector<std::pair<unsigned long long, unsigned long long>> pix_to_pos;
+    std::vector<qint64> color_start_;
+    std::vector<std::pair<qint64, qint64>> pix_to_pos;
     std::unique_ptr<QMenu> menu_ = std::make_unique<QMenu> ();
 
     bool clearable_ = false;

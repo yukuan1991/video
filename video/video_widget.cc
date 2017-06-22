@@ -133,6 +133,11 @@ void video_widget::set_file(const QString &file)
     ui->player->set_file(file);
 }
 
+QString video_widget::file() const noexcept
+{
+    return ui->player->file ();
+}
+
 void video_widget::play_video()
 {
     ui->player->play_video();
@@ -163,7 +168,7 @@ void video_widget::set_position(long long position)
     ui->player->set_position(position);
 }
 
-long long video_widget::position()
+long long video_widget::position() const noexcept
 {
     return ui->player->position();
 }

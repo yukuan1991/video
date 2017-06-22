@@ -20,6 +20,8 @@ public:
 public:
     /// 修改视频路径
     void set_file(const QString &file);
+
+    QString file () const noexcept;
     /// 播放视频
     void play_video();
     /// 暂停视频
@@ -33,7 +35,7 @@ public:
     /// 设置视频播放进度
     void set_position(long long int position);
     /// 获取视频播放进度
-    long long int position();
+    long long int position()const noexcept;
     /// 获取视频播放状态
     video_player::state_enum state();
     /// 设置标记无效的进度条的位置
