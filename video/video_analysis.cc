@@ -460,6 +460,5 @@ void video_analysis::refresh_chart (action_ratio ratio)
 void video_analysis::export_data()
 {
     auto j = ui->form->export_data ();
-    file::write_buffer ("123.txt", j.dump (4));
 }
 

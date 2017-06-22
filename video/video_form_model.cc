@@ -46,7 +46,7 @@ video_form_model::video_form_model(QObject *parent)
     edit_col_ << "评比系数" << "宽放率" << "操作类型";
     paste_col_ << "评比系数" << "作业内容" << "宽放率";
 
-    resize_helper (max_rows);
+    resize_helper (0);
 }
 
 QString video_form_model::get_std_sum()
@@ -207,18 +207,15 @@ optional<action_ratio> video_form_model::ratio() const
     }
 
     const auto total = accumulate (begin (arr), end (arr), static_cast<qreal> (0), plus<qreal> ());
-    qDebug () << "total -> " << total;
     if (total < 0.00001)
     {
         return {};
     }
     const auto ratio = 100.0 / total;
-    qDebug () << "ratio -> " << ratio;
 
     for (auto & it : arr)
     {
         it *= ratio;
-        qDebug () << "it -> " << it;
     }
 
     action_ratio ret;
