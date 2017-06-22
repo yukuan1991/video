@@ -54,7 +54,7 @@ public:
     std::optional<action_ratio> ratio () const;
 
 protected:
-    void paintEvent(QPaintEvent *) override;
+//    void paintEvent(QPaintEvent *) override;
 
 
 private:

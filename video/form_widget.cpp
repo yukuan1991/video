@@ -626,13 +626,13 @@ std::optional<action_ratio> form_widget::ratio() const
     return src_model_->ratio ();
 }
 
-void form_widget::paintEvent(QPaintEvent *)
-{
-    QStyleOption opt;
-    opt.init(this);
-    QPainter p(this);
-    style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
-}
+//void form_widget::paintEvent(QPaintEvent *)
+//{
+//    QStyleOption opt;
+//    opt.init(this);
+//    QPainter p(this);
+//    style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
+//}
 
 
 json form_widget::export_data()
