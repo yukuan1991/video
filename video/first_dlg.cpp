@@ -3,12 +3,14 @@
 #include <QMessageBox>
 #include <QApplication>
 #include <QDesktopWidget>
+#include <QStyleFactory>
 
 first_dlg::first_dlg(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::first_dlg)
 {
     ui->setupUi(this);
+    this->setStyle (QStyleFactory::create ("fusion"));
     ui->widget->set_clearable (true);
     this->resize (QApplication::desktop()->screenGeometry ().width () / 2,
                   QApplication::desktop()->screenGeometry ().height () / 2);

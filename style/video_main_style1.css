@@ -1,0 +1,29 @@
+video_main{
+background: #A0A0A0;
+}
+
+table_view{
+	background:#A0A0A0;
+}
+
+QWidget#stats{
+	background:#A0A0A0;
+}
+
+QWidget#pie{
+	background:#A0A0A0;
+}
+
+QTabWidget#chart::tab:selected{
+    border: 1px solid #BAC9DB;
+    background: #A0A0A0;
+    border-bottom-color: #A0A0A0;
+}
+
+video_widget{
+	background:#A0A0A0;
+}	
+
+
+
+

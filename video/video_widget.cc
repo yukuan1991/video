@@ -133,7 +133,7 @@ void video_widget::on_stop_clicked()
 
 void video_widget::on_volume_bar_sliderMoved(int position)
 {
-    ui->player->set_volume((static_cast<float> (position))/100);
+    ui->player->set_volume((static_cast<float> (position)) / 100);
 }
 
 void video_widget::set_file(const QString &file)

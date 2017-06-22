@@ -621,16 +621,9 @@ void form_widget::set_editable(bool b)
 }
 
 
-action_ratio form_widget::get_ratio() const
+std::optional<action_ratio> form_widget::ratio() const
 {
-    action_ratio ret;
-    auto header = ui->table_result->horizontalHeader ();
-    for (int i = 0; i < header->count (); i ++)
-    {
-
-    }
-
-    return ret;
+    return src_model_->ratio ();
 }
 
 void form_widget::paintEvent(QPaintEvent *)

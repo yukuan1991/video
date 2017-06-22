@@ -14,6 +14,7 @@
 #include <QChart>
 #include <QPieSeries>
 #include <QPieSlice>
+#include <QStyleFactory>
 
 using namespace QtCharts;
 
@@ -36,9 +37,19 @@ video_analysis::video_analysis(QWidget *parent)
     {
         ui->video_player->set_position(end);
     });
+    connect (ui->form, &form_widget::data_changed, [this]
+    {
+        const auto ratio = ui->form->ratio ();
+        if (ratio)
+        {
+            this->refresh_chart (ratio.value ());
+        }
+    });
 
     set_children_filter (this);
     ui->button_mark->setIcon (QIcon ("icon/mark.png"));
+
+    this->setStyle (QStyleFactory::create ("fusion"));
 
     init_chart ();
 }
@@ -334,10 +345,6 @@ void video_analysis::on_button_mark_clicked()
 
 void video_analysis::on_marked(long long msec)
 {
-    //if (pause_marked_action_->isChecked ())
-    //{
-    //    ui->video_player->pause_video ();
-    //}
 
     ui->form->mark (msec);
 }
@@ -410,25 +417,25 @@ void video_analysis::refresh_chart (action_ratio ratio)
         const auto slices = operation_type_->slices ();
         {
             auto slice = slices.at (0);
-            slice->setLabel ("加工 " + QString::number (ratio.processing) + "%");
+            slice->setLabel ("加工 " + QString::number (ratio.processing, 'f', 1) + "%");
             slice->setValue (ratio.processing);
         }
 
         {
             auto slice = slices.at (1);
-            slice->setLabel ("检查 " + QString::number (ratio.checking) + "%");
+            slice->setLabel ("检查 " + QString::number (ratio.checking, 'f', 1) + "%");
             slice->setValue (ratio.checking);
         }
 
         {
             auto slice = slices.at (2);
-            slice->setLabel ("搬运 " + QString::number (ratio.moving) + "%");
+            slice->setLabel ("搬运 " + QString::number (ratio.moving, 'f', 1) + "%");
             slice->setValue (ratio.moving);
         }
 
         {
             auto slice = slices.at (3);
-            slice->setLabel ("等待 " + QString::number (ratio.waiting) + "%");
+            slice->setLabel ("等待 " + QString::number (ratio.waiting, 'f', 1) + "%");
             slice->setValue (ratio.waiting);
         }
     }
@@ -437,13 +444,13 @@ void video_analysis::refresh_chart (action_ratio ratio)
         const auto slices = efficiency_->slices ();
         {
             auto slice = slices.at (0);
-            slice->setLabel ("增值 " + QString::number (ratio.processing) + "%");
+            slice->setLabel ("增值 " + QString::number (ratio.processing, 'f', 1) + "%");
             slice->setValue (ratio.processing);
         }
 
         {
             auto slice = slices.at (1);
-            slice->setLabel ("非增值 " + QString::number (100 - ratio.processing) + "%");
+            slice->setLabel ("非增值 " + QString::number (100 - ratio.processing, 'f', 1) + "%");
             slice->setValue (100 - ratio.processing);
         }
     }

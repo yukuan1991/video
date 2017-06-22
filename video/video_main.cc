@@ -5,7 +5,9 @@
 #include <QStyle>
 #include <QDebug>
 #include <QFileDialog>
+#include <QFileInfo>
 #include <functional>
+#include <QMessageBox>
 
 
 using namespace std;
@@ -17,7 +19,7 @@ video_main::video_main(QWidget *parent)
     ui->setupUi(this);
     //ui->mdi->setTabShape (QTabWidget::Triangular);
     ui->mdi->setViewMode (QMdiArea::TabbedView);
-    ui->mdi->setDocumentMode (false);
+    //ui->mdi->setDocumentMode (false);
     init_conn ();
 }
 
@@ -85,6 +87,29 @@ void video_main::video_import()
         return;
     }
 
+    QFileInfo info (file);
+    const auto src_name = info.fileName ();
+    QDir video_dir (".");
+
+    if (!video_dir.mkpath ("video_data"))
+    {
+        QMessageBox::information (this, "导入", "无法导入视频,数据路径创建失败");
+        return;
+    }
+
+    const auto dest_path = "video_data/" + src_name;
+
+    if (QFile::exists (dest_path))
+    {
+        QFile::remove (dest_path);
+    }
+
+    if (!QFile::copy (file, dest_path))
+    {
+        QMessageBox::information (this, "导入", "无法导入视频,拷贝文件失败");
+        return;
+    }
+
     auto w = current_sub_window ();
 
     if (w == nullptr)
@@ -92,7 +117,7 @@ void video_main::video_import()
         return;
     }
 
-    w->set_video_file (file);
+    w->set_video_file (dest_path);
 }
 
 void video_main::init_conn()
