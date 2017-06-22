@@ -163,10 +163,10 @@ void progress_label::paintEvent(QPaintEvent*)
     QPainter painter{ this };
 
     painter.setPen(Qt::NoPen);
-    painter.setBrush(Qt::red);
+    painter.setBrush(QColor("#000000"));
     painter.drawPolygon(QPolygon{ pt });
 
-    painter.setBrush(QColor (0x00, 0xEC, 0x00));
+    painter.setBrush(QColor ("#94AAD6"));
     painter.drawRect(0, height() / 2, width(), height());
 
     if (boundaries_.empty ())
