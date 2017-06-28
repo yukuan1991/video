@@ -1,6 +1,6 @@
 ribbon_button {
-    min-width:50px;
-    max-width:50px;
+    min-width:60px;
+    max-width:60px;
     min-height:21px;
     max-height:21px;
 }
@@ -47,7 +47,7 @@ ribbon::pane{
 
 
 ribbon::tab-bar {
-    left: 52px;
+    left: 62px;
 }
 ribbon_bar::tab{
     min-width:60px;

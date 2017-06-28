@@ -161,12 +161,13 @@ void progress_label::paintEvent(QPaintEvent*)
     QVector<QPoint> pt { {pix_pos, height() / 2}, {pix_pos - height() / 5, 0}, {pix_pos + height() / 5, 0} };
 
     QPainter painter{ this };
+    painter.setRenderHint (QPainter::Antialiasing);
 
     painter.setPen(Qt::NoPen);
-    painter.setBrush(Qt::red);
+    painter.setBrush(QColor (227, 52, 57));
     painter.drawPolygon(QPolygon{ pt });
 
-    painter.setBrush(QColor (0x00, 0xEC, 0x00));
+    painter.setBrush(QColor (91, 189, 44));
     painter.drawRect(0, height() / 2, width(), height());
 
     if (boundaries_.empty ())

@@ -218,6 +218,7 @@ void video_analysis::load (const json &data)
             invalid_data_.at (i) = it;
             i ++;
         }
+        ui->video_player->set_invalid(invalid_data_);
     }
 }
 
