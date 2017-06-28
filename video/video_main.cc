@@ -9,6 +9,7 @@
 #include <functional>
 #include <QMessageBox>
 #include <base/io/file/file.hpp>
+#include <QPixmap>
 #include <base/utils/charset.hpp>
 #include <QtXlsx>
 #include <QDateEdit>
@@ -204,7 +205,7 @@ void video_main::init_conn()
     connect (ui->video_ribbon, &ribbon::invalid_timespan, [this] { apply_to_current (&video_analysis::modify_invalid); });
     connect (ui->video_ribbon, &ribbon::paste, [this] { apply_to_current (&video_analysis::on_paste); });
     connect (ui->video_ribbon, &ribbon::save, this, &video_main::on_save);
-    connect (ui->video_ribbon, &ribbon::save_as, this, &video_main::on_save);
+    connect (ui->video_ribbon, &ribbon::save_as, this, &video_main::on_save_as);
     connect (ui->video_ribbon, &ribbon::open, this, &video_main::on_open);
     connect (ui->video_ribbon, &ribbon::quit, this, &video_main::close);
     connect (ui->video_ribbon, &ribbon::export_data, this, &video_main::export_xlsx);
@@ -330,6 +331,22 @@ void video_main::export_xlsx()
         xlsx.write (i + 2, start_result + 5, val_useful.data ());
         xlsx.write (i + 2, start_result + 6, val_type.data ());
     }
+
+
+    const auto date = data.find ("measure-date");
+    assert (date != end (data) and date->is_string ());
+    xlsx.write (static_cast<int> (task_list->size () + 3), 1, "测量日期");
+    xlsx.write (static_cast<int> (task_list->size () + 3), 2, QString::fromStdString (*date));
+
+    const auto measure_man = data.find ("measure-man");
+    assert (measure_man != end (data) and measure_man->is_string ());
+    xlsx.write (static_cast<int> (task_list->size () + 3 + 1), 1, "测量人");
+    xlsx.write (static_cast<int> (task_list->size () + 3 + 1), 2, QString::fromStdString (*measure_man));
+
+    const auto task_man = data.find ("task-man");
+    assert (task_man != end (data) and task_man->is_string ());
+    xlsx.write (static_cast<int> (task_list->size () + 3 + 2), 1, "作业员");
+    xlsx.write (static_cast<int> (task_list->size () + 3 + 2), 2, QString::fromStdString (*task_man));
 
     if (QFile::exists (path))
     {

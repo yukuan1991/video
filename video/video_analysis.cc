@@ -498,11 +498,18 @@ void video_analysis::refresh_stats(overall_stats stats)
 
 void video_analysis::update_box(gsl::span<qreal> data)
 {
-    if (data.size () <= 2)
+    if (data.size () <= 3)
     {
         return;
     }
     sort (begin (data), end (data), greater <>());
+
+    qDebug () << "--------------------------------------";
+    for (auto & it : data)
+    {
+        qDebug () << it;
+    }
+    qDebug () << "--------------------------------------";
 
     whisker_data wh_data;
     wh_data.top = data.at (0);
@@ -510,14 +517,33 @@ void video_analysis::update_box(gsl::span<qreal> data)
     if (data.size () % 2 == 0)
     {
         wh_data.mid = (data.at (data.size () / 2) + data.at (data.size () / 2 + 1)) / 2;
+        const auto size = data.size () / 2 + 1;
+        if (size % 2 == 0)
+        {
+            wh_data.bottom_quarter = (data.at (data.size () / 2 + size / 2 - 1) + data.at (data.size () / 2 + size / 2)) / 2;
+            wh_data.top_quarter = (data.at (size / 2 - 1) + data.at (data.size () / 2)) / 2;
+        }
+        else
+        {
+            wh_data.bottom_quarter = data.at (data.size () / 2 + size / 2);
+            wh_data.top_quarter = data.at (size / 2);
+        }
     }
     else
     {
         wh_data.mid = data.at (data.size () / 2);
+        const auto size = data.size () / 2 + 1;
+        if (size % 2 == 0)
+        {
+            wh_data.bottom_quarter = (data.at (data.size () / 2 + size / 2 - 1) + data.at (data.size () / 2 + size / 2)) / 2;
+            wh_data.top_quarter = (data.at (size / 2 - 1) + data.at (data.size () / 2)) / 2;
+        }
+        else
+        {
+            wh_data.bottom_quarter = data.at (data.size () / 2 + size / 2);
+            wh_data.top_quarter = data.at (size / 2);
+        }
     }
-
-    wh_data.top_quarter = (wh_data.mid + wh_data.top) / 2;
-    wh_data.bottom_quarter = (wh_data.mid + wh_data.bottom) / 2;
 
     ui->upper_quarter->setText (QString::number (wh_data.top_quarter, 'f', 2));
     ui->lower_quarter->setText (QString::number (wh_data.bottom_quarter, 'f', 2));

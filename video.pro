@@ -45,7 +45,8 @@ SOURCES += \
     verification_dlg.cc \
     net_utils.cc \
     des.cc \
-    algorithm_utils.cc
+    algorithm_utils.cc \
+    video/whisker.cc
 
 HEADERS += \
     video/first_dlg.h \
@@ -69,7 +70,8 @@ HEADERS += \
     net_utils.h \
     des.h \
     krys_application.hpp \
-    algorithm_utils.h
+    algorithm_utils.h \
+    video/whisker.h
 
 FORMS += \
     video/first_dlg.ui \
