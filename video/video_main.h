@@ -27,6 +27,10 @@ private:
     void apply_to_current (analysis_slot);
     void invalid_timespan ();
 
+    void on_measure_date ();
+    void on_measure_man ();
+    void on_task_man ();
+
     void video_import ();
     void init_conn ();
     void change_task_count ();
@@ -35,6 +39,7 @@ private:
 
     void on_save ();
     void on_open ();
+    void on_save_as ();
 private:
     Ui::video_main *ui;
 };

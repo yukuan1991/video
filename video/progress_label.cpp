@@ -164,10 +164,10 @@ void progress_label::paintEvent(QPaintEvent*)
     painter.setRenderHint (QPainter::Antialiasing);
 
     painter.setPen(Qt::NoPen);
-    painter.setBrush(QColor (227, 52, 57));
+    painter.setBrush(QColor (0, 166, 173));
     painter.drawPolygon(QPolygon{ pt });
 
-    painter.setBrush(QColor (91, 189, 44));
+    painter.setBrush (QColor (32, 90, 167));
     painter.drawRect(0, height() / 2, width(), height());
 
     if (boundaries_.empty ())
@@ -175,7 +175,7 @@ void progress_label::paintEvent(QPaintEvent*)
         return;
     }
 
-    painter.setBrush (QColor (0x5B, 0x5B, 0x5B));
+    painter.setBrush(QColor (183, 183, 183));
     for (uint32_t i = 0; i < boundaries_.size() - 1; i++)
     {
         auto start_pos = boundaries_[i] * static_cast<unsigned long long>(width ()) / total_;

@@ -1,5 +1,4 @@
-﻿#ifndef WIDGET_H
-#define WIDGET_H
+﻿#pragma once
 
 #include <QWidget>
 #include "form_widget.h"
@@ -9,6 +8,7 @@
 #include <vector>
 #include "json.hpp"
 #include "video/utils.hpp"
+#include <gsl/span>
 
 namespace QtCharts {
 class QPieSeries;
@@ -46,6 +46,17 @@ public:
     void refresh_chart (action_ratio ratio);
 
     void refresh_stats (overall_stats stats);
+
+    void update_box (gsl::span<qreal> data);
+
+    void set_measure_date (const QDate & date);
+    QString measure_date () const;
+
+    void set_measure_man (const QString & data);
+    QString measure_man () const;
+
+    void set_task_man (const QString & data);
+    QString task_man () const;
 
     json dump ();
 
@@ -90,6 +101,3 @@ private:
     QtCharts::QPieSeries* operation_type_;
     QtCharts::QPieSeries* efficiency_;
 };
-
-
-#endif // WIDGET_H

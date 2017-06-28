@@ -11,6 +11,9 @@
 #include <base/io/file/file.hpp>
 #include <base/utils/charset.hpp>
 #include <QtXlsx>
+#include <QDateEdit>
+#include <QStyleFactory>
+#include <QInputDialog>
 
 
 using namespace std;
@@ -22,6 +25,7 @@ video_main::video_main(QWidget *parent)
     ui->setupUi(this);
     ui->mdi->setViewMode (QMdiArea::TabbedView);
     init_conn ();
+    setStyle (QStyleFactory::create ("fusion"));
 }
 
 video_main::~video_main()
@@ -81,6 +85,75 @@ void video_main::invalid_timespan()
     }
 }
 
+void video_main::on_measure_date()
+{
+    auto w = current_sub_window ();
+    if (w == nullptr)
+    {
+        return;
+    }
+
+    QDialog dlg (this);
+
+    auto edit = new QDateEdit (&dlg);
+    edit->setCalendarPopup (true);
+    edit->setDate (QDate::currentDate ());
+
+    auto ok_button = new QPushButton (&dlg);
+    ok_button->setText ("确定");
+
+    auto layout = new QHBoxLayout;
+
+    layout->addWidget (edit);
+    layout->addWidget (ok_button);
+    dlg.setLayout (layout);
+
+    connect (ok_button, &QPushButton::clicked, &dlg, &QDialog::accept);
+    const auto res = dlg.exec ();
+
+    if (res != QDialog::Accepted)
+    {
+        return;
+    }
+
+    w->set_measure_date (edit->date ());
+}
+
+void video_main::on_measure_man()
+{
+    auto w = current_sub_window ();
+    if (w == nullptr)
+    {
+        return;
+    }
+
+    bool is_ok;
+    const auto old_data = w->measure_man ();
+    const auto data = QInputDialog::getText (this, "测量人", "测量人", QLineEdit::Normal, old_data, &is_ok);
+    if (is_ok)
+    {
+        w->set_measure_man (data);
+    }
+}
+
+void video_main::on_task_man()
+{
+    auto w = current_sub_window ();
+    if (w == nullptr)
+    {
+        return;
+    }
+
+    bool is_ok;
+    const auto old_data = w->task_man ();
+    const auto data = QInputDialog::getText (this, "作业员", "作业员", QLineEdit::Normal, old_data, &is_ok);
+
+    if (is_ok)
+    {
+        w->set_task_man (data);
+    }
+}
+
 void video_main::video_import()
 {
     const QString type = tr ("Video Files (*.mp4 *.mpg *.mod *.mov *.mkv *.wmv *.avi)");
@@ -131,9 +204,13 @@ void video_main::init_conn()
     connect (ui->video_ribbon, &ribbon::invalid_timespan, [this] { apply_to_current (&video_analysis::modify_invalid); });
     connect (ui->video_ribbon, &ribbon::paste, [this] { apply_to_current (&video_analysis::on_paste); });
     connect (ui->video_ribbon, &ribbon::save, this, &video_main::on_save);
+    connect (ui->video_ribbon, &ribbon::save_as, this, &video_main::on_save);
     connect (ui->video_ribbon, &ribbon::open, this, &video_main::on_open);
     connect (ui->video_ribbon, &ribbon::quit, this, &video_main::close);
     connect (ui->video_ribbon, &ribbon::export_data, this, &video_main::export_xlsx);
+    connect (ui->video_ribbon, &ribbon::measure_date, this, &video_main::on_measure_date);
+    connect (ui->video_ribbon, &ribbon::measure_man, this, &video_main::on_measure_man);
+    connect (ui->video_ribbon, &ribbon::task_man, this, &video_main::on_task_man);
 }
 
 void video_main::change_task_count()
@@ -271,14 +348,32 @@ void video_main::export_xlsx()
 
 void video_main::on_save()
 {
-    if (auto w = current_sub_window ();
-            w != nullptr)
+    const auto active = ui->mdi->currentSubWindow ();
+    if (active == nullptr)
+    {
+        return;
+    }
+    auto w = dynamic_cast<video_analysis *> (active->widget ());
+
+    if (w == nullptr)
+    {
+        return;
+    }
+
+    if (const auto title_path = active->windowTitle ();
+            title_path == "未命名")
     {
         const auto path = QFileDialog::getSaveFileName(this, "文件保存", ".", tr ("Video Analysis File (*.vaf)"));
         const auto data = w->dump ();
 
         file::write_buffer (::utf_to_sys (path.toStdString ()).data (), data.dump (4));
     }
+    else
+    {
+        const auto data = w->dump ();
+        file::write_buffer (::utf_to_sys (title_path.toStdString ()).data (), data.dump (4));
+    }
+
 }
 
 void video_main::on_open()
@@ -305,5 +400,17 @@ void video_main::on_open()
     {
         QMessageBox::information (this, "打开", "文件格式错误 无法打开");
         return;
+    }
+}
+
+void video_main::on_save_as()
+{
+    auto w = current_sub_window ();
+    if (w != nullptr)
+    {
+        const auto path = QFileDialog::getSaveFileName(this, "文件保存", ".", tr ("Video Analysis File (*.vaf)"));
+        const auto data = w->dump ();
+
+        file::write_buffer (::utf_to_sys (path.toStdString ()).data (), data.dump (4));
     }
 }

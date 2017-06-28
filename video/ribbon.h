@@ -34,6 +34,9 @@ signals:
     void invalid_timespan ();
 
     void export_data ();
+    void measure_date ();
+    void measure_man ();
+    void task_man ();
 public:
     ribbon (QWidget * parent = nullptr);
 private:

@@ -632,6 +632,11 @@ std::optional<overall_stats> form_widget::operation_stats() const
     return src_model_->operation_stats ();
 }
 
+std::vector<qreal> form_widget::cycle_times() const
+{
+    return src_model_->cycle_times ();
+}
+
 json form_widget::export_data()
 {
     json video_data = json::object ();

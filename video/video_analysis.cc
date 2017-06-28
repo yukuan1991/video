@@ -17,6 +17,7 @@
 #include <QStyleFactory>
 #include <base/io/file/file.hpp>
 
+
 using namespace QtCharts;
 using namespace std;
 
@@ -43,6 +44,7 @@ video_analysis::video_analysis(QWidget *parent)
     {
         const auto ratio = ui->form->operation_ratio ();
         const auto stats = ui->form->operation_stats ();
+        auto cycles = ui->form->cycle_times ();
         if (ratio)
         {
             this->refresh_chart (ratio.value ());
@@ -51,6 +53,7 @@ video_analysis::video_analysis(QWidget *parent)
         {
             this->refresh_stats (stats.value ());
         }
+        update_box (cycles);
     });
 
     set_children_filter (this);
@@ -219,6 +222,22 @@ void video_analysis::load (const json &data)
             i ++;
         }
         ui->video_player->set_invalid(invalid_data_);
+    }
+
+    const auto measure_date = data.find ("measure-date");
+    if (measure_date != end (data) and measure_date->is_string ())
+    {
+        ui->measure_date->setText (QString::fromStdString (*measure_date));
+    }
+    const auto measure_man = data.find ("measure-man");
+    if (measure_man != end (data) and measure_man->is_string ())
+    {
+        ui->measure_man->setText (QString::fromStdString (*measure_man));
+    }
+    const auto task_man = data.find ("task-man");
+    if (task_man != end (data) and task_man->is_string ())
+    {
+        ui->task_man->setText (QString::fromStdString (*task_man));
     }
 }
 
@@ -477,12 +496,74 @@ void video_analysis::refresh_stats(overall_stats stats)
     ui->ct_deviation->setText (QString::number (stats.deviation, 'f', 2));
 }
 
+void video_analysis::update_box(gsl::span<qreal> data)
+{
+    if (data.size () <= 2)
+    {
+        return;
+    }
+    sort (begin (data), end (data), greater <>());
+
+    whisker_data wh_data;
+    wh_data.top = data.at (0);
+    wh_data.bottom = data.at (data.size () - 1);
+    if (data.size () % 2 == 0)
+    {
+        wh_data.mid = (data.at (data.size () / 2) + data.at (data.size () / 2 + 1)) / 2;
+    }
+    else
+    {
+        wh_data.mid = data.at (data.size () / 2);
+    }
+
+    wh_data.top_quarter = (wh_data.mid + wh_data.top) / 2;
+    wh_data.bottom_quarter = (wh_data.mid + wh_data.bottom) / 2;
+
+    ui->upper_quarter->setText (QString::number (wh_data.top_quarter, 'f', 2));
+    ui->lower_quarter->setText (QString::number (wh_data.bottom_quarter, 'f', 2));
+    ui->mid->setText (QString::number (wh_data.mid, 'f', 2));
+    ui->wh_chart->set_data (wh_data);
+}
+
+void video_analysis::set_measure_date(const QDate &date)
+{
+    ui->measure_date->setText (date.toString ("yyyy-MM-dd"));
+}
+
+void video_analysis::set_measure_man(const QString &data)
+{
+    ui->measure_man->setText (data);
+}
+
+QString video_analysis::measure_man() const
+{
+    return ui->measure_man->text ();
+}
+
+void video_analysis::set_task_man(const QString &data)
+{
+    ui->task_man->setText (data);
+}
+
+QString video_analysis::task_man() const
+{
+    return ui->task_man->text ();
+}
+
+QString video_analysis::measure_date() const
+{
+    return ui->measure_date->text ();
+}
+
 json video_analysis::dump()
 {
     json data;
     data ["form"] = ui->form->export_data ();
     data ["video-file"] = ui->video_player->file ().toStdString ();
     data ["invalid"] = invalid_data_;
+    data ["measure-date"] = ui->measure_date->text ().toStdString ();
+    data ["measure-man"] = ui->measure_man->text ().toStdString ();
+    data ["task-man"] = ui->task_man->text ().toStdString ();
 
     return data;
 }

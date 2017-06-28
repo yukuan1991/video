@@ -52,6 +52,7 @@ public:
     action_ratio get_ratio () const;
     std::optional<action_ratio> operation_ratio () const;
     std::optional<overall_stats> operation_stats () const;
+    std::vector<qreal> cycle_times () const;
 
 private:
     void set_views ();

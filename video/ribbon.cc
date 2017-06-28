@@ -251,7 +251,7 @@ std::unique_ptr<QWidget> ribbon::ui_report()
 
     constexpr auto len = 39;
 
-    auto export_button = make_button (QPixmap ("png/导出.png").scaled (len - 5, len), "PDF文档");
+    auto export_button = make_button (QPixmap ("png/导出.png").scaled (len - 5, len), "Excel文档");
     connect (export_button.get (), &QToolButton::clicked, this, &ribbon::export_data);
     upper_layout->addWidget (export_button.release ());
 
@@ -280,62 +280,62 @@ std::unique_ptr<QWidget> ribbon::ui_settings()
     layout->setContentsMargins (1, 1, 1, 1);
     layout->setSpacing (1);
 
-    {
-        auto block1_layout = make_unique<QVBoxLayout> ();
-        block1_layout->setContentsMargins (1, 1, 1, 1);
-        block1_layout->setSpacing (1);
+    //{
+    //    auto block1_layout = make_unique<QVBoxLayout> ();
+    //    block1_layout->setContentsMargins (1, 1, 1, 1);
+    //    block1_layout->setSpacing (1);
 
-        auto upper_layout = make_unique<QHBoxLayout> ();
-        upper_layout->setSpacing(10);
-        upper_layout->setContentsMargins(10, 0, 10, 0);
+    //    auto upper_layout = make_unique<QHBoxLayout> ();
+    //    upper_layout->setSpacing(10);
+    //    upper_layout->setContentsMargins(10, 0, 10, 0);
 
 
-        constexpr auto len = 39;
+    //    constexpr auto len = 39;
 
-        {
-            auto btn = make_button (QPixmap ("png/单位.png").scaled (len, len), "单位");
-            upper_layout->addWidget (btn.release ());
-        }
+    //    {
+    //        auto btn = make_button (QPixmap ("png/单位.png").scaled (len, len), "单位");
+    //        upper_layout->addWidget (btn.release ());
+    //    }
 
-        block1_layout->addLayout (upper_layout.release ());
-        auto label = new QLabel ("第一类");
-        label->setAlignment (Qt::AlignHCenter | Qt::AlignBottom);
-        block1_layout->addWidget (label);
-        layout->addLayout (block1_layout.release (), 0);
+    //    block1_layout->addLayout (upper_layout.release ());
+    //    auto label = new QLabel ("第一类");
+    //    label->setAlignment (Qt::AlignHCenter | Qt::AlignBottom);
+    //    block1_layout->addWidget (label);
+    //    layout->addLayout (block1_layout.release (), 0);
 
-        auto line = new QFrame (ret.get ());
-        line->setFrameShape (QFrame::VLine);
-        line->setFrameShadow(QFrame::Sunken);
-        layout->addWidget (line);
-    }
+    //    auto line = new QFrame (ret.get ());
+    //    line->setFrameShape (QFrame::VLine);
+    //    line->setFrameShadow(QFrame::Sunken);
+    //    layout->addWidget (line);
+    //}
 
-    {
-        auto block_layout = make_unique<QVBoxLayout> ();
-        block_layout->setContentsMargins (1, 1, 1, 1);
-        block_layout->setSpacing (1);
+    //{
+    //    auto block_layout = make_unique<QVBoxLayout> ();
+    //    block_layout->setContentsMargins (1, 1, 1, 1);
+    //    block_layout->setSpacing (1);
 
-        auto upper_layout = make_unique<QHBoxLayout> ();
-        upper_layout->setSpacing(10);
-        upper_layout->setContentsMargins(10, 0, 10, 0);
+    //    auto upper_layout = make_unique<QHBoxLayout> ();
+    //    upper_layout->setSpacing(10);
+    //    upper_layout->setContentsMargins(10, 0, 10, 0);
 
-        constexpr auto len = 39;
+    //    constexpr auto len = 39;
 
-        {
-            auto btn = make_button (QPixmap ("png/属性.png").scaled (len, len), "属性");
-            upper_layout->addWidget (btn.release ());
-        }
+    //    {
+    //        auto btn = make_button (QPixmap ("png/属性.png").scaled (len, len), "属性");
+    //        upper_layout->addWidget (btn.release ());
+    //    }
 
-        block_layout->addLayout (upper_layout.release ());
-        auto label = new QLabel ("第二类");
-        label->setAlignment (Qt::AlignHCenter | Qt::AlignBottom);
-        block_layout->addWidget (label);
-        layout->addLayout (block_layout.release (), 0);
+    //    block_layout->addLayout (upper_layout.release ());
+    //    auto label = new QLabel ("第二类");
+    //    label->setAlignment (Qt::AlignHCenter | Qt::AlignBottom);
+    //    block_layout->addWidget (label);
+    //    layout->addLayout (block_layout.release (), 0);
 
-        auto line = new QFrame (ret.get ());
-        line->setFrameShape (QFrame::VLine);
-        line->setFrameShadow(QFrame::Sunken);
-        layout->addWidget (line);
-    }
+    //    auto line = new QFrame (ret.get ());
+    //    line->setFrameShape (QFrame::VLine);
+    //    line->setFrameShadow(QFrame::Sunken);
+    //    layout->addWidget (line);
+    //}
 
     {
         auto block_layout = make_unique<QVBoxLayout> ();
@@ -351,16 +351,19 @@ std::unique_ptr<QWidget> ribbon::ui_settings()
 
         {
             auto btn = make_button (QPixmap ("png/测量日期.png").scaled (len, len), "测量日期");
+            connect (btn.get (), &QToolButton::clicked, this, &ribbon::measure_date);
             upper_layout->addWidget (btn.release ());
         }
 
         {
             auto btn = make_button (QPixmap ("png/测量人.png").scaled (len , len), "测量人");
+            connect (btn.get (), &QToolButton::clicked, this, &ribbon::measure_man);
             upper_layout->addWidget (btn.release ());
         }
 
         {
             auto btn = make_button (QPixmap ("png/作业员.png").scaled (len , len), "作业员");
+            connect (btn.get (), &QToolButton::clicked, this, &ribbon::task_man);
             upper_layout->addWidget (btn.release ());
         }
 

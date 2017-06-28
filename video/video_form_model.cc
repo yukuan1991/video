@@ -278,6 +278,32 @@ std::optional<overall_stats> video_form_model::operation_stats() const
     return ::move (ret);
 }
 
+std::vector<qreal> video_form_model::cycle_times() const
+{
+    vector<qreal> ret;
+    for (int i = 2; i < 2 + max_round * 2; i += 2)
+    {
+        optional<qreal> sum = 0.0;
+        for (int j = 0; j < rowCount (); j ++)
+        {
+            const auto var = data (index (j, i + 1));
+            if (var.isNull ())
+            {
+                sum = {};
+                break;
+            }
+            sum.value () += var.toDouble ();
+        }
+        if (not sum)
+        {
+            break;
+        }
+        ret.emplace_back (sum.value ());
+    }
+
+    return ret;
+}
+
 QVariant video_form_model::get_result_table(const QModelIndex &index) const
 {
     auto op_header = get_header (index);

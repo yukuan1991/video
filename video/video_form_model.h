@@ -27,6 +27,7 @@ public:
     void clear ();
     std::optional<action_ratio> operation_ratio () const;
     std::optional<overall_stats> operation_stats () const;
+    std::vector<qreal> cycle_times () const;
 private:
     QVariant get_des_header (const QModelIndex&, int) const;
     QVariant get_data_header (const QModelIndex&, int) const;
