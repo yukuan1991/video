@@ -25,7 +25,8 @@ public:
     Qt::ItemFlags flags (const QModelIndex &index) const noexcept override;
     void resize (unsigned len) override;
     void clear ();
-    std::optional<action_ratio> ratio () const;
+    std::optional<action_ratio> operation_ratio () const;
+    std::optional<overall_stats> operation_stats () const;
 private:
     QVariant get_des_header (const QModelIndex&, int) const;
     QVariant get_data_header (const QModelIndex&, int) const;

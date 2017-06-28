@@ -45,6 +45,8 @@ public:
 
     void refresh_chart (action_ratio ratio);
 
+    void refresh_stats (overall_stats stats);
+
     json dump ();
 
 private slots:
@@ -76,22 +78,14 @@ protected:
 private:
     Ui::video_analysis *ui;
 
-    QString current_video_dir_ = ".";
-    QString current_excel_dir_ = ".";
-    QString current_excel_;
-    QString current_video_;
     std::vector<qint64> invalid_data_;
-    int chart_size_ = form_widget::max_row;
 
     std::vector<std::pair<std::string, std::string>> product_data_;
     const std::shared_ptr<bool> alive_ = std::make_shared<bool> (true);
 
     std::unique_ptr<first_dlg> dlg_ = std::make_unique<first_dlg> (nullptr);
-    json current_file_data_;
-    QString current_file_path_;
 
     bool file_opening_;
-
 
     QtCharts::QPieSeries* operation_type_;
     QtCharts::QPieSeries* efficiency_;

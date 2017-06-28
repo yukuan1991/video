@@ -1,12 +1,12 @@
 ﻿#include "progress_label.h"
-#include <boost/scope_exit.hpp>
 #include <string>
+#include <base/lang/scope.hpp>
 #include <QPainter>
 #include <QMenu>
 #include <algorithm>
 #include <QDebug>
 #include <QMouseEvent>
-#include <base/lang/scope.hpp>
+#include <assert.h>
 
 void progress_label::init()
 {
@@ -41,13 +41,13 @@ void progress_label::set_position(qint64 pos)
 
 
     unsigned i=0;
-    int rank = -1;
+    unsigned rank = -1;
 
     for (; i < boundaries_.size (); i++)
     {
-        if (boundaries_.at (i) < pos)
+        if (boundaries_[i] < pos)
         {
-            rank = static_cast<int> (i);
+            rank = i;
         }
         else
         {
@@ -55,12 +55,10 @@ void progress_label::set_position(qint64 pos)
         }
     }
 
-    if (rank % 2 == 0)
+    if (rank %2 == 0)
     {
-        assert (rank >= 0);
-        const auto u_rank = static_cast<size_t> (rank);
-        assert (u_rank + 1 < boundaries_.size ());
-        emit stepped_into_invalid (boundaries_.at (u_rank), boundaries_.at (u_rank + 1));
+        assert (rank + 1 < boundaries_.size ());
+        emit stepped_into_invalid (boundaries_[rank], boundaries_[rank + 1]);
     }
 }
 
@@ -87,11 +85,11 @@ bool progress_label::add_invalid(const std::pair<qint64, qint64> &p)
 
     for (unsigned i = 0; i < boundaries_.size (); i ++)
     {
-        if (boundaries_.at (i) < p.first)
+        if (boundaries_[i] < p.first)
         {
             first_rank = static_cast<int>(i);
         }
-        if (boundaries_.at (i) < p.second)
+        if (boundaries_[i] < p.second)
         {
             second_rank = static_cast<int>(i);
         }
@@ -113,7 +111,7 @@ bool progress_label::is_invalid_pos(int pos)
     assert (color_start_.size () % 2 == 0);
     for (unsigned i = 0; i < color_start_.size (); i++)
     {
-        if (pos < static_cast<int> (color_start_.at (i)))
+        if (pos < color_start_[i])
         {
             return i % 2;
         }
@@ -130,7 +128,7 @@ void progress_label::clear_invalid_area()
     unsigned j = 0;
     for (unsigned i = 0; i < color_start_.size (); i ++)
     {
-        if (right_click_pos_ >= static_cast<qint64> (color_start_.at (i)))
+        if (right_click_pos_ >= color_start_[i])
         {
             j = i;
         }
@@ -142,7 +140,7 @@ void progress_label::clear_invalid_area()
 
     assert (j % 2 == 0);
     assert (j + 1 < color_start_.size ());
-    boundaries_.erase (boundaries_.begin ()+ static_cast<int> (j), boundaries_.begin () + static_cast<int> (j) + 2);
+    boundaries_.erase (boundaries_.begin ()+ j, boundaries_.begin () + j + 2);
 
     repaint ();
     right_click_pos_ = -1;
@@ -158,17 +156,17 @@ void progress_label::paintEvent(QPaintEvent*)
     color_start_.clear ();
     pix_to_pos.clear ();
 
-    int pix_pos = static_cast<int> (pos_ * width () / total_);
+    int pix_pos = pos_ * width () / total_;
 
     QVector<QPoint> pt { {pix_pos, height() / 2}, {pix_pos - height() / 5, 0}, {pix_pos + height() / 5, 0} };
 
     QPainter painter{ this };
 
     painter.setPen(Qt::NoPen);
-    painter.setBrush(QColor("#000000"));
+    painter.setBrush(Qt::red);
     painter.drawPolygon(QPolygon{ pt });
 
-    painter.setBrush(QColor ("#94AAD6"));
+    painter.setBrush(QColor (0x00, 0xEC, 0x00));
     painter.drawRect(0, height() / 2, width(), height());
 
     if (boundaries_.empty ())
@@ -179,15 +177,15 @@ void progress_label::paintEvent(QPaintEvent*)
     painter.setBrush (QColor (0x5B, 0x5B, 0x5B));
     for (uint32_t i = 0; i < boundaries_.size() - 1; i++)
     {
-        auto start_pos = boundaries_.at (i) * width () / total_;
-        auto end_pos = boundaries_.at (i) * width () / total_ - 1;
+        auto start_pos = boundaries_[i] * static_cast<unsigned long long>(width ()) / total_;
+        auto end_pos = boundaries_[i + 1] * static_cast<unsigned long long> (width ()) / total_ - 1;
 
         color_start_.emplace_back (start_pos);
         pix_to_pos.emplace_back (start_pos, boundaries_[i]);
 
         if (i % 2 == 1) continue;
 
-        painter.drawRect (static_cast<int32_t> (start_pos), height () / 2, static_cast<int32_t> (end_pos - start_pos), height ());
+        painter.drawRect (start_pos, height () / 2, end_pos - start_pos, height ());
     }
 
     color_start_.emplace_back (boundaries_.back () * width () / total_);

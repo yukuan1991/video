@@ -18,6 +18,7 @@
 #include <base/io/file/file.hpp>
 
 using namespace QtCharts;
+using namespace std;
 
 video_analysis::video_analysis(QWidget *parent)
     :QWidget(parent)
@@ -40,10 +41,15 @@ video_analysis::video_analysis(QWidget *parent)
     });
     connect (ui->form, &form_widget::data_changed, [this]
     {
-        const auto ratio = ui->form->ratio ();
+        const auto ratio = ui->form->operation_ratio ();
+        const auto stats = ui->form->operation_stats ();
         if (ratio)
         {
             this->refresh_chart (ratio.value ());
+        }
+        if (stats)
+        {
+            this->refresh_stats (stats.value ());
         }
     });
 
@@ -64,8 +70,7 @@ video_analysis::~video_analysis()
 
 void video_analysis::set_video_file(const QString & video)
 {
-    current_video_ = video;
-    ui->video_player->set_file (current_video_);
+    ui->video_player->set_file (video);
     file_opening_ = true;
     modify_invalid ();
 }
@@ -79,7 +84,6 @@ void video_analysis::init_video_widget(const json &video_detail)
     assert (iter_path->is_string ());
     std::string path = *iter_path;
     ui->video_player->set_file (path.data ());
-    current_video_ = QString (path.data ());
 
     auto iter_invalid = video_detail.find ("无效时间段");
     assert (iter_invalid != video_detail.end ());
@@ -180,21 +184,41 @@ bool video_analysis::eventFilter(QObject *, QEvent *event)
 
 void video_analysis::load (const json &data)
 {
-    const auto iter_video_analysis = &data;
-    assert (iter_video_analysis->is_object ());
-    auto iter_task = iter_video_analysis->find ("作业内容");
-    assert (iter_task != iter_video_analysis->end () and iter_task->is_array ());
-    auto iter_data = iter_video_analysis->find ("观测时间");
-    assert (iter_data != iter_video_analysis->end () and iter_data->is_array ());
-    auto iter_result = iter_video_analysis->find ("结果");
-    assert (iter_result != iter_video_analysis->end () and iter_result->is_array ());
+    const auto iter_form = data.find ("form");
+    assert (iter_form != end (data));
+    assert (iter_form->is_object ());
+    auto iter_task = iter_form->find ("作业内容");
+    assert (iter_task != iter_form->end ());
+    assert (iter_task->is_array ());
+    auto iter_data = iter_form->find ("观测时间");
+    assert (iter_data != iter_form->end () and iter_data->is_array ());
+    auto iter_result = iter_form->find ("结果");
+    assert (iter_result != iter_form->end () and iter_result->is_array ());
 
     ui->form->set_row (static_cast<int> (iter_task->size ()));
     ui->form->load_task (*iter_task);
     ui->form->load_data (*iter_data);
     ui->form->load_result (*iter_result);
 
-    init_video_widget (*iter_video_analysis);
+    const auto file = data.find ("video-file");
+    assert (iter_form != end (data));
+    assert (file->is_string ());
+    ui->video_player->set_file (QString::fromStdString (*file));
+    const auto invalid = data.find ("invalid");
+
+    if (invalid != end (data))
+    {
+        assert (invalid->is_array ());
+        invalid_data_.clear ();
+        invalid_data_.resize (invalid->size ());
+
+        size_t i = 0;
+        for (auto & it : invalid.value ())
+        {
+            invalid_data_.at (i) = it;
+            i ++;
+        }
+    }
 }
 
 void video_analysis::on_combo_second_activated(int index)
@@ -271,13 +295,13 @@ void video_analysis::on_spinbox_rate_valueChanged(double arg1)
 void video_analysis::modify_invalid ()
 {
     ui->video_player->stop_video();
-    if(current_video_.isEmpty())
+    if (ui->video_player->file ().isEmpty ())
     {
         QMessageBox::information(this,"错误","未载入文件");
         return;
     }
 
-    dlg_->set_current_video(current_video_);
+    dlg_->set_current_video(ui->video_player->file ());
 
     invalid_data_ = ui->video_player->retrieve_invalid();
     dlg_->set_invalid(invalid_data_);
@@ -380,7 +404,6 @@ void video_analysis::set_task_count ()
         auto row = dlg.intValue ();
         ui->form->clear ();
         ui->form->set_row (row);
-        this->current_file_data_.clear();
     }
 }
 
@@ -445,11 +468,20 @@ void video_analysis::refresh_chart (action_ratio ratio)
     }
 }
 
+void video_analysis::refresh_stats(overall_stats stats)
+{
+    ui->ct_max->setText (QString::number (stats.max_val, 'f', 2));
+    ui->ct_min->setText (QString::number (stats.min_val, 'f', 2));
+    ui->ct_average->setText (QString::number (stats.average, 'f', 2));
+    ui->ct_deviation->setText (QString::number (stats.deviation, 'f', 2));
+}
+
 json video_analysis::dump()
 {
     json data;
     data ["form"] = ui->form->export_data ();
     data ["video-file"] = ui->video_player->file ().toStdString ();
+    data ["invalid"] = invalid_data_;
 
     return data;
 }

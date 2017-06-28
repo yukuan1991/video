@@ -20,7 +20,7 @@ public:
     QMdiArea * area ();
 private:
     using analysis_slot = void (video_analysis::*) ();
-    not_null<video_analysis*> create_window ();
+    not_null<video_analysis*> create_window (const QString & title);
     void create_analysis ();
     video_analysis * current_sub_window ();
 
@@ -31,7 +31,10 @@ private:
     void init_conn ();
     void change_task_count ();
 
+    void export_xlsx ();
+
     void on_save ();
+    void on_open ();
 private:
     Ui::video_main *ui;
 };

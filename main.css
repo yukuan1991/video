@@ -5,3 +5,10 @@ QWidget{
 
 
 
+QSlider::add-page:horizontal {
+      background: white;
+}
+
+QSlider::sub-page:horizontal {
+      background: white;
+}

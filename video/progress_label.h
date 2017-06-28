@@ -29,7 +29,7 @@ public:
     void set_position (qint64 pos);
 
     /// 无效时间
-    bool add_invalid (const std::pair<qint64, qint64> &p);
+    bool add_invalid (const std::pair<qint64, qint64>& p);
     const auto& retrieve_invalid () { return boundaries_; }
     void set_invalid (const std::vector<qint64>& data) { boundaries_ = data; repaint ();}
 
@@ -57,7 +57,7 @@ protected:
     void mouseReleaseEvent (QMouseEvent *ev) override;
 private:
     qint64 total_ = 0;
-    qint64 pos_ = 0;
+    long long int pos_ = 0;
     std::vector<qint64> boundaries_;
     std::vector<qint64> color_start_;
     std::vector<std::pair<qint64, qint64>> pix_to_pos;

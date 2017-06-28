@@ -58,10 +58,9 @@ unique_ptr<QWidgetAction> make_action (const QPixmap & pix, const QString & text
 
 void ribbon::setup_menu()
 {
-    auto file = new ribbon_button ("文件", this);
+    auto file = new ribbon_button ("  文件", this);
     auto menu = new ribbon_menu (file);
     file->setMenu (menu);
-    file->setObjectName("ribbon_button_file");
 
     auto action =  make_action (QPixmap ("png/新建.png"), "新建");
     connect (action.get (), &QAction::triggered, this, &ribbon::create_new);

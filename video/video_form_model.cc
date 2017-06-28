@@ -4,6 +4,7 @@
 #include <boost/algorithm/string.hpp>
 #include <boost/scope_exit.hpp>
 #include <string>
+#include <math.h>
 
 const char * const video_form_model::cols[] =
 {
@@ -164,7 +165,7 @@ void video_form_model::clear()
     this->resize (rowCount ());
 }
 
-optional<action_ratio> video_form_model::ratio() const
+optional<action_ratio> video_form_model::operation_ratio() const
 {
     std::array<qreal, 4> arr {{0, 0, 0, 0}};
 
@@ -206,7 +207,7 @@ optional<action_ratio> video_form_model::ratio() const
         }
     }
 
-    const auto total = accumulate (begin (arr), end (arr), static_cast<qreal> (0), plus<qreal> ());
+    const auto total = accumulate (begin (arr), end (arr), qreal {0});
     if (total < 0.00001)
     {
         return {};
@@ -226,6 +227,55 @@ optional<action_ratio> video_form_model::ratio() const
     ret.waiting = waiting;
 
     return ret;
+}
+
+std::optional<overall_stats> video_form_model::operation_stats() const
+{
+    bool b;
+    std::vector<qreal> cts;
+    cts.reserve (max_round);
+
+    for (int i = 0; i < max_round; i ++)
+    {
+        optional<qreal> total = 0.0;
+        for (int j = 0; j < this->rowCount (); j ++)
+        {
+            const auto time = get_value_by_key (j, QString::number (i + 1) + "R").toDouble (&b);
+            if (!b)
+            {
+                total = {};
+                break;
+            }
+            total.value () += time;
+        }
+
+        if (total)
+        {
+            cts.emplace_back (total.value ());
+        }
+    }
+
+    if (cts.empty ())
+    {
+        return {};
+    }
+
+    const auto max_val = *(max_element (begin (cts), end (cts)));
+    const auto min_val = *(min_element (begin (cts), end (cts)));
+    const auto average = accumulate (begin (cts), end (cts), qreal {0}) / cts.size ();
+
+    const auto square_total = accumulate (begin (cts), end (cts) , qreal {0}, [&] (qreal tmp, qreal it)
+    {  return tmp + (average - it) * (average - it); });
+
+    const auto deviation = ::sqrt (square_total / cts.size ());
+
+    overall_stats ret;
+    ret.max_val = max_val;
+    ret.min_val = min_val;
+    ret.average = average;
+    ret.deviation = deviation;
+
+    return ::move (ret);
 }
 
 QVariant video_form_model::get_result_table(const QModelIndex &index) const

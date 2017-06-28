@@ -132,12 +132,12 @@ public:
         :QWidget (parent)
     {
         QLabel* label_icon = new QLabel(this);
-        label_icon->setFixedSize(32, 32);
+        label_icon->setFixedSize(24, 24);
         label_icon->setScaledContents(true);
         label_icon->setPixmap(pix);
 
         QLabel* label_text = new QLabel(text,this);
-        label_text->setAlignment (Qt::AlignCenter);
+        label_text->setAlignment (Qt::AlignLeft | Qt::AlignVCenter);
 
         QHBoxLayout* layout = new QHBoxLayout;
         layout->setContentsMargins(1, 1, 1, 1);
@@ -146,7 +146,8 @@ public:
         layout->addWidget(label_text);
         setLayout(layout);
 
-        setFixedWidth(120);
+        setFixedWidth(100);
+        setFixedHeight (32);
     }
     ~ribbon_menu_item()
     {}

@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui avwidgets charts
+QT       += core gui avwidgets charts xlsx
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 CONFIG -= c++11
@@ -39,7 +39,13 @@ SOURCES += \
     video/video_widget.cc \
     model/json_model.cc \
     view/table_view.cpp \
-    video/video_chart.cc
+    video/video_chart.cc \
+    verification.cc \
+    encryption.cc \
+    verification_dlg.cc \
+    net_utils.cc \
+    des.cc \
+    algorithm_utils.cc
 
 HEADERS += \
     video/first_dlg.h \
@@ -56,7 +62,14 @@ HEADERS += \
     model/json_model.h \
     view/table_view.h \
     video/video_chart.h \
-    video/utils.hpp
+    video/utils.hpp \
+    verification.h \
+    verification_dlg.h \
+    encryption.h \
+    net_utils.h \
+    des.h \
+    krys_application.hpp \
+    algorithm_utils.h
 
 FORMS += \
     video/first_dlg.ui \
@@ -64,7 +77,8 @@ FORMS += \
     video/video_analysis.ui \
     video/video_main.ui \
     video/video_widget.ui \
-    video/video_chart.ui
+    video/video_chart.ui \
+    verification_dlg.ui
 
 QMAKE_CXXFLAGS += -Wextra
 QMAKE_CXXFLAGS += -Wno-deprecated-declarations

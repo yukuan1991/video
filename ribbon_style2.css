@@ -28,7 +28,7 @@ ribbon_button::pressed{
 	background: #2F63AE;
 }
 
-#ribbon_button_file::menu-indicator{
+ribbon_button::menu-indicator{
 	image:None;
 }
 
@@ -79,9 +79,10 @@ ribbon_bar::tab:hover:!selected{
     border: 1px solid #ECECEC;
 }
 
-ribbon_bar::tab:!selected {
+/*ribbon_bar::tab:!selected {
     margin-top: 1px;
 }
+*/
 
 
 

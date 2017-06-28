@@ -509,7 +509,7 @@ void form_widget::clear()
 void form_widget::load_task(const json &task)
 {
     assert (task.is_array ());
-    int max_rows = task.size ();
+    int max_rows = static_cast<int> (task.size ());
     QModelIndex index;
     QVariant val;
     std::string task_str;
@@ -517,9 +517,9 @@ void form_widget::load_task(const json &task)
     for (int i = 0; i < max_rows; ++ i)
     {
         index = src_model_->index (i,1);
-        auto& task_index_ref = task [i];
+        auto& task_index_ref = task.at (static_cast<size_t> (i));
         assert (task_index_ref.is_string ());
-        task_str = task_index_ref.dump ();
+        task_str = task_index_ref;
         val.setValue (QString (task_str.data ()));
         src_model_->setData (index, val);
     }
@@ -622,9 +622,14 @@ void form_widget::set_editable(bool b)
 }
 
 
-std::optional<action_ratio> form_widget::ratio() const
+std::optional<action_ratio> form_widget::operation_ratio () const
 {
-    return src_model_->ratio ();
+    return src_model_->operation_ratio ();
+}
+
+std::optional<overall_stats> form_widget::operation_stats() const
+{
+    return src_model_->operation_stats ();
 }
 
 json form_widget::export_data()
