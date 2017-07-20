@@ -562,8 +562,6 @@
           </spacer>
          </item>
         </layout>
-        <zorder></zorder>
-        <zorder>verticalSpacer</zorder>
        </widget>
        <widget class="QWidget" name="pie">
         <attribute name="title">

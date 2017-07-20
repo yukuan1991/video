@@ -9,11 +9,14 @@ class video_main;
 }
 
 class QMdiArea;
+class QMdiSubWindow;
 
 class video_analysis;
 class video_main final : public QWidget
 {
     Q_OBJECT
+signals:
+    void mdi_active (bool);
 public:
     explicit video_main(QWidget *parent = 0);
     ~video_main();
@@ -23,6 +26,8 @@ private:
     not_null<video_analysis*> create_window (const QString & title);
     void create_analysis ();
     video_analysis * current_sub_window ();
+
+    void mdi_changed (QMdiSubWindow *window);
 
     void apply_to_current (analysis_slot);
     void invalid_timespan ();

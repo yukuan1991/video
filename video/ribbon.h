@@ -37,6 +37,7 @@ signals:
     void measure_date ();
     void measure_man ();
     void task_man ();
+    void mdi_active (bool);
 public:
     ribbon (QWidget * parent = nullptr);
 private:

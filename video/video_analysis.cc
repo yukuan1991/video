@@ -504,13 +504,6 @@ void video_analysis::update_box(gsl::span<qreal> data)
     }
     sort (begin (data), end (data), greater <>());
 
-    qDebug () << "--------------------------------------";
-    for (auto & it : data)
-    {
-        qDebug () << it;
-    }
-    qDebug () << "--------------------------------------";
-
     whisker_data wh_data;
     wh_data.top = data.at (0);
     wh_data.bottom = data.at (data.size () - 1);

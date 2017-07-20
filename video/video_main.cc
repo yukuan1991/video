@@ -68,6 +68,11 @@ video_analysis *video_main::current_sub_window ()
     return w;
 }
 
+void video_main::mdi_changed(QMdiSubWindow * window)
+{
+    ui->video_ribbon->mdi_active (window != nullptr);
+}
+
 void video_main::apply_to_current(analysis_slot slot)
 {
     auto w = current_sub_window ();
@@ -199,6 +204,7 @@ void video_main::video_import()
 
 void video_main::init_conn()
 {
+    connect (ui->mdi, &QMdiArea::subWindowActivated, this, &video_main::mdi_changed);
     connect (ui->video_ribbon, &ribbon::create_new, this, &video_main::create_analysis);
     connect (ui->video_ribbon, &ribbon::import_data, this, &video_main::video_import);
     connect (ui->video_ribbon, &ribbon::change_task_count, [this] { apply_to_current (&video_analysis::set_task_count); });

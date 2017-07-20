@@ -41,7 +41,7 @@ void set_style ()
             }
         }
     }
-
+    qApp->setFont (QFont ("宋体", 11));
     qApp->setStyleSheet (QString::fromStdString (qss));
 }
 

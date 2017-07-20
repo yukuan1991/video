@@ -45,6 +45,7 @@ void ribbon::setup_ui()
     this->addTab (ui_video ().release (), "视频");
     this->addTab (ui_settings ().release (), "设置");
     this->addTab (ui_report ().release (), "报表");
+    mdi_active (false);
 }
 
 
@@ -71,10 +72,13 @@ void ribbon::setup_menu()
     menu->addAction (action.release ());
 
     action =  make_action (QPixmap ("png/保存.png"), "保存");
+    connect (this, &ribbon::mdi_active, action.get (), &QAction::setEnabled);
+
     connect (action.get (), &QAction::triggered, this, &ribbon::save);
     menu->addAction (action.release ());
 
     action =  make_action (QPixmap ("png/另存为.png"), "另存为");
+    connect (this, &ribbon::mdi_active, action.get (), &QAction::setEnabled);
     connect (action.get (), &QAction::triggered, this, &ribbon::save_as);
     menu->addAction (action.release ());
 
@@ -106,24 +110,28 @@ std::unique_ptr<QWidget> ribbon::ui_edit ()
     {
         auto btn = make_button (QPixmap ("png/剪切.png").scaled (len, len), "剪切");
         connect (btn.get (), &QToolButton::clicked, this, &ribbon::cut);
+        connect (this, &ribbon::mdi_active, btn.get (), &QToolButton::setEnabled);
         upper_layout->addWidget (btn.release ());
     }
 
     {
         auto btn = make_button (QPixmap ("png/复制.png").scaled (len, len), "复制");
         connect (btn.get (), &QToolButton::clicked, this, &ribbon::copy);
+        connect (this, &ribbon::mdi_active, btn.get (), &QToolButton::setEnabled);
         upper_layout->addWidget (btn.release ());
     }
 
     {
         auto btn = make_button (QPixmap ("png/粘贴.png").scaled (len, len), "粘贴");
         connect (btn.get (), &QToolButton::clicked, this, &ribbon::paste);
+        connect (this, &ribbon::mdi_active, btn.get (), &QToolButton::setEnabled);
         upper_layout->addWidget (btn.release ());
     }
 
     {
         auto btn = make_button (QPixmap ("png/删除.png").scaled (len, len), "删除");
         connect (btn.get (), &QToolButton::clicked, this, &ribbon::del);
+        connect (this, &ribbon::mdi_active, btn.get (), &QToolButton::setEnabled);
         upper_layout->addWidget (btn.release ());
     }
 
@@ -145,6 +153,7 @@ std::unique_ptr<QWidget> ribbon::ui_edit ()
 
     {
         auto btn = make_button (QPixmap ("png/作业项数.png").scaled (len, len), "改变作业项数");
+        connect (this, &ribbon::mdi_active, btn.get (), &QToolButton::setEnabled);
         connect (btn.get (), &QToolButton::clicked, this, &ribbon::change_task_count);
         upper_layout->addWidget (btn.release ());
     }
@@ -191,6 +200,7 @@ std::unique_ptr<QWidget> ribbon::ui_video()
     constexpr auto len = 39;
 
     auto btn = make_button (QPixmap ("png/导入").scaled (len, len), "导入");
+    connect (this, &ribbon::mdi_active, btn.get (), &QToolButton::setEnabled);
     connect (btn.get (), &QToolButton::clicked, this, &ribbon::import_data);
     upper_layout->addWidget (btn.release ());
 
@@ -213,6 +223,7 @@ std::unique_ptr<QWidget> ribbon::ui_video()
     upper_layout->setContentsMargins(10, 0, 10, 0);
 
     btn = make_button (QPixmap ("png/无效时间.png").scaled (len, len), "无效时间");
+    connect (this, &ribbon::mdi_active, btn.get (), &QToolButton::setEnabled);
     connect (btn.get (), &QToolButton::clicked, this, &ribbon::invalid_timespan);
     upper_layout->addWidget (btn.release ());
 
@@ -252,6 +263,7 @@ std::unique_ptr<QWidget> ribbon::ui_report()
     constexpr auto len = 39;
 
     auto export_button = make_button (QPixmap ("png/导出.png").scaled (len - 5, len), "Excel文档");
+    connect (this, &ribbon::mdi_active, export_button.get (), &QToolButton::setEnabled);
     connect (export_button.get (), &QToolButton::clicked, this, &ribbon::export_data);
     upper_layout->addWidget (export_button.release ());
 
@@ -352,18 +364,21 @@ std::unique_ptr<QWidget> ribbon::ui_settings()
         {
             auto btn = make_button (QPixmap ("png/测量日期.png").scaled (len, len), "测量日期");
             connect (btn.get (), &QToolButton::clicked, this, &ribbon::measure_date);
+            connect (this, &ribbon::mdi_active, btn.get (), &QToolButton::setEnabled);
             upper_layout->addWidget (btn.release ());
         }
 
         {
             auto btn = make_button (QPixmap ("png/测量人.png").scaled (len , len), "测量人");
             connect (btn.get (), &QToolButton::clicked, this, &ribbon::measure_man);
+            connect (this, &ribbon::mdi_active, btn.get (), &QToolButton::setEnabled);
             upper_layout->addWidget (btn.release ());
         }
 
         {
             auto btn = make_button (QPixmap ("png/作业员.png").scaled (len , len), "作业员");
             connect (btn.get (), &QToolButton::clicked, this, &ribbon::task_man);
+            connect (this, &ribbon::mdi_active, btn.get (), &QToolButton::setEnabled);
             upper_layout->addWidget (btn.release ());
         }
 
