@@ -5,6 +5,7 @@
 #include <boost/thread.hpp>
 #include <memory>
 #include <thread>
+#include <base/io/file/file.hpp>
 
 class krys_application;
 

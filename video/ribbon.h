@@ -23,6 +23,7 @@ signals:
     void paste ();
 
     void change_task_count ();
+    void change_example_cycle ();
 
     void create_new ();
     void open ();

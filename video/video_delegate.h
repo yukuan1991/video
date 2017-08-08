@@ -14,7 +14,7 @@ public:
     void setModelData (QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const override;
     void updateEditorGeometry (QWidget* editor, const QStyleOptionViewItem& option, const QModelIndex& index) const override;
 
-    compl video_delegate () override = default;
+    ~video_delegate () override = default;
 
 private:
     QWidget* create_result_editor (QWidget* parent, const QModelIndex& index, video_form_model* src_model) const;

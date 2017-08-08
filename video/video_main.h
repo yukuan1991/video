@@ -45,6 +45,7 @@ private:
     void on_save ();
     void on_open ();
     void on_save_as ();
+    void on_example_cycle ();
 private:
     Ui::video_main *ui;
 };

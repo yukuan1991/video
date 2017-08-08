@@ -19,8 +19,10 @@
 #include "verification.h"
 #include "krys_application.hpp"
 #include <chrono>
+#include <QDebug>
 #include <QTimer>
 using namespace std::chrono_literals;
+using namespace std::string_view_literals;
 
 
 void set_style ()
@@ -30,6 +32,7 @@ void set_style ()
     auto rng = boost::make_iterator_range (directory_iterator ("."), directory_iterator ());
 
     std::string qss;
+
     for (auto & it : rng)
     {
         if (it.path ().extension ().string () == ".css")
@@ -41,6 +44,7 @@ void set_style ()
             }
         }
     }
+
     qApp->setFont (QFont ("宋体", 11));
     qApp->setStyleSheet (QString::fromStdString (qss));
 }

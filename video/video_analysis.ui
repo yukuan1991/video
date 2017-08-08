@@ -237,7 +237,7 @@
      <item>
       <widget class="QTabWidget" name="chart">
        <property name="currentIndex">
-        <number>0</number>
+        <number>1</number>
        </property>
        <widget class="QWidget" name="stats">
         <attribute name="title">
@@ -452,12 +452,12 @@
                 </size>
                </property>
                <property name="text">
-                <string/>
+                <string>样例循环</string>
                </property>
               </widget>
              </item>
              <item row="5" column="1">
-              <widget class="QLabel" name="label_14">
+              <widget class="QLabel" name="example_cycle">
                <property name="minimumSize">
                 <size>
                  <width>80</width>
@@ -465,7 +465,7 @@
                 </size>
                </property>
                <property name="text">
-                <string/>
+                <string>无</string>
                </property>
               </widget>
              </item>

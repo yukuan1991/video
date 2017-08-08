@@ -198,6 +198,8 @@ void video_analysis::load (const json &data)
     auto iter_result = iter_form->find ("结果");
     assert (iter_result != iter_form->end () and iter_result->is_array ());
 
+
+
     ui->form->set_row (static_cast<int> (iter_task->size ()));
     ui->form->load_task (*iter_task);
     ui->form->load_data (*iter_data);
@@ -238,6 +240,17 @@ void video_analysis::load (const json &data)
     if (task_man != end (data) and task_man->is_string ())
     {
         ui->task_man->setText (QString::fromStdString (*task_man));
+    }
+
+    const auto example_cycle = data.find ("example-cycle");
+    if (example_cycle != end (data) and example_cycle->is_number () and *example_cycle != 0)
+    {
+        const auto i_example_cycle = int (*example_cycle);
+        ui->example_cycle->setText (QString::number (i_example_cycle));
+    }
+    else
+    {
+        ui->example_cycle->setText ("无");
     }
 }
 
@@ -583,7 +596,18 @@ json video_analysis::dump()
     data ["measure-date"] = ui->measure_date->text ().toStdString ();
     data ["measure-man"] = ui->measure_man->text ().toStdString ();
     data ["task-man"] = ui->task_man->text ().toStdString ();
+    data ["example-cycle"] = ui->example_cycle->text ().toInt ();
 
     return data;
+}
+
+void video_analysis::set_example_cycle(int cycle)
+{
+    ui->example_cycle->setText (QString::number (cycle));
+}
+
+int video_analysis::example_cycle() const noexcept
+{
+    return ui->example_cycle->text ().toInt ();
 }
 

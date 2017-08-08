@@ -156,17 +156,19 @@ std::unique_ptr<QWidget> ribbon::ui_edit ()
         connect (this, &ribbon::mdi_active, btn.get (), &QToolButton::setEnabled);
         connect (btn.get (), &QToolButton::clicked, this, &ribbon::change_task_count);
         upper_layout->addWidget (btn.release ());
+
+        btn = make_button (QPixmap ("png/测量日期.png").scaled (len, len), "更改样例循环");
+        connect (this, &ribbon::mdi_active, btn.get (), &QToolButton::setEnabled);
+        connect (btn.get (), &QToolButton::clicked, this, &ribbon::change_example_cycle);
+        upper_layout->addWidget (btn.release ());
     }
 
     block2_layout->addLayout (upper_layout.release ());
 
     label = new QLabel ("第二类");
-//    label->setMaximumWidth (90);
-//    label->setMinimumWidth (90);
     label->setAlignment (Qt::AlignHCenter | Qt::AlignBottom);
     block2_layout->addWidget (label);
 
-//    block2_layout->setSizeConstraint (QLayout::SetFixedSize);
     layout->addLayout (block2_layout.release (), 0);
 
     line = new QFrame(widget.get ());
@@ -291,63 +293,6 @@ std::unique_ptr<QWidget> ribbon::ui_settings()
 
     layout->setContentsMargins (1, 1, 1, 1);
     layout->setSpacing (1);
-
-    //{
-    //    auto block1_layout = make_unique<QVBoxLayout> ();
-    //    block1_layout->setContentsMargins (1, 1, 1, 1);
-    //    block1_layout->setSpacing (1);
-
-    //    auto upper_layout = make_unique<QHBoxLayout> ();
-    //    upper_layout->setSpacing(10);
-    //    upper_layout->setContentsMargins(10, 0, 10, 0);
-
-
-    //    constexpr auto len = 39;
-
-    //    {
-    //        auto btn = make_button (QPixmap ("png/单位.png").scaled (len, len), "单位");
-    //        upper_layout->addWidget (btn.release ());
-    //    }
-
-    //    block1_layout->addLayout (upper_layout.release ());
-    //    auto label = new QLabel ("第一类");
-    //    label->setAlignment (Qt::AlignHCenter | Qt::AlignBottom);
-    //    block1_layout->addWidget (label);
-    //    layout->addLayout (block1_layout.release (), 0);
-
-    //    auto line = new QFrame (ret.get ());
-    //    line->setFrameShape (QFrame::VLine);
-    //    line->setFrameShadow(QFrame::Sunken);
-    //    layout->addWidget (line);
-    //}
-
-    //{
-    //    auto block_layout = make_unique<QVBoxLayout> ();
-    //    block_layout->setContentsMargins (1, 1, 1, 1);
-    //    block_layout->setSpacing (1);
-
-    //    auto upper_layout = make_unique<QHBoxLayout> ();
-    //    upper_layout->setSpacing(10);
-    //    upper_layout->setContentsMargins(10, 0, 10, 0);
-
-    //    constexpr auto len = 39;
-
-    //    {
-    //        auto btn = make_button (QPixmap ("png/属性.png").scaled (len, len), "属性");
-    //        upper_layout->addWidget (btn.release ());
-    //    }
-
-    //    block_layout->addLayout (upper_layout.release ());
-    //    auto label = new QLabel ("第二类");
-    //    label->setAlignment (Qt::AlignHCenter | Qt::AlignBottom);
-    //    block_layout->addWidget (label);
-    //    layout->addLayout (block_layout.release (), 0);
-
-    //    auto line = new QFrame (ret.get ());
-    //    line->setFrameShape (QFrame::VLine);
-    //    line->setFrameShadow(QFrame::Sunken);
-    //    layout->addWidget (line);
-    //}
 
     {
         auto block_layout = make_unique<QVBoxLayout> ();

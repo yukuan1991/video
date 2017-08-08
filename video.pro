@@ -39,7 +39,6 @@ SOURCES += \
     video/video_widget.cc \
     model/json_model.cc \
     view/table_view.cpp \
-    video/video_chart.cc \
     verification.cc \
     encryption.cc \
     verification_dlg.cc \
@@ -62,7 +61,6 @@ HEADERS += \
     video/video_player.hpp \
     model/json_model.h \
     view/table_view.h \
-    video/video_chart.h \
     video/utils.hpp \
     verification.h \
     verification_dlg.h \
@@ -71,7 +69,8 @@ HEADERS += \
     des.h \
     krys_application.hpp \
     algorithm_utils.h \
-    video/whisker.h
+    video/whisker.h \
+    video/video_player.hpp
 
 FORMS += \
     video/first_dlg.ui \
@@ -79,7 +78,6 @@ FORMS += \
     video/video_analysis.ui \
     video/video_main.ui \
     video/video_widget.ui \
-    video/video_chart.ui \
     verification_dlg.ui
 
 QMAKE_CXXFLAGS += -Wextra

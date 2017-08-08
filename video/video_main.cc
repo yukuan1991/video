@@ -15,7 +15,8 @@
 #include <QDateEdit>
 #include <QStyleFactory>
 #include <QInputDialog>
-
+#include <base/lang/not_null.h>
+#include <QInputDialog>
 
 using namespace std;
 
@@ -59,9 +60,9 @@ void video_main::create_analysis()
 video_analysis *video_main::current_sub_window ()
 {
     const auto active = ui->mdi->currentSubWindow ();
-    if (active == nullptr)
+    if (active == null)
     {
-        return nullptr;
+        return null;
     }
     auto w = dynamic_cast<video_analysis *> (active->widget ());
 
@@ -70,13 +71,13 @@ video_analysis *video_main::current_sub_window ()
 
 void video_main::mdi_changed(QMdiSubWindow * window)
 {
-    ui->video_ribbon->mdi_active (window != nullptr);
+    ui->video_ribbon->mdi_active (window != null);
 }
 
 void video_main::apply_to_current(analysis_slot slot)
 {
     auto w = current_sub_window ();
-    if (w != nullptr)
+    if (w != null)
     {
         (w->*slot) ();
     }
@@ -85,7 +86,7 @@ void video_main::apply_to_current(analysis_slot slot)
 void video_main::invalid_timespan()
 {
     auto w = current_sub_window ();
-    if (w != nullptr)
+    if (w != null)
     {
         w->modify_invalid ();
     }
@@ -94,7 +95,7 @@ void video_main::invalid_timespan()
 void video_main::on_measure_date()
 {
     auto w = current_sub_window ();
-    if (w == nullptr)
+    if (w == null)
     {
         return;
     }
@@ -128,7 +129,7 @@ void video_main::on_measure_date()
 void video_main::on_measure_man()
 {
     auto w = current_sub_window ();
-    if (w == nullptr)
+    if (w == null)
     {
         return;
     }
@@ -145,7 +146,7 @@ void video_main::on_measure_man()
 void video_main::on_task_man()
 {
     auto w = current_sub_window ();
-    if (w == nullptr)
+    if (w == null)
     {
         return;
     }
@@ -194,7 +195,7 @@ void video_main::video_import()
 
     auto w = current_sub_window ();
 
-    if (w == nullptr)
+    if (w == null)
     {
         return;
     }
@@ -218,12 +219,13 @@ void video_main::init_conn()
     connect (ui->video_ribbon, &ribbon::measure_date, this, &video_main::on_measure_date);
     connect (ui->video_ribbon, &ribbon::measure_man, this, &video_main::on_measure_man);
     connect (ui->video_ribbon, &ribbon::task_man, this, &video_main::on_task_man);
+    connect (ui->video_ribbon, &ribbon::change_example_cycle, this, &video_main::on_example_cycle);
 }
 
 void video_main::change_task_count()
 {
     auto w = current_sub_window ();
-    if (w != nullptr)
+    if (w != null)
     {
         w->set_task_count ();
     }
@@ -232,7 +234,7 @@ void video_main::change_task_count()
 void video_main::export_xlsx()
 {
     auto w = current_sub_window ();
-    if (w == nullptr)
+    if (w == null)
     {
         return;
     }
@@ -372,13 +374,13 @@ void video_main::export_xlsx()
 void video_main::on_save()
 {
     const auto active = ui->mdi->currentSubWindow ();
-    if (active == nullptr)
+    if (active == null)
     {
         return;
     }
     auto w = dynamic_cast<video_analysis *> (active->widget ());
 
-    if (w == nullptr)
+    if (w == null)
     {
         return;
     }
@@ -429,11 +431,30 @@ void video_main::on_open()
 void video_main::on_save_as()
 {
     auto w = current_sub_window ();
-    if (w != nullptr)
+    if (w != null)
     {
         const auto path = QFileDialog::getSaveFileName(this, "文件保存", ".", tr ("Video Analysis File (*.vaf)"));
         const auto data = w->dump ();
 
         file::write_buffer (::utf_to_sys (path.toStdString ()).data (), data.dump (4));
     }
+}
+
+void video_main::on_example_cycle()
+{
+    auto w = current_sub_window ();
+    if (w == null)
+    {
+        return;
+    }
+
+    const auto old_cycle = w->example_cycle ();
+    const auto cycle = QInputDialog::getInt (this, "实例循环", "设置示例循环", old_cycle, 1, 10);
+
+    if (cycle == w->example_cycle ())
+    {
+        return;
+    }
+
+    w->set_example_cycle (cycle);
 }

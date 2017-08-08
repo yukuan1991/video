@@ -60,6 +60,10 @@ public:
 
     json dump ();
 
+    void set_example_cycle (int cycle);
+
+    int example_cycle() const noexcept;
+
 private slots:
     void on_combo_second_activated(int index);
 
