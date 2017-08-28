@@ -163,7 +163,7 @@ void video_main::on_task_man()
 
 void video_main::video_import()
 {
-    const QString type = tr ("Video Files (*.mp4 *.mpg *.mod *.mov *.mkv *.wmv *.avi)");
+    const QString type = tr ("Video Files (*.mp4 *.mpg *.mod *.mov *.mkv *.wmv *.avi *.vid)");
     const auto file = QFileDialog::getOpenFileName (this, "打开视频", ".", type);
     if (file.isEmpty ())
     {
