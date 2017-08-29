@@ -20,10 +20,10 @@ form_widget::form_widget(QWidget *parent) :
     set_views ();
     set_scrolls ();
 
-    connect (src_model_.get (), &video_form_model::dataChanged, [this]{
-        auto sum = src_model_->get_std_sum ();
-        emit total_time_changed (sum);
-    });
+//    connect (src_model_.get (), &video_form_model::dataChanged, [this]{
+//        auto sum = src_model_->get_std_sum ();
+//        emit total_time_changed (sum);
+//    });
     connect (src_model_.get (), &video_form_model::dataChanged, this, &form_widget::data_changed);
 }
 
@@ -621,20 +621,20 @@ void form_widget::set_editable(bool b)
 }
 
 
-std::optional<action_ratio> form_widget::operation_ratio () const
-{
-    return src_model_->operation_ratio ();
-}
+//std::optional<action_ratio> form_widget::operation_ratio () const
+//{
+//    return src_model_->operation_ratio ();
+//}
 
-std::optional<overall_stats> form_widget::operation_stats() const
-{
-    return src_model_->operation_stats ();
-}
+//std::optional<overall_stats> form_widget::operation_stats() const
+//{
+//    return src_model_->operation_stats ();
+//}
 
-std::vector<qreal> form_widget::cycle_times() const
-{
-    return src_model_->cycle_times ();
-}
+//std::vector<qreal> form_widget::cycle_times() const
+//{
+//    return src_model_->cycle_times ();
+//}
 
 json form_widget::export_data()
 {
@@ -695,11 +695,12 @@ void form_widget::set_row(int num)
 {
     emit line_exists (num != 0);
 
-    src_model_->resize (num);
+//    src_model_->resize (num);
+    src_model_->setRowCount(num);
     set_models();
     set_views ();
-    auto sum = src_model_->get_std_sum ();
-    emit total_time_changed (sum);
+//    auto sum = src_model_->get_std_sum ();
+//    emit total_time_changed (sum);
 }
 
 void form_widget::add_row(int num)

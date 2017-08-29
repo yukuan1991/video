@@ -12,7 +12,7 @@
 #include <QModelIndex>
 #include <optional>
 #include "video/utils.hpp"
-
+#include "video/VideoFormModel.h"
 
 using json = nlohmann::json;
 
@@ -47,7 +47,6 @@ public:
     void load_data (const json& data);
     void load_result (const json& result);
     void set_editable (bool b);
-
 
     action_ratio get_ratio () const;
     std::optional<action_ratio> operation_ratio () const;
@@ -88,7 +87,8 @@ signals:
 private:
     Ui::form_widget *ui;
     int total_round_ = 10;
-    std::unique_ptr<video_form_model> src_model_ = std::make_unique<video_form_model> ();
+    std::unique_ptr<VideoFormModel> src_model_ = std::make_unique<VideoFormModel> ();
+//    std::unique_ptr<video_form_model> src_model_ = std::make_unique<video_form_model> ();
     std::unique_ptr<video_form_split> model_des_ = std::make_unique<video_form_split> ();
     std::unique_ptr<video_form_split> model_data_ = std::make_unique<video_form_split> ();
     std::unique_ptr<video_form_split> model_result_ = std::make_unique<video_form_split> ();

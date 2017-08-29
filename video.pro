@@ -45,7 +45,8 @@ SOURCES += \
     net_utils.cc \
     des.cc \
     algorithm_utils.cc \
-    video/whisker.cc
+    video/whisker.cc \
+    video/VideoFormModel.cc
 
 HEADERS += \
     video/first_dlg.h \
@@ -70,7 +71,8 @@ HEADERS += \
     krys_application.hpp \
     algorithm_utils.h \
     video/whisker.h \
-    video/video_player.hpp
+    video/video_player.hpp \
+    video/VideoFormModel.h
 
 FORMS += \
     video/first_dlg.ui \

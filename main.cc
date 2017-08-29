@@ -21,6 +21,11 @@
 #include <chrono>
 #include <QDebug>
 #include <QTimer>
+
+
+#include <QTableView>
+#include "video/VideoFormModel.h"
+
 using namespace std::chrono_literals;
 using namespace std::string_view_literals;
 
@@ -54,11 +59,19 @@ void set_style ()
 
 int main(int argc, char *argv[])
 {
+//    QApplication a(argc, argv);
+
+
     krys_application a(argc, argv);
     if (!verification_process ())
     {
         return -1;
     }
+
+    QTableView tableView;
+    auto model = new VideoFormModel(3, 27);
+    tableView.setModel(model);
+    tableView.show();
 
     video_main v;
     v.resize (1366, 768);

@@ -40,21 +40,21 @@ video_analysis::video_analysis(QWidget *parent)
     {
         ui->video_player->set_position(end);
     });
-    connect (ui->form, &form_widget::data_changed, [this]
-    {
-        const auto ratio = ui->form->operation_ratio ();
-        const auto stats = ui->form->operation_stats ();
-        auto cycles = ui->form->cycle_times ();
-        if (ratio)
-        {
-            this->refresh_chart (ratio.value ());
-        }
-        if (stats)
-        {
-            this->refresh_stats (stats.value ());
-        }
-        update_box (cycles);
-    });
+//    connect (ui->form, &form_widget::data_changed, [this]
+//    {
+//        const auto ratio = ui->form->operation_ratio ();
+//        const auto stats = ui->form->operation_stats ();
+//        auto cycles = ui->form->cycle_times ();
+//        if (ratio)
+//        {
+//            this->refresh_chart (ratio.value ());
+//        }
+//        if (stats)
+//        {
+//            this->refresh_stats (stats.value ());
+//        }
+//        update_box (cycles);
+//    });
 
     set_children_filter (this);
     ui->button_mark->setIcon (QIcon ("icon/mark.png"));

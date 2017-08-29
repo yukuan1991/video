@@ -17,7 +17,7 @@ public:
     static const char * const cols[];
 public:
     explicit video_form_model(QObject *parent = 0);
-    QVariant get_header_info (const QModelIndex&, int) const;
+//    QVariant get_header_info (const QModelIndex&, int) const;
     QString get_std_sum ();
 
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
