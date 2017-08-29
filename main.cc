@@ -68,11 +68,6 @@ int main(int argc, char *argv[])
         return -1;
     }
 
-    QTableView tableView;
-    auto model = new VideoFormModel(3, 27);
-    tableView.setModel(model);
-    tableView.show();
-
     video_main v;
     v.resize (1366, 768);
     v.setWindowIcon (QPixmap ("icon.ico"));

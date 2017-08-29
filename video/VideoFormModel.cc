@@ -1,11 +1,14 @@
-#include "VideoFormModel.h"
+﻿#include "VideoFormModel.h"
 #include <boost/range/adaptor/indexed.hpp>
 #include <boost/algorithm/string.hpp>
+#include <boost/range/counting_range.hpp>
+#include <base/lang/range.hpp>
 
 #include <QDebug>
 
 using namespace std;
 using namespace boost::adaptors;
+using namespace boost;
 
 void VideoFormModel::init()
 {
@@ -13,7 +16,7 @@ void VideoFormModel::init()
 
     QStringList horizontalHeaderList;
     horizontalHeaderList << "编号" << "作业内容";
-    editableColumns_ << "作业内容";
+    originDataColumns_ << "作业内容";
 
     for(int i = 0; i < dataCol_; i ++)
     {
@@ -21,7 +24,7 @@ void VideoFormModel::init()
         if (i % 2 == 0)
         {
             cycleHeader += "T";
-            editableColumns_ << cycleHeader.data();
+            originDataColumns_ << cycleHeader.data();
         }
         else
         {
@@ -31,7 +34,7 @@ void VideoFormModel::init()
     }
 
     horizontalHeaderList << "平均时间" << "评比系数" << "基本时间" << "宽放率" << "标准工时" << "增值/非增值" << "操作类型";
-    editableColumns_ << "评比系数" << "宽放率" << "操作类型";
+    originDataColumns_ << "评比系数" << "宽放率" << "操作类型";
     setHorizontalHeaderLabels(horizontalHeaderList);
 }
 
@@ -43,7 +46,7 @@ QString VideoFormModel::findHorizontalHeader(const QStandardItemModel *model, co
 bool VideoFormModel::setData(const QModelIndex &index, const QVariant &value, int role)
 {
     const auto header = findHorizontalHeader(this, index);
-    if(editableColumns_.contains(header))
+    if(originDataColumns_.contains(header))
     {
         return QStandardItemModel::setData(index, value, role);
     }
@@ -59,62 +62,52 @@ QVariant VideoFormModel::data(const QModelIndex &index, int role) const
     }
 
     const auto header = findHorizontalHeader(this, index);
-    if(editableColumns_.contains(header))
+    if(originDataColumns_.contains(header))
     {
         return QStandardItemModel::data(index, role);
     }
 
-    if(header == "编号")
+    if (header == "编号")
     {
-        return index.row() + 1;
+        return index.row () + 1;
     }
 
     if(header.at(header.size() - 1) == "R")
     {
         const auto row = index.row();
         const auto col = index.column();
-        if(row == 0)
+
+        const QVariant currentTime = data (this->index (row, col - 1), Qt::DisplayRole);
+        const QVariant lastTime = previousData (index);
+
+        if (currentTime.type () != QVariant::Double or lastTime.type () != QVariant::Double)
         {
-            const auto theCol = 3;
-            if(col == theCol)
-            {
-                const auto theIndex = this->index(row, col -1);
-                return theIndex.data();
-            }
-            if(col > theCol)
-            {
-                const auto theIndex = this->index(row, col -1);
-                const auto anotherIndex = this->index(rowCount() - 1, col - 3);
-                return QString::number((theIndex.data().toDouble() - anotherIndex.data().toDouble()), 'f', 2);
-            }
+            return {};
         }
-        else if(row > 0)
+        else
         {
-            const auto theIndex = this->index(row - 1, col - 1);
-            const auto anotherIndex = this->index(row, col -1);
-            return QString::number((anotherIndex.data().toDouble() - theIndex.data().toDouble()), 'f', 2);
+            return currentTime.toDouble () - lastTime.toDouble ();
         }
     }
 
     if(header == "平均时间")
     {
-        double sum = 0;
-        int num = 0;
-        const auto row = index.row();
-        for(int i = 0; i < columnCount(); i++)
+        std::vector<double> times;
+        counting_range (2, 2 + dataCol_)
+                | transformed ([&] (auto && c) { return this->index (index.row (), c); })
+                | filtered ([&] (auto && c) { return *(findHorizontalHeader (this, c).rbegin ()) == "R"; })
+                | filtered ([&] (auto && c) { return c.data (Qt::DisplayRole).type () == QVariant::Double; })
+                | transformed ([] (auto && c) { return c.data (Qt::DisplayRole).toDouble (); })
+                | append_to (times);
+
+        if (times.empty ())
         {
-            if(*(headerData(i, Qt::Horizontal).toString().rbegin()) == "R")
-            {
-                const auto theIndex = this->index(row, i);
-                if(theIndex.data().isNull())
-                {
-                    continue;
-                }
-                sum += theIndex.data().toDouble();
-                num++;
-            }
+            return {};
         }
-        return sum / num;
+        else
+        {
+            return (times | accumulated (qreal {0}))  / times.size ();
+        }
     }
 
     if(header == "基本时间")
@@ -156,7 +149,29 @@ QVariant VideoFormModel::data(const QModelIndex &index, int role) const
             return "非增值";
         }
     }
+
+    qDebug () << __PRETTY_FUNCTION__ << " " << __LINE__;
+
     return {};
+}
+
+QVariant VideoFormModel::previousData(const QModelIndex &index) const
+{
+    if (index.row () == 0)
+    {
+        if (index.column () == 3)
+        {
+            return qreal {0};
+        }
+        else
+        {
+            return data (this->index (rowCount () - 1, index.column () - 3), Qt::DisplayRole);
+        }
+    }
+    else
+    {
+        return data (this->index (index.row () - 1, index.column () - 1));
+    }
 }
 
 

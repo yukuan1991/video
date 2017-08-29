@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include <QStandardItemModel>
 
 
@@ -16,7 +16,8 @@ public:
     static QString findHorizontalHeader(const QStandardItemModel* model, const QModelIndex& index);
     bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole) override;
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
+    QVariant previousData (const QModelIndex & index) const;
 private:
-    QStringList editableColumns_;
+    QStringList originDataColumns_;
 };
 
