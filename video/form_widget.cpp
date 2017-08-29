@@ -83,6 +83,7 @@ void form_widget::mark(long long time_val)
 
 void form_widget::set_views()
 {
+    qDebug() << "form_widget::set_views()";
     views_ = {ui->table_des, ui->table_data, ui->table_result};
     set_des_view ();
     set_data_view ();
@@ -97,6 +98,7 @@ void form_widget::set_views()
 
 void form_widget::set_des_view()
 {
+    qDebug() << "form_widget::set_des_view()";
     ui->table_des->verticalHeader()->setSectionResizeMode (QHeaderView::Fixed);
     ui->table_des->horizontalHeader ()->setSectionResizeMode (QHeaderView::Fixed);
 
@@ -106,16 +108,18 @@ void form_widget::set_des_view()
 
 void form_widget::set_data_view()
 {
+    qDebug() << "form_widget::set_data_view()";
     ui->table_data->verticalHeader()->setSectionResizeMode (QHeaderView::Fixed);
     ui->table_data->horizontalHeader ()->setSectionResizeMode (QHeaderView::Stretch);
 
-    assert (video_form_model::data_col % 2 == 0);
+    assert (VideoFormModel::dataCol_ % 2 == 0);
 
     ui->table_data->setItemDelegate (des_delegate_.get ());
 }
 
 void form_widget::set_result_view()
 {
+    qDebug() << "form_widget::set_result_view()";
     ui->table_result->verticalHeader()->setSectionResizeMode (QHeaderView::Fixed);
     ui->table_result->horizontalHeader ()->setSectionResizeMode (QHeaderView::Stretch);
     ui->table_result->setItemDelegate (des_delegate_.get ());
@@ -161,6 +165,7 @@ optional<QModelIndex> form_widget::get_next_index(const QModelIndex & index) con
 
 void form_widget::set_models()
 {
+    qDebug() << "form_widget::set_models()";
     set_des_model ();
     set_data_model ();
     set_result_model ();
@@ -168,6 +173,7 @@ void form_widget::set_models()
 
 void form_widget::set_des_model()
 {
+    qDebug() << "form_widget::set_des_model()";
     ui->table_des->setModel (nullptr);
 
     model_des_ = make_unique<video_form_split> ();
@@ -179,22 +185,24 @@ void form_widget::set_des_model()
 
 void form_widget::set_data_model()
 {
+    qDebug() << "form_widget::set_data_model()";
     ui->table_data->setModel (nullptr);
 
     model_data_ = make_unique<video_form_split> ();
     model_data_->setSourceModel (src_model_.get ());
-    model_data_->set_range (2, video_form_model::data_col + 2);
+    model_data_->set_range (2, VideoFormModel::dataCol_ + 2);
 
     ui->table_data->setModel (model_data_.get ());
 }
 
 void form_widget::set_result_model()
 {
+    qDebug() << "form_widget::set_result_model()";
     ui->table_result->setModel (nullptr);
 
     model_result_ = make_unique<video_form_split> ();
     model_result_->setSourceModel (src_model_.get ());
-    model_result_->set_range (video_form_model::data_col + 2, src_model_->columnCount ());
+    model_result_->set_range (VideoFormModel::dataCol_ + 2, src_model_->columnCount ());
 
     ui->table_result->setModel (model_result_.get ());
 }
@@ -693,9 +701,11 @@ json form_widget::export_data()
 
 void form_widget::set_row(int num)
 {
-    emit line_exists (num != 0);
+    qDebug() << "form_widget::set_row";
+//    emit line_exists (num != 0);
 
 //    src_model_->resize (num);
+    qDebug() << num;
     src_model_->setRowCount(num);
     set_models();
     set_views ();
