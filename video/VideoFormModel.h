@@ -18,7 +18,6 @@ public:
     bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole) override;
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
     QVariant previousData (const QModelIndex & index) const;
-    QStringList originDataColumns() const  { return originDataColumns_; }
 private:
     QStringList horizontalHeaderColumns_;
     QStringList originDataColumns_;

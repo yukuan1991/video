@@ -163,37 +163,37 @@ void video_main::on_task_man()
 
 void video_main::video_import()
 {
-    const QString type = tr ("Video Files (*.mp4 *.mpg *.mod *.mov *.mkv *.wmv *.avi *.vid)");
-    const auto file = QFileDialog::getOpenFileName (this, "打开视频", ".", type);
-    if (file.isEmpty ())
-    {
-        return;
-    }
+//    const QString type = tr ("Video Files (*.mp4 *.mpg *.mod *.mov *.mkv *.wmv *.avi *.vid)");
+//    const auto file = QFileDialog::getOpenFileName (this, "打开视频", ".", type);
+//    if (file.isEmpty ())
+//    {
+//        return;
+//    }
 
-    QFileInfo info (file);
-    const auto src_name = info.fileName ();
-    QDir video_dir (".");
+//    QFileInfo info (file);
+//    const auto src_name = info.fileName ();
+//    QDir video_dir (".");
 
-    if (not video_dir.mkpath ("video_data"))
-    {
-        QMessageBox::information (this, "导入", "无法导入视频,数据路径创建失败");
-        return;
-    }
+//    if (not video_dir.mkpath ("video_data"))
+//    {
+//        QMessageBox::information (this, "导入", "无法导入视频,数据路径创建失败");
+//        return;
+//    }
 
-    const auto dest_path = "video_data/" + src_name;
+//    const auto dest_path = "video_data/" + src_name;
 
-    if (QFile::exists (dest_path))
-    {
-        QFile::remove (dest_path);
-    }
+//    if (QFile::exists (dest_path))
+//    {
+//        QFile::remove (dest_path);
+//    }
 
-    QMessageBox::information (this, "xxx", "去看看删了没有");
+//    QMessageBox::information (this, "xxx", "去看看删了没有");
 
-    if (not QFile::copy (file, dest_path))
-    {
-        QMessageBox::information (this, "导入", "无法导入视频,拷贝文件失败");
-        return;
-    }
+//    if (not QFile::copy (file, dest_path))
+//    {
+//        QMessageBox::information (this, "导入", "无法导入视频,拷贝文件失败");
+//        return;
+//    }
 
     auto w = current_sub_window ();
 
@@ -202,7 +202,7 @@ void video_main::video_import()
         return;
     }
 
-    w->set_video_file (dest_path);
+    w->set_video_file ("video_data/1.mp4");
 }
 
 void video_main::init_conn()

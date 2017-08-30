@@ -60,13 +60,6 @@ bool VideoFormModel::setData(const QModelIndex &index, const QVariant &value, in
     const auto header = findHorizontalHeader(this, index);
     if(originDataColumns_.contains(header))
     {
-//        if(header == "操作类型")
-//        {
-//            if(!value.isValid())
-//            {
-//                return QStandardItemModel::setData(index, "加工", role);
-//            }
-//        }
         if(header == "宽放率")
         {
             bool isOk = false;
@@ -105,14 +98,22 @@ QVariant VideoFormModel::data(const QModelIndex &index, int role) const
         return QStandardItemModel::data (index, role);
     }
 
-//    if(originDataColumns_.contains(header))
-//    {
-//        return QStandardItemModel::data(index, role);
-//    }
-
     if (header == "编号")
     {
         return index.row () + 1;
+    }
+
+    if(header.at(header.size() - 1) == "T")
+    {
+        bool isOk = false;
+        auto var = QStandardItemModel::data(index, role);
+        double data = var.toDouble(&isOk);
+        if(isOk)
+        {
+            return QString::number(data, 'f', 2);
+        }
+
+        return {};
     }
 
     if(header.at(header.size() - 1) == "R")
@@ -125,6 +126,8 @@ QVariant VideoFormModel::data(const QModelIndex &index, int role) const
         bool isLastOk = false;
         const auto lastTime = previousData (index).toDouble(&isLastOk);
 
+        qDebug() << "currentTime" << currentTime;
+        qDebug() << "lastTime" << lastTime;
         if (!isCurrentOk or !isLastOk)
         {
             return {};
@@ -151,15 +154,9 @@ QVariant VideoFormModel::data(const QModelIndex &index, int role) const
         }
         else
         {
-            return (times | accumulated (qreal {0}))  / times.size ();
+            return QString::number( (times | accumulated (qreal {0})) / times.size (), 'f', 2);
         }
     }
-
-//    if (header == "评比系数")
-//    {
-//        auto var = QStandardItemModel::data (index, Qt::DisplayRole);
-//        return var.type () == QVariant::Double ? var : double {1};
-//    }
 
     if(header == "基本时间")
     {
@@ -175,7 +172,7 @@ QVariant VideoFormModel::data(const QModelIndex &index, int role) const
         const auto comparison = comparisonIndex.data().toDouble(&isComparisonOk);
         if(isAverageOk and isComparisonOk)
         {
-            return (averageTime * comparison);
+            return QString::number( (averageTime * comparison), 'f', 2);
         }
         else
         {
@@ -208,12 +205,21 @@ QVariant VideoFormModel::data(const QModelIndex &index, int role) const
 
         bool isRateOk = false;
         bool isBasicTimeOk = false;
-        const auto rate = rateIndex.data().toDouble(&isRateOk);
+        const auto data = rateIndex.data().toString();
+        auto list = data.split("%");
+        if(list.size() <= 0)
+        {
+            return {};
+        }
+
+        auto rate = list.at(0).toDouble(&isRateOk);
         const auto basicTime = basicTimeIndex.data().toDouble(&isBasicTimeOk);
 
-        if(isRateOk and isBasicTimeOk)
+        qDebug() << "isRateOk" << isRateOk;
+        qDebug() << "isBasicTimeOk" << isBasicTimeOk;
+        if(isBasicTimeOk)
         {
-            return ((rate + 1) * basicTime);
+            return ((rate / 100 + 1) * basicTime);
         }
         else
         {
@@ -238,7 +244,7 @@ QVariant VideoFormModel::data(const QModelIndex &index, int role) const
         }
     }
 
-    qDebug () << __PRETTY_FUNCTION__ << " " << __LINE__;
+//    qDebug () << __PRETTY_FUNCTION__ << " " << __LINE__;
     return QStandardItemModel::data(index, role);
 }
 

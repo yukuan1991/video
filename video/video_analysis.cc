@@ -435,7 +435,7 @@ void video_analysis::set_task_count ()
     if (dlg.exec () == QDialog::Accepted)
     {
         auto row = dlg.intValue ();
-        ui->form->clear ();
+//        ui->form->clear ();
         ui->form->set_row (row);
     }
 }

@@ -76,7 +76,54 @@ void form_widget::mark(long long time_val)
 
 optional<QModelIndex> form_widget::get_next_index(const QModelIndex & index) const
 {
-    return {};
+    if (!index.isValid())
+    {
+        QMessageBox::information (nullptr, "标记", "请选择一个操作内容");
+        return {};
+    }
+    auto model = index.model (); assert (model);
+
+    int row = index.row ();
+    int col = index.column ();
+    int next_row = -1;
+    int next_col = -1;
+
+    if (row == model->rowCount () - 1 and col >= model->columnCount () - 2)
+    {
+        return {};
+    }
+
+    if (col % 2 != 0)
+    {
+        col --;
+    }
+
+    if (row == model->rowCount () - 1)
+    {
+        next_col = col + 2;
+        next_row = 0;
+    }
+    else
+    {
+        next_col = col;
+        next_row = row + 1;
+    }
+
+    return model->index (next_row, next_col);
+}
+
+void form_widget::table_clicked(const QModelIndex &)
+{
+    auto src = sender (); assert (src);
+    current_view_ = dynamic_cast<table_view*>(src); assert (current_view_);
+
+    for (const auto& iter : views_)
+    {
+        if (current_view_ != iter)
+        {
+            iter->clearSelection ();
+        }
+    }
 }
 
 json form_widget::task_data()
@@ -139,7 +186,6 @@ void form_widget::initTable()
     }
 
 
-
     {
         const auto col = src_model_->getHorizontalHeaderCol("评比系数");
         for(int row = 0; row < rows; row++)
@@ -199,28 +245,33 @@ void form_widget::setTable()
 
     ui->table_result->verticalHeader()->setSectionResizeMode (QHeaderView::Fixed);
     ui->table_result->horizontalHeader ()->setSectionResizeMode (QHeaderView::Stretch);
+
+    for (const auto & iter : views_)
+    {
+        connect (iter, &QTableView::pressed, this, &form_widget::table_clicked);
+    }
 }
 
-void form_widget::clear()
-{
-    //ui->table_data->setModel (nullptr);
-    //model_data_->setSourceModel (nullptr);
-    //ui->table_des->setModel (nullptr);
-    //model_des_->setSourceModel (nullptr);
-    //ui->table_result->setModel (nullptr);
-    //model_result_->setSourceModel (nullptr);
+//void form_widget::clear()
+//{
+//    ui->table_data->setModel (nullptr);
+//    model_data_->setSourceModel (nullptr);
+//    ui->table_des->setModel (nullptr);
+//    model_des_->setSourceModel (nullptr);
+//    ui->table_result->setModel (nullptr);
+//    model_result_->setSourceModel (nullptr);
 
-    //src_model_->clear ();
+//    src_model_->clear ();
 
-    //model_data_->setSourceModel (src_model_.get ());
-    //ui->table_data->setModel (model_data_.get ());
+//    model_data_->setSourceModel (src_model_.get ());
+//    ui->table_data->setModel (model_data_.get ());
 
-    //model_des_->setSourceModel (src_model_.get ());
-    //ui->table_des->setModel (model_des_.get ());
+//    model_des_->setSourceModel (src_model_.get ());
+//    ui->table_des->setModel (model_des_.get ());
 
-    //model_result_->setSourceModel (src_model_.get ());
-    //ui->table_result->setModel (model_result_.get ());
-}
+//    model_result_->setSourceModel (src_model_.get ());
+//    ui->table_result->setModel (model_result_.get ());
+//}
 
 
 void form_widget::load_task(const json &task)

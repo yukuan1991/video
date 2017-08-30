@@ -49,12 +49,12 @@ public:
 private:
     std::optional<QModelIndex> get_next_index (const QModelIndex&) const;
 
+    void table_clicked (const QModelIndex&);
     json task_data ();
     json observation_time ();
     json result_data ();
     json map_to_json (const std::map <QString,QString>& map);
     json info_pandect (const json& json_data, const std::string& video_path);
-    //void save_task (const QString& filename, const std::map <QString,QString>& info,const json &data);
     void set_scrolls ();
 
     void initConn();
@@ -62,19 +62,15 @@ private:
     void setTable();
 public:
     json export_data ();
-    //void save_file (const std::map <QString, QString>& dlg_info, std::vector <unsigned long long >& invalid_vec);
     void clear ();
 
 signals:
-    void bar_move (int value);
     void total_time_changed (const QString& sum);
     void data_changed ();
 
 private:
     Ui::form_widget *ui;
-    int total_round_ = 10;
     const std::unique_ptr<VideoFormModel> src_model_ = std::make_unique<VideoFormModel> ();
-//    std::unique_ptr<video_form_model> src_model_ = std::make_unique<video_form_model> ();
     const std::unique_ptr<video_form_split> model_des_ = std::make_unique<video_form_split> ();
     const std::unique_ptr<video_form_split> model_data_ = std::make_unique<video_form_split> ();
     const std::unique_ptr<video_form_split> model_result_ = std::make_unique<video_form_split> ();
