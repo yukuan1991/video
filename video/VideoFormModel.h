@@ -13,11 +13,14 @@ public:
     VideoFormModel(ARGS && ...args) : QStandardItemModel(std::forward<ARGS> (args)...) { init(); }
     void init();
 
+    int getHorizontalHeaderCol(const QString& name) const;
     static QString findHorizontalHeader(const QStandardItemModel* model, const QModelIndex& index);
     bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole) override;
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
     QVariant previousData (const QModelIndex & index) const;
+    QStringList originDataColumns() const  { return originDataColumns_; }
 private:
+    QStringList horizontalHeaderColumns_;
     QStringList originDataColumns_;
 };
 

@@ -14,8 +14,7 @@ void VideoFormModel::init()
 {
     static_assert (dataCol_ % 2 == 0, "data_col is not an even number");
 
-    QStringList horizontalHeaderList;
-    horizontalHeaderList << "编号" << "作业内容";
+    horizontalHeaderColumns_ << "编号" << "作业内容";
     originDataColumns_ << "作业内容";
 
     for(int i = 0; i < dataCol_; i ++)
@@ -30,12 +29,25 @@ void VideoFormModel::init()
         {
             cycleHeader += "R";
         }
-        horizontalHeaderList << cycleHeader.data();
+        horizontalHeaderColumns_ << cycleHeader.data();
     }
 
-    horizontalHeaderList << "平均时间" << "评比系数" << "基本时间" << "宽放率" << "标准工时" << "增值/非增值" << "操作类型";
+    horizontalHeaderColumns_ << "平均时间" << "评比系数" << "基本时间" << "宽放率" << "标准工时" << "增值/非增值" << "操作类型";
     originDataColumns_ << "评比系数" << "宽放率" << "操作类型";
-    setHorizontalHeaderLabels(horizontalHeaderList);
+    setHorizontalHeaderLabels(horizontalHeaderColumns_);
+}
+
+int VideoFormModel::getHorizontalHeaderCol(const QString &name) const
+{
+    for(int i = 0; i < horizontalHeaderColumns_.size(); i++)
+    {
+        if(horizontalHeaderColumns_.at(i) == name)
+        {
+            return i;
+        }
+    }
+
+    return -1;
 }
 
 QString VideoFormModel::findHorizontalHeader(const QStandardItemModel *model, const QModelIndex &index)
@@ -48,6 +60,24 @@ bool VideoFormModel::setData(const QModelIndex &index, const QVariant &value, in
     const auto header = findHorizontalHeader(this, index);
     if(originDataColumns_.contains(header))
     {
+//        if(header == "操作类型")
+//        {
+//            if(!value.isValid())
+//            {
+//                return QStandardItemModel::setData(index, "加工", role);
+//            }
+//        }
+        if(header == "宽放率")
+        {
+            bool isOk = false;
+            const auto value_str = value.toString();
+            const auto allowance = value_str.toDouble(&isOk);
+            if(isOk)
+            {
+                return QStandardItemModel::setData(index, allowance / 100, role);
+            }
+        }
+
         return QStandardItemModel::setData(index, value, role);
     }
 
@@ -56,16 +86,29 @@ bool VideoFormModel::setData(const QModelIndex &index, const QVariant &value, in
 
 QVariant VideoFormModel::data(const QModelIndex &index, int role) const
 {
+    const auto header = findHorizontalHeader(this, index);
+
+    if (role == Qt::BackgroundRole)
+    {
+        if (!originDataColumns_.contains (header))
+        {
+            return QBrush (QColor (245, 245, 245));
+        }
+        else
+        {
+            return {};
+        }
+    }
+
     if (role != Qt::DisplayRole)
     {
         return QStandardItemModel::data (index, role);
     }
 
-    const auto header = findHorizontalHeader(this, index);
-    if(originDataColumns_.contains(header))
-    {
-        return QStandardItemModel::data(index, role);
-    }
+//    if(originDataColumns_.contains(header))
+//    {
+//        return QStandardItemModel::data(index, role);
+//    }
 
     if (header == "编号")
     {
@@ -84,7 +127,6 @@ QVariant VideoFormModel::data(const QModelIndex &index, int role) const
 
         if (!isCurrentOk or !isLastOk)
         {
-            qDebug() << "currentTime.type () != QVariant::Double or lastTime.type () != QVariant::Double";
             return {};
         }
         else
@@ -113,6 +155,12 @@ QVariant VideoFormModel::data(const QModelIndex &index, int role) const
         }
     }
 
+//    if (header == "评比系数")
+//    {
+//        auto var = QStandardItemModel::data (index, Qt::DisplayRole);
+//        return var.type () == QVariant::Double ? var : double {1};
+//    }
+
     if(header == "基本时间")
     {
         ///基本时间为平均时间*评比系数
@@ -132,6 +180,21 @@ QVariant VideoFormModel::data(const QModelIndex &index, int role) const
         else
         {
             return {};
+        }
+    }
+
+    if (header == "宽放率")
+    {
+        const auto var = QStandardItemModel::data(index, Qt::DisplayRole);
+        bool isOk = false;
+        const auto rate = var.toDouble(&isOk);
+        if(isOk)
+        {
+            return QString::number (rate * 100, 'f', 2) + " %";
+        }
+        else
+        {
+            return QString::number (0, 'f', 2) + " %";
         }
     }
 
@@ -176,8 +239,7 @@ QVariant VideoFormModel::data(const QModelIndex &index, int role) const
     }
 
     qDebug () << __PRETTY_FUNCTION__ << " " << __LINE__;
-
-    return {};
+    return QStandardItemModel::data(index, role);
 }
 
 QVariant VideoFormModel::previousData(const QModelIndex &index) const

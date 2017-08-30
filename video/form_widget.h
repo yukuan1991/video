@@ -72,7 +72,8 @@ private:
     json info_pandect (const json& json_data, const std::string& video_path);
     //void save_task (const QString& filename, const std::map <QString,QString>& info,const json &data);
     void set_scrolls ();
-
+    void initConn();
+    void initTable();
 public:
     json export_data ();
     //void save_file (const std::map <QString, QString>& dlg_info, std::vector <unsigned long long >& invalid_vec);

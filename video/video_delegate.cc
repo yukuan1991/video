@@ -112,7 +112,7 @@ QWidget* video_delegate::create_result_editor(QWidget *parent, const QModelIndex
     {
         auto combo = make_unique<QComboBox> (parent);
         auto items = QStringList {};
-        items << "" <<"加工" << "检查" << "搬运" << "等待";
+        items << "加工" << "检查" << "搬运" << "等待";
         combo->addItems (items);
 
         return combo.release ();

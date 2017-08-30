@@ -40,6 +40,8 @@ form_widget::form_widget(QWidget *parent) :
 
     ui->table_result->verticalHeader()->setSectionResizeMode (QHeaderView::Fixed);
     ui->table_result->horizontalHeader ()->setSectionResizeMode (QHeaderView::Stretch);
+
+    initConn();
 }
 
 form_widget::~form_widget()
@@ -133,7 +135,7 @@ void form_widget::set_result_view()
 {
     //ui->table_result->verticalHeader()->setSectionResizeMode (QHeaderView::Fixed);
     //ui->table_result->horizontalHeader ()->setSectionResizeMode (QHeaderView::Stretch);
-    ui->table_result->setItemDelegate (des_delegate_.get ());
+    ui->table_result->setItemDelegate (des_delegate_.get ());    
 }
 
 optional<QModelIndex> form_widget::get_next_index(const QModelIndex & index) const
@@ -221,6 +223,57 @@ void form_widget::set_scrolls()
         });
 
         item->setVerticalScrollBar (scroll.release ());
+    }
+}
+
+void form_widget::initConn()
+{
+    connect(src_model_.get(), &QStandardItemModel::rowsInserted, this, &form_widget::initTable);
+    connect(src_model_.get(), &QStandardItemModel::rowsRemoved, this, &form_widget::initTable);
+}
+
+void form_widget::initTable()
+{
+    const auto rows = src_model_->rowCount();
+    const auto cols = src_model_->columnCount();
+    {
+        for(int row = 0; row < rows; row++)
+        {
+            for(int col = 0; col < cols; col++)
+            {
+                src_model_->setItem(row, col, new QStandardItem);
+                src_model_->item(row, col)->setTextAlignment(Qt::AlignCenter);
+            }
+        }
+    }
+
+
+
+    {
+        const auto col = src_model_->getHorizontalHeaderCol("评比系数");
+        for(int row = 0; row < rows; row++)
+        {
+            const auto index = src_model_->index(row, col);
+            src_model_->setData(index, double{1});
+        }
+    }
+
+    {
+        const auto col = src_model_->getHorizontalHeaderCol("宽放率");
+        for(int row = 0; row < rows; row++)
+        {
+            const auto index = src_model_->index(row, col);
+            src_model_->setData(index, "0.00%");
+        }
+    }
+
+    {
+        const auto col = src_model_->getHorizontalHeaderCol("操作类型");
+        for(int row = 0; row < rows; row++)
+        {
+            const auto index = src_model_->index(row, col);
+            src_model_->setData(index, "加工");
+        }
     }
 }
 
