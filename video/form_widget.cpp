@@ -17,30 +17,6 @@ form_widget::form_widget(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    connect (src_model_.get (), &video_form_model::dataChanged,
-             this, &form_widget::data_changed);
-
-    model_des_->setSourceModel (src_model_.get ());
-    model_des_->set_range (0, 2);
-    ui->table_des->setModel (model_des_.get ());
-
-    model_data_->setSourceModel (src_model_.get ());
-    model_data_->set_range (2, 2 + VideoFormModel::dataCol_);
-    ui->table_data->setModel (model_data_.get ());
-
-    model_result_->setSourceModel (src_model_.get ());
-    model_result_->set_range (2 + VideoFormModel::dataCol_, src_model_->columnCount ());
-    ui->table_result->setModel (model_result_.get ());
-
-    ui->table_des->verticalHeader()->setSectionResizeMode (QHeaderView::Fixed);
-    ui->table_des->horizontalHeader ()->setSectionResizeMode (QHeaderView::Stretch);
-
-    ui->table_data->verticalHeader()->setSectionResizeMode (QHeaderView::Fixed);
-    ui->table_data->horizontalHeader ()->setSectionResizeMode (QHeaderView::Stretch);
-
-    ui->table_result->verticalHeader()->setSectionResizeMode (QHeaderView::Fixed);
-    ui->table_result->horizontalHeader ()->setSectionResizeMode (QHeaderView::Stretch);
-
     initConn();
 }
 
@@ -98,94 +74,9 @@ void form_widget::mark(long long time_val)
     }
 }
 
-void form_widget::set_views()
-{
-    views_ = {ui->table_des, ui->table_data, ui->table_result};
-    set_des_view ();
-    set_data_view ();
-    set_result_view ();
-
-    for (const auto & iter : views_)
-    {
-        //iter->horizontalHeader ()->setSectionResizeMode (QHeaderView::Interactive);
-        connect (iter, &QTableView::pressed, this, &form_widget::table_clicked);
-    }
-}
-
-void form_widget::set_des_view()
-{
-//    ui->table_des->verticalHeader()->setSectionResizeMode (QHeaderView::Fixed);
-//    ui->table_des->horizontalHeader ()->setSectionResizeMode (QHeaderView::Fixed);
-
-
-    ui->table_des->setItemDelegate (des_delegate_.get ());
-}
-
-void form_widget::set_data_view()
-{
-//    ui->table_data->verticalHeader()->setSectionResizeMode (QHeaderView::Fixed);
-//    ui->table_data->horizontalHeader ()->setSectionResizeMode (QHeaderView::Stretch);
-
-    assert (VideoFormModel::dataCol_ % 2 == 0);
-
-    ui->table_data->setItemDelegate (des_delegate_.get ());
-}
-
-void form_widget::set_result_view()
-{
-    //ui->table_result->verticalHeader()->setSectionResizeMode (QHeaderView::Fixed);
-    //ui->table_result->horizontalHeader ()->setSectionResizeMode (QHeaderView::Stretch);
-    ui->table_result->setItemDelegate (des_delegate_.get ());    
-}
-
 optional<QModelIndex> form_widget::get_next_index(const QModelIndex & index) const
 {
     return {};
-}
-
-void form_widget::set_models()
-{
-    //set_des_model ();
-    //set_data_model ();
-    //set_result_model ();
-}
-
-void form_widget::set_des_model()
-{
-    //ui->table_des->setModel (nullptr);
-
-    //model_des_ = make_unique<video_form_split> ();
-    //model_des_->setSourceModel (src_model_.get ());
-    //model_des_->set_range (0, 2);
-
-    //ui->table_des->setModel (model_des_.get ());
-}
-
-void form_widget::set_data_model()
-{
-    //ui->table_data->setModel (nullptr);
-
-    //model_data_ = make_unique<video_form_split> ();
-    //model_data_->setSourceModel (src_model_.get ());
-    //model_data_->set_range (2, VideoFormModel::dataCol_ + 2);
-
-    //ui->table_data->setModel (model_data_.get ());
-}
-
-void form_widget::set_result_model()
-{
-    //ui->table_result->setModel (nullptr);
-
-    //model_result_ = make_unique<video_form_split> ();
-    //model_result_->setSourceModel (src_model_.get ());
-    //model_result_->set_range (VideoFormModel::dataCol_ + 2, src_model_->columnCount ());
-
-    //ui->table_result->setModel (model_result_.get ());
-}
-
-void form_widget::table_clicked(const QModelIndex&)
-{
-
 }
 
 json form_widget::task_data()
@@ -275,6 +166,39 @@ void form_widget::initTable()
             src_model_->setData(index, "加工");
         }
     }
+}
+
+void form_widget::setTable()
+{
+    views_ = {ui->table_des, ui->table_data, ui->table_result};
+    set_scrolls ();
+
+    connect (src_model_.get (), &video_form_model::dataChanged,
+             this, &form_widget::data_changed);
+
+    model_des_->setSourceModel (src_model_.get ());
+    model_des_->set_range (0, 2);
+    ui->table_des->setModel (model_des_.get ());
+    ui->table_des->setItemDelegate (des_delegate_.get ());
+
+    model_data_->setSourceModel (src_model_.get ());
+    model_data_->set_range (2, 2 + VideoFormModel::dataCol_);
+    ui->table_data->setModel (model_data_.get ());
+    ui->table_data->setItemDelegate (des_delegate_.get ());
+
+    model_result_->setSourceModel (src_model_.get ());
+    model_result_->set_range (2 + VideoFormModel::dataCol_, src_model_->columnCount ());
+    ui->table_result->setModel (model_result_.get ());
+    ui->table_result->setItemDelegate (des_delegate_.get ());
+
+    ui->table_des->verticalHeader()->setSectionResizeMode (QHeaderView::Fixed);
+    ui->table_des->horizontalHeader ()->setSectionResizeMode (QHeaderView::Stretch);
+
+    ui->table_data->verticalHeader()->setSectionResizeMode (QHeaderView::Fixed);
+    ui->table_data->horizontalHeader ()->setSectionResizeMode (QHeaderView::Stretch);
+
+    ui->table_result->verticalHeader()->setSectionResizeMode (QHeaderView::Fixed);
+    ui->table_result->horizontalHeader ()->setSectionResizeMode (QHeaderView::Stretch);
 }
 
 void form_widget::clear()
@@ -398,22 +322,6 @@ void form_widget::load_result(const json &result)
     //}
 }
 
-void form_widget::set_editable(bool b)
-{
-    //if (b == true)
-    //{
-    //    ui->table_data->setEditTriggers (QAbstractItemView::AllEditTriggers);
-    //    ui->table_des->setEditTriggers (QAbstractItemView::AllEditTriggers);
-    //    ui->table_result->setEditTriggers (QAbstractItemView::AllEditTriggers);
-    //}
-    //else
-    //{
-    //    ui->table_data->setEditTriggers (QAbstractItemView::NoEditTriggers);
-    //    ui->table_des->setEditTriggers (QAbstractItemView::NoEditTriggers);
-    //    ui->table_result->setEditTriggers (QAbstractItemView::NoEditTriggers);
-    //}
-}
-
 json form_widget::export_data()
 {
     json video_data = json::object ();
@@ -432,12 +340,8 @@ json form_widget::export_data()
 
 void form_widget::set_row(int num)
 {
-//    emit line_exists (num != 0);
-
-//    src_model_->resize (num);
-    set_models();
-    set_views ();
     src_model_->setRowCount(num);
+    setTable();
 //    auto sum = src_model_->get_std_sum ();
 //    emit total_time_changed (sum);
 }
