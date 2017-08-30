@@ -77,16 +77,19 @@ QVariant VideoFormModel::data(const QModelIndex &index, int role) const
         const auto row = index.row();
         const auto col = index.column();
 
-        const QVariant currentTime = data (this->index (row, col - 1), Qt::DisplayRole);
-        const QVariant lastTime = previousData (index);
+        bool isCurrentOk =false;
+        const auto currentTime = data (this->index (row, col - 1), Qt::DisplayRole).toDouble(&isCurrentOk);
+        bool isLastOk = false;
+        const auto lastTime = previousData (index).toDouble(&isLastOk);
 
-        if (currentTime.type () != QVariant::Double or lastTime.type () != QVariant::Double)
+        if (!isCurrentOk or !isLastOk)
         {
+            qDebug() << "currentTime.type () != QVariant::Double or lastTime.type () != QVariant::Double";
             return {};
         }
         else
         {
-            return currentTime.toDouble () - lastTime.toDouble ();
+            return currentTime - lastTime;
         }
     }
 
@@ -115,11 +118,21 @@ QVariant VideoFormModel::data(const QModelIndex &index, int role) const
         ///基本时间为平均时间*评比系数
         const auto row = index.row();
         const auto col = index.column();
-        const auto theIndex = this->index(row, col - 1);
-        const auto anotherIndex = this->index(row, col - 2);
-        const auto theData = theIndex.data().toDouble();
-        const auto anotherData = anotherIndex.data().toDouble();
-        return (theData * anotherData);
+        const auto averageTimeIndex = this->index(row, col - 1);
+        const auto comparisonIndex = this->index(row, col - 2);
+
+        bool isAverageOk = false;
+        bool isComparisonOk = false;
+        const auto averageTime = averageTimeIndex.data().toDouble(&isAverageOk);
+        const auto comparison = comparisonIndex.data().toDouble(&isComparisonOk);
+        if(isAverageOk and isComparisonOk)
+        {
+            return (averageTime * comparison);
+        }
+        else
+        {
+            return {};
+        }
     }
 
     if(header == "标准工时")
@@ -127,11 +140,22 @@ QVariant VideoFormModel::data(const QModelIndex &index, int role) const
         ///标准工时为基本时间*（1+宽放率）
         const auto row = index.row();
         const auto col = index.column();
-        const auto theIndex = this->index(row, col - 1);
-        const auto anotherIndex = this->index(row, col - 2);
-        const auto theData = theIndex.data().toDouble();
-        const auto anotherData = anotherIndex.data().toDouble();
-        return ((theData + 1) * anotherData);
+        const auto rateIndex = this->index(row, col - 1);
+        const auto basicTimeIndex = this->index(row, col - 2);
+
+        bool isRateOk = false;
+        bool isBasicTimeOk = false;
+        const auto rate = rateIndex.data().toDouble(&isRateOk);
+        const auto basicTime = basicTimeIndex.data().toDouble(&isBasicTimeOk);
+
+        if(isRateOk and isBasicTimeOk)
+        {
+            return ((rate + 1) * basicTime);
+        }
+        else
+        {
+            return {};
+        }
     }
 
     if(header == "增值/非增值")
@@ -140,6 +164,7 @@ QVariant VideoFormModel::data(const QModelIndex &index, int role) const
         const auto col = index.column();
         const auto theIndex = this->index(row, col + 1);
         const auto theData = theIndex.data().toString();
+
         if(theData == "加工")
         {
             return "增值";

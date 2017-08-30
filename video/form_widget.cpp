@@ -17,7 +17,8 @@ form_widget::form_widget(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    connect (src_model_.get (), &video_form_model::dataChanged, this, &form_widget::data_changed);
+    connect (src_model_.get (), &video_form_model::dataChanged,
+             this, &form_widget::data_changed);
 
     model_des_->setSourceModel (src_model_.get ());
     model_des_->set_range (0, 2);
@@ -30,8 +31,6 @@ form_widget::form_widget(QWidget *parent) :
     model_result_->setSourceModel (src_model_.get ());
     model_result_->set_range (2 + VideoFormModel::dataCol_, src_model_->columnCount ());
     ui->table_result->setModel (model_result_.get ());
-
-
 
     ui->table_des->verticalHeader()->setSectionResizeMode (QHeaderView::Fixed);
     ui->table_des->horizontalHeader ()->setSectionResizeMode (QHeaderView::Stretch);
@@ -113,8 +112,8 @@ void form_widget::set_views()
 
 void form_widget::set_des_view()
 {
-    ui->table_des->verticalHeader()->setSectionResizeMode (QHeaderView::Fixed);
-    ui->table_des->horizontalHeader ()->setSectionResizeMode (QHeaderView::Fixed);
+//    ui->table_des->verticalHeader()->setSectionResizeMode (QHeaderView::Fixed);
+//    ui->table_des->horizontalHeader ()->setSectionResizeMode (QHeaderView::Fixed);
 
 
     ui->table_des->setItemDelegate (des_delegate_.get ());
@@ -122,19 +121,19 @@ void form_widget::set_des_view()
 
 void form_widget::set_data_view()
 {
-    //ui->table_data->verticalHeader()->setSectionResizeMode (QHeaderView::Fixed);
-    //ui->table_data->horizontalHeader ()->setSectionResizeMode (QHeaderView::Stretch);
+//    ui->table_data->verticalHeader()->setSectionResizeMode (QHeaderView::Fixed);
+//    ui->table_data->horizontalHeader ()->setSectionResizeMode (QHeaderView::Stretch);
 
-    //assert (VideoFormModel::dataCol_ % 2 == 0);
+    assert (VideoFormModel::dataCol_ % 2 == 0);
 
-    //ui->table_data->setItemDelegate (des_delegate_.get ());
+    ui->table_data->setItemDelegate (des_delegate_.get ());
 }
 
 void form_widget::set_result_view()
 {
     //ui->table_result->verticalHeader()->setSectionResizeMode (QHeaderView::Fixed);
     //ui->table_result->horizontalHeader ()->setSectionResizeMode (QHeaderView::Stretch);
-    //ui->table_result->setItemDelegate (des_delegate_.get ());
+    ui->table_result->setItemDelegate (des_delegate_.get ());
 }
 
 optional<QModelIndex> form_widget::get_next_index(const QModelIndex & index) const

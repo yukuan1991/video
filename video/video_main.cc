@@ -187,6 +187,8 @@ void video_main::video_import()
         QFile::remove (dest_path);
     }
 
+    QMessageBox::information (this, "xxx", "去看看删了没有");
+
     if (not QFile::copy (file, dest_path))
     {
         QMessageBox::information (this, "导入", "无法导入视频,拷贝文件失败");

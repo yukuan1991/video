@@ -2,6 +2,7 @@
 #define TABLE_DES_DELEGATE_H
 #include <QStyledItemDelegate>
 #include "video/video_form_model.h"
+#include "video/VideoFormModel.h"
 
 
 class video_delegate : public QStyledItemDelegate
@@ -17,9 +18,9 @@ public:
     ~video_delegate () override = default;
 
 private:
-    QWidget* create_result_editor (QWidget* parent, const QModelIndex& index, video_form_model* src_model) const;
-    void set_result_editor (QWidget* editor, const QModelIndex& index, video_form_model* src_model) const;
-    void set_result_model (QWidget* editor, video_form_model* src_model, const QModelIndex& index) const;
+    QWidget* create_result_editor (QWidget* parent, const QModelIndex& index, VideoFormModel* src_model) const;
+    void set_result_editor (QWidget* editor, const QModelIndex& index, VideoFormModel* src_model) const;
+    void set_result_model (QWidget* editor, VideoFormModel* src_model, const QModelIndex& index) const;
 };
 
 #endif // TABLE_DES_DELEGATE_H

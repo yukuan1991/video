@@ -20,7 +20,7 @@ QWidget *video_delegate::createEditor(QWidget *parent, const QStyleOptionViewIte
     auto proxy_model = dynamic_cast<const QSortFilterProxyModel*>(index.model ()); assert (proxy_model);
     auto src_index = proxy_model->mapToSource (index);
     auto src_abstract_model = proxy_model->sourceModel ();
-    auto src_model = dynamic_cast<video_form_model*>(src_abstract_model);
+    auto src_model = dynamic_cast<VideoFormModel*>(src_abstract_model);
 
     if (!src_index.isValid ())
     {
@@ -32,7 +32,7 @@ QWidget *video_delegate::createEditor(QWidget *parent, const QStyleOptionViewIte
         return make_unique<QLineEdit> (parent).release ();
     }
 
-    if (src_index.column () > 2 + static_cast<int> (video_form_model::data_col))
+    if (src_index.column () > 2 + static_cast<int> (VideoFormModel::dataCol_))
     {
         return create_result_editor (parent, src_index, src_model);
     }
@@ -46,7 +46,7 @@ void video_delegate::setEditorData(QWidget *editor, const QModelIndex &index) co
     auto proxy_model = dynamic_cast<const QSortFilterProxyModel*>(index.model ()); assert (proxy_model);
     auto src_index = proxy_model->mapToSource (index);
     auto src_abstract_model = proxy_model->sourceModel ();
-    auto src_model = dynamic_cast<video_form_model*>(src_abstract_model);
+    auto src_model = dynamic_cast<VideoFormModel*>(src_abstract_model);
 
     if (!src_index.isValid ())
     {
@@ -60,7 +60,7 @@ void video_delegate::setEditorData(QWidget *editor, const QModelIndex &index) co
         edit->setText (variant.toString ());
     }
 
-    if (src_index.column () > 2 + static_cast<int> (video_form_model::data_col))
+    if (src_index.column () > 2 + static_cast<int> (VideoFormModel::dataCol_))
     {
         return set_result_editor (editor, src_index, src_model);
     }
@@ -71,7 +71,7 @@ void video_delegate::setModelData(QWidget *editor, QAbstractItemModel *model, co
     auto proxy_model = dynamic_cast<QSortFilterProxyModel*>(model); assert (proxy_model);
     auto src_index = proxy_model->mapToSource (index);
     auto src_abstract_model = proxy_model->sourceModel ();
-    auto src_model = dynamic_cast<video_form_model*>(src_abstract_model);
+    auto src_model = dynamic_cast<VideoFormModel*>(src_abstract_model);
 
     if (src_index.column ()== 1)
     {
@@ -79,7 +79,7 @@ void video_delegate::setModelData(QWidget *editor, QAbstractItemModel *model, co
         model->setData (index, edit->text ());
     }
 
-    if (src_index.column () > 2 + static_cast<int>(video_form_model::data_col))
+    if (src_index.column () > 2 + static_cast<int>(VideoFormModel::dataCol_))
     {
         return set_result_model (editor, src_model, src_index);
     }
@@ -90,13 +90,13 @@ void video_delegate::updateEditorGeometry(QWidget *editor, const QStyleOptionVie
     editor->setGeometry (option.rect);
 }
 
-QWidget* video_delegate::create_result_editor(QWidget *parent, const QModelIndex &index, video_form_model* src_model) const
+QWidget* video_delegate::create_result_editor(QWidget *parent, const QModelIndex &index, VideoFormModel* src_model) const
 {
     assert (index.isValid ());
     assert (src_model);
-    auto op_header = src_model->get_header (index);
+    const auto header = src_model->findHorizontalHeader(src_model, index);
 
-    if (*op_header == "评比系数")
+    if (header == "评比系数")
     {
         auto spinbox = make_unique<QDoubleSpinBox> (parent);
         spinbox->setMinimum (0.1);
@@ -104,15 +104,15 @@ QWidget* video_delegate::create_result_editor(QWidget *parent, const QModelIndex
         spinbox->setSingleStep (0.1);
         return spinbox.release ();
     }
-    else if (*op_header == "宽放率")
+    else if (header == "宽放率")
     {
         return new QLineEdit {parent};
     }
-    else if (*op_header == "操作类型")
+    else if (header == "操作类型")
     {
         auto combo = make_unique<QComboBox> (parent);
         auto items = QStringList {};
-        items << "加工" << "检查" << "搬运" << "等待";
+        items << "" <<"加工" << "检查" << "搬运" << "等待";
         combo->addItems (items);
 
         return combo.release ();
@@ -121,26 +121,26 @@ QWidget* video_delegate::create_result_editor(QWidget *parent, const QModelIndex
     return nullptr;
 }
 
-void video_delegate::set_result_editor(QWidget *editor, const QModelIndex &index, video_form_model* src_model) const
+void video_delegate::set_result_editor(QWidget *editor, const QModelIndex &index, VideoFormModel* src_model) const
 {
     assert (index.isValid ());
     assert (src_model);
     auto var = index.data ();
-    auto op_header = src_model->get_header (index);
+    const auto header = src_model->findHorizontalHeader(src_model, index);
 
-    if (*op_header == "评比系数")
+    if (header == "评比系数")
     {
         auto spinbox = dynamic_cast<QDoubleSpinBox*>(editor); assert (spinbox);
         assert (var.type () == QVariant::Double);
         spinbox->setValue (var.toDouble ());
     }
-    else if (*op_header == "宽放率")
+    else if (header == "宽放率")
     {
         auto edit = dynamic_cast<QLineEdit*>(editor); assert (edit);
         auto list = var.toString ().split (" "); assert (list.size () == 2);
         edit->setText (list[0]);
     }
-    else if (*op_header == "操作类型")
+    else if (header == "操作类型")
     {
         auto combo = dynamic_cast<QComboBox*>(editor); assert (combo);
         auto text_str = var.toString ();
@@ -157,26 +157,26 @@ void video_delegate::set_result_editor(QWidget *editor, const QModelIndex &index
     }
 }
 
-void video_delegate::set_result_model(QWidget *editor, video_form_model *src_model, const QModelIndex &index) const
+void video_delegate::set_result_model(QWidget *editor, VideoFormModel *src_model, const QModelIndex &index) const
 {
     assert (src_model);
     assert (index.isValid ());
 
-    auto op_header = src_model->get_header (index);
-    if (*op_header == "评比系数")
+    auto header = src_model->findHorizontalHeader(src_model, index);
+    if (header == "评比系数")
     {
         auto spinbox = dynamic_cast<QDoubleSpinBox*>(editor); assert (spinbox);
         double val = spinbox->value ();
         src_model->setData (index, val);
     }
-    else if (*op_header == "宽放率")
+    else if (header == "宽放率")
     {
         auto edit = dynamic_cast<QLineEdit*>(editor); assert (edit);
         auto text = edit->text ();
 
         src_model->setData (index, text);
     }
-    else if (*op_header == "操作类型")
+    else if (header == "操作类型")
     {
         auto combo = dynamic_cast<QComboBox*>(editor); assert (combo);
         auto text = combo->currentText ();
