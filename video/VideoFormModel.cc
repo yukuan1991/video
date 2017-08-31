@@ -72,6 +72,16 @@ int VideoFormModel::getHorizontalHeaderCol(const QString &name) const
     return -1;
 }
 
+QVariant VideoFormModel::getValueByKey(int row, const QString &key, int role) const
+{
+    assert (row >= 0 and row < rowCount ());
+    auto col = getHorizontalHeaderCol(key);
+    assert (col != -1);
+
+    auto index = this->index (row, col);
+    return index.data (role);
+}
+
 QString VideoFormModel::findHorizontalHeader(const QStandardItemModel *model, const QModelIndex &index)
 {
     return model->headerData(index.column(), Qt::Horizontal).toString();
@@ -283,6 +293,145 @@ QVariant VideoFormModel::previousData(const QModelIndex &index) const
     {
         return data (this->index (index.row () - 1, index.column () - 1));
     }
+}
+
+std::optional<action_ratio> VideoFormModel::operation_ratio() const
+{
+    std::array<qreal, 4> arr {{0, 0, 0, 0}};
+
+    qreal & processing = arr.at (0);
+    qreal & checking = arr.at (1);
+    qreal & moving = arr.at (2);
+    qreal & waiting = arr.at (3);
+
+    for (int i = 0; i < this->rowCount (); i ++)
+    {
+        bool b;
+        const auto time = getValueByKey(i, "标准工时").toDouble (&b);
+
+        if (!b)
+        {
+            continue;
+        }
+
+        const auto type = getValueByKey (i, "操作类型").toString ();
+        if (type == "加工")
+        {
+            processing += time;
+        }
+        else if (type == "搬运")
+        {
+            moving += time;
+        }
+        else if (type == "检查")
+        {
+            checking += time;
+        }
+        else if (type == "等待")
+        {
+            waiting += time;
+        }
+        else
+        {
+            assert (false);
+        }
+    }
+
+    const auto total = accumulate (std::begin (arr), std::end (arr), qreal {0});
+    if (total < 0.00001)
+    {
+        return {};
+    }
+    const auto ratio = 100.0 / total;
+
+    for (auto & it : arr)
+    {
+        it *= ratio;
+    }
+
+    action_ratio ret;
+
+    ret.processing = processing;
+    ret.checking = checking;
+    ret.moving = moving;
+    ret.waiting = waiting;
+
+    return ret;
+}
+
+std::optional<overall_stats> VideoFormModel::operation_stats() const
+{
+    bool b;
+    std::vector<qreal> cts;
+    cts.reserve (maxRound_);
+
+    for (int i = 0; i < maxRound_; i ++)
+    {
+        std::optional<qreal> total = 0.0;
+        for (int j = 0; j < this->rowCount (); j ++)
+        {
+            const auto time = getValueByKey(j, QString::number (i + 1) + "R").toDouble (&b);
+            if (!b)
+            {
+                total = {};
+                break;
+            }
+            total.value () += time;
+        }
+
+        if (total)
+        {
+            cts.emplace_back (total.value ());
+        }
+    }
+
+    if (cts.empty ())
+    {
+        return {};
+    }
+
+    const auto max_val = *(max_element (std::begin (cts), std::end (cts)));
+    const auto min_val = *(min_element (std::begin (cts), std::end (cts)));
+    const auto average = accumulate (std::begin (cts), std::end (cts), qreal {0}) / cts.size ();
+
+    const auto square_total = accumulate (std::begin (cts), std::end (cts) , qreal {0}, [&] (qreal tmp, qreal it)
+    {  return tmp + (average - it) * (average - it); });
+
+    const auto deviation = ::sqrt (square_total / cts.size ());
+
+    overall_stats ret;
+    ret.max_val = max_val;
+    ret.min_val = min_val;
+    ret.average = average;
+    ret.deviation = deviation;
+
+    return std::move (ret);
+}
+
+std::vector<qreal> VideoFormModel::cycle_times() const
+{
+    vector<qreal> ret;
+    for (int i = 2; i < 2 + maxRound_ * 2; i += 2)
+    {
+        std::optional<qreal> sum = 0.0;
+        for (int j = 0; j < rowCount (); j ++)
+        {
+            const auto var = data (index (j, i + 1));
+            if (var.isNull ())
+            {
+                sum = {};
+                break;
+            }
+            sum.value () += var.toDouble ();
+        }
+        if (not sum)
+        {
+            break;
+        }
+        ret.emplace_back (sum.value ());
+    }
+
+    return ret;
 }
 
 

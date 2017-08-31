@@ -46,6 +46,9 @@ public:
     void load_data (const json& data);
     void load_result (const json& result);
 
+    std::optional<action_ratio> operation_ratio () const;
+    std::optional<overall_stats> operation_stats () const;
+    std::vector<qreal> cycle_times () const;
 private:
     std::optional<QModelIndex> get_next_index (const QModelIndex&) const;
 

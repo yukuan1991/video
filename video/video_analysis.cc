@@ -16,6 +16,7 @@
 #include <QPieSlice>
 #include <QStyleFactory>
 #include <base/io/file/file.hpp>
+#include <base/lang/range.hpp>
 
 
 using namespace QtCharts;
@@ -40,21 +41,21 @@ video_analysis::video_analysis(QWidget *parent)
     {
         ui->video_player->set_position(end);
     });
-//    connect (ui->form, &form_widget::data_changed, [this]
-//    {
-//        const auto ratio = ui->form->operation_ratio ();
-//        const auto stats = ui->form->operation_stats ();
-//        auto cycles = ui->form->cycle_times ();
-//        if (ratio)
-//        {
-//            this->refresh_chart (ratio.value ());
-//        }
-//        if (stats)
-//        {
-//            this->refresh_stats (stats.value ());
-//        }
-//        update_box (cycles);
-//    });
+    connect (ui->form, &form_widget::data_changed, [this]
+    {
+        const auto ratio = ui->form->operation_ratio ();
+        const auto stats = ui->form->operation_stats ();
+        auto cycles = ui->form->cycle_times ();
+        if (ratio)
+        {
+            this->refresh_chart (ratio.value ());
+        }
+        if (stats)
+        {
+            this->refresh_stats (stats.value ());
+        }
+        update_box (cycles);
+    });
 
     set_children_filter (this);
     ui->button_mark->setIcon (QIcon ("icon/mark.png"));
@@ -604,8 +605,18 @@ json video_analysis::dump()
 QVariant video_analysis::Dump()
 {
     QVariantMap data;
-    data["form"] = ui->form->dump();
+    std::vector<QVariant> var_vec;
+    invalid_data_ | append_to (var_vec);
+    const auto invalid_list =
+            QVariantList::fromVector(QVector<QVariant>::fromStdVector (var_vec));
 
+    data["form"] = ui->form->dump();
+    data ["video-file"] = ui->video_player->file ();
+    data ["invalid"] = invalid_list;
+    data ["measure-date"] = ui->measure_date->text ();
+    data ["measure-man"] = ui->measure_man->text ();
+    data ["task-man"] = ui->task_man->text ();
+    data ["example-cycle"] = ui->example_cycle->text ();
     return data;
 }
 
