@@ -18,6 +18,7 @@
 #include <base/lang/not_null.h>
 #include <QInputDialog>
 #include <QJsonDocument>
+#include <QJsonParseError>
 
 using namespace std;
 
@@ -426,9 +427,16 @@ void video_main::on_open()
     }
     try
     {
-        const auto data = json::parse (res.value ());
-        auto w = create_window (path);
-        w->load (data);
+        QJsonParseError jsonError;
+        const auto text = QString(res.value().data());
+        QJsonDocument document = QJsonDocument::fromJson(text.toUtf8(), &jsonError);
+        if(jsonError.error == QJsonParseError::NoError)
+        {
+            const auto data = document.toVariant();
+            auto w = create_window (path);
+//            w->load (data);
+            w->Load(data);
+        }
     }
     catch (std::exception &)
     {
@@ -443,9 +451,12 @@ void video_main::on_save_as()
     if (w != null)
     {
         const auto path = QFileDialog::getSaveFileName(this, "文件保存", ".", tr ("Video Analysis File (*.vaf)"));
-        const auto data = w->dump ();
+        const auto dumpData = w->Dump();
+        QJsonDocument document = QJsonDocument::fromVariant(dumpData);
+        const auto text = document.toJson();
+        const auto data = QString(text).toStdString();
 
-        file::write_buffer (::utf_to_sys (path.toStdString ()).data (), data.dump (4));
+        file::write_buffer (::utf_to_sys (path.toStdString ()).data (), data);
     }
 }
 

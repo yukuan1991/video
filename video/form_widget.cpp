@@ -522,6 +522,107 @@ void form_widget::load_result(const json &result)
     //}
 }
 
+void form_widget::loadTask(const QVariant &task)
+{
+    if(task.isNull())
+    {
+        return;
+    }
+
+    const auto list = task.toList();
+
+    if(list.size() == 0)
+    {
+        return;
+    }
+
+    const auto rows = list.size();
+    const auto col = src_model_->getHorizontalHeaderCol("作业内容");
+
+    for(int row = 0; row < rows; row++)
+    {
+        const auto index = src_model_->index(row, col);
+        src_model_->setData(index, list.at(row));
+    }
+}
+
+void form_widget::loadData(const QVariant &data)
+{
+    if(data.isNull())
+    {
+        return;
+    }
+
+    const auto list = data.toList();
+
+    if(list.size() == 0)
+    {
+        return;
+    }
+
+    for(int i = 0; i < list.size(); i++)
+    {
+
+        const auto groupList = list.at(i).toList();
+
+        for(int j = 0; j < groupList.size(); j++)
+        {
+            bool isOk = false;
+            const auto startCol = src_model_->getHorizontalHeaderCol("1T");
+            const auto index = src_model_->index(j, startCol + 2 * j);
+            const auto data = groupList.at(j).toMap()["T"].toDouble(&isOk);
+            if(!isOk)
+            {
+                continue;
+            }
+
+            if(data > 0)
+            {
+                src_model_->setData(index, data);
+            }
+            else
+            {
+                src_model_->setData(index, QVariant{});
+            }
+        }
+    }
+}
+
+void form_widget::loadResult(const QVariant &result)
+{
+    if(result.isNull())
+    {
+        return;
+    }
+
+    const auto list = result.toList();
+
+    if(list.size() == 0)
+    {
+        return;
+    }
+
+    const auto comparsionCol = src_model_->getHorizontalHeaderCol("评比系数");
+    const auto rateCol = src_model_->getHorizontalHeaderCol("宽放率");
+    const auto typeCol = src_model_->getHorizontalHeaderCol("操作类型");
+
+    for(int row = 0; row < list.size(); row++)
+    {
+        const auto comparsionIndex = src_model_->index(row, comparsionCol);
+        const auto rateIndex = src_model_->index(row, rateCol);
+        const auto typeIndex = src_model_->index(row, typeCol);
+
+        const auto comparsion = list.at(row).toMap()["评比系数"];
+        const auto rate = list.at(row).toMap()["宽放率"];
+        const auto type = list.at(row).toMap()["操作类型"];
+
+        src_model_->setData(comparsionIndex, comparsion);
+        src_model_->setData(rateIndex, rate);
+        src_model_->setData(typeIndex, type);
+    }
+
+}
+
 std::optional<action_ratio> form_widget::operation_ratio() const
 {
     return src_model_->operation_ratio ();

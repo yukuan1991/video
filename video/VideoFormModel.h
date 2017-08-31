@@ -12,7 +12,9 @@ public:
 public:
     template<typename ...ARGS>
     VideoFormModel(ARGS && ...args) : QStandardItemModel(std::forward<ARGS> (args)...) { init(); }
+
     void init();
+
     QString getStdSum ();
     int getHorizontalHeaderCol(const QString& name) const;
     QVariant getValueByKey (int row, const QString& key, int role = Qt::DisplayRole) const;

@@ -199,8 +199,6 @@ void video_analysis::load (const json &data)
     auto iter_result = iter_form->find ("结果");
     assert (iter_result != iter_form->end () and iter_result->is_array ());
 
-
-
     ui->form->set_row (static_cast<int> (iter_task->size ()));
     ui->form->load_task (*iter_task);
     ui->form->load_data (*iter_data);
@@ -253,6 +251,66 @@ void video_analysis::load (const json &data)
     {
         ui->example_cycle->setText ("无");
     }
+}
+
+void video_analysis::Load(const QVariant &data)
+{
+    const auto totalMap = data.toMap();
+    if(totalMap.size() == 0)
+    {
+        return;
+    }
+
+    const auto formMap = totalMap["form"].toMap();
+    const auto task = formMap["作业内容"];
+    const auto observation = formMap["观测时间"];
+    const auto result = formMap["结果"];
+
+    const auto row = task.toList().size();
+    if(row <= 0)
+    {
+        return;
+    }
+
+    ui->form->set_row(row);
+    ui->form->loadTask(task);
+    ui->form->loadData(observation);
+    ui->form->loadResult(result);
+
+    const auto file = totalMap["video-file"].toString();
+    ui->video_player->set_file(file);
+
+    const auto invalid = totalMap["invalid"].toList();
+    invalid_data_.clear();
+    invalid_data_.resize(static_cast<size_t>(invalid.size()) );
+    const auto vec = invalid.toVector().toStdVector();
+    size_t i = 0;
+    for(auto & it : vec)
+    {
+        invalid_data_.at(i) = it.toLongLong();
+        i++;
+    }
+    ui->video_player->set_invalid(invalid_data_);
+
+    const auto measureDate = totalMap["measure-date"].toString();
+    ui->measure_date->setText(measureDate);
+
+    const auto measureMan = totalMap["measure-man"].toString();
+    ui->measure_man->setText(measureMan);
+
+    const auto taskMan = totalMap["task-man"].toString();
+    ui->task_man->setText(taskMan);
+
+    const auto exampleCycle = totalMap["example-cycle"].toInt();
+    if(exampleCycle > 0)
+    {
+        ui->example_cycle->setText(QString::number(exampleCycle));
+    }
+    else
+    {
+        ui->example_cycle->setText("无");
+    }
+
 }
 
 void video_analysis::on_combo_second_activated(int index)

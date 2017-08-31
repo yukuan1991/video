@@ -45,6 +45,10 @@ public:
     void load_task (const json& task);
     void load_data (const json& data);
     void load_result (const json& result);
+    void loadTask(const QVariant& task);
+    void loadData(const QVariant& data);
+    void loadResult(const QVariant& result);
+
 
     std::optional<action_ratio> operation_ratio () const;
     std::optional<overall_stats> operation_stats () const;

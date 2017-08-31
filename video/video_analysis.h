@@ -30,6 +30,7 @@ public:
 
     void push_reaction (const QString& data);
     void load (const json& data);
+    void Load(const QVariant& data);
 
     void set_video_file (const QString &video);
     void modify_invalid();
