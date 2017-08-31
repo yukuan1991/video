@@ -3,6 +3,7 @@
 #include <boost/algorithm/string.hpp>
 #include <boost/range/counting_range.hpp>
 #include <base/lang/range.hpp>
+#include <base/lang/scope.hpp>
 
 #include <QDebug>
 
@@ -37,6 +38,27 @@ void VideoFormModel::init()
     setHorizontalHeaderLabels(horizontalHeaderColumns_);
 }
 
+QString VideoFormModel::getStdSum()
+{
+    double sum = 0;
+    const auto col = getHorizontalHeaderCol("标准工时");
+    for(int row = 0; row < rowCount(); row++)
+    {
+        const auto index = this->index(row, col);
+        const auto var = data(index);
+        if(var.isNull())
+        {
+            continue;
+        }
+        else
+        {
+            const auto stdTime = var.toDouble();
+            sum += stdTime;
+        }
+    }
+    return QString::number(sum, 'f', 2);
+}
+
 int VideoFormModel::getHorizontalHeaderCol(const QString &name) const
 {
     for(int i = 0; i < horizontalHeaderColumns_.size(); i++)
@@ -57,6 +79,7 @@ QString VideoFormModel::findHorizontalHeader(const QStandardItemModel *model, co
 
 bool VideoFormModel::setData(const QModelIndex &index, const QVariant &value, int role)
 {
+    SCOPE_EXIT { emit dataChanged (this->index (0, 0), this->index (rowCount () - 1, columnCount () - 1)); };
     const auto header = findHorizontalHeader(this, index);
     if(originDataColumns_.contains(header))
     {
@@ -126,8 +149,6 @@ QVariant VideoFormModel::data(const QModelIndex &index, int role) const
         bool isLastOk = false;
         const auto lastTime = previousData (index).toDouble(&isLastOk);
 
-        qDebug() << "currentTime" << currentTime;
-        qDebug() << "lastTime" << lastTime;
         if (!isCurrentOk or !isLastOk)
         {
             return {};
@@ -215,8 +236,6 @@ QVariant VideoFormModel::data(const QModelIndex &index, int role) const
         auto rate = list.at(0).toDouble(&isRateOk);
         const auto basicTime = basicTimeIndex.data().toDouble(&isBasicTimeOk);
 
-        qDebug() << "isRateOk" << isRateOk;
-        qDebug() << "isBasicTimeOk" << isBasicTimeOk;
         if(isBasicTimeOk)
         {
             return ((rate / 100 + 1) * basicTime);
@@ -244,7 +263,6 @@ QVariant VideoFormModel::data(const QModelIndex &index, int role) const
         }
     }
 
-//    qDebug () << __PRETTY_FUNCTION__ << " " << __LINE__;
     return QStandardItemModel::data(index, role);
 }
 

@@ -12,7 +12,7 @@ public:
     template<typename ...ARGS>
     VideoFormModel(ARGS && ...args) : QStandardItemModel(std::forward<ARGS> (args)...) { init(); }
     void init();
-
+    QString getStdSum ();
     int getHorizontalHeaderCol(const QString& name) const;
     static QString findHorizontalHeader(const QStandardItemModel* model, const QModelIndex& index);
     bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole) override;

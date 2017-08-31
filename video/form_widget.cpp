@@ -17,6 +17,8 @@ form_widget::form_widget(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    views_ = {ui->table_des, ui->table_data, ui->table_result};
+    set_scrolls ();
     initConn();
 }
 
@@ -141,9 +143,154 @@ json form_widget::result_data()
     return {};
 }
 
-json form_widget::map_to_json(const std::map<QString, QString> &map)
+QVariant form_widget::taskData()
 {
-    return {};
+    QVariantList taskList;
+    const auto col = src_model_->getHorizontalHeaderCol("作业内容");
+    for(int row = 0; row < src_model_->rowCount(); row++)
+    {
+        const auto index = src_model_->index(row, col);
+        const auto var = index.data();
+        taskList.push_back(var);
+    }
+
+    return taskList;
+
+}
+
+QVariant form_widget::observationTime()
+{
+    QVariantList observationList;
+    const auto startCol = src_model_->getHorizontalHeaderCol("1T");
+    const auto endCol = src_model_->getHorizontalHeaderCol("10R");
+
+    for(int col = startCol; col <= endCol; col += 2)
+    {
+        QVariantList TRList;
+        for(int row = 0; row < src_model_->rowCount(); row++)
+        {
+            const auto index = src_model_->index(row, col);
+            const auto var = index.data();
+            QVariantMap map;
+            bool isOk = false;
+            if(var.isNull())
+            {
+                map["T"] = static_cast<double>(0);
+            }
+            else
+            {
+                map["T"] = var.toDouble(&isOk);
+                assert(isOk);
+            }
+
+            const auto indexR = src_model_->index(row, col + 1);
+            const auto varR = indexR.data();
+            bool isOkR = false;
+            if(varR.isNull())
+            {
+                map["R"] = static_cast<double>(0);
+            }
+            else
+            {
+                map["R"] = varR.toDouble(&isOkR);
+                assert(isOkR);
+            }
+
+            TRList.push_back(map);
+        }
+        observationList.push_back(TRList);
+    }
+
+    return observationList;
+}
+
+QVariant form_widget::resultData()
+{
+    QVariantList resultList;
+    const auto averageTimeCol = src_model_->getHorizontalHeaderCol("平均时间");
+    const auto comparsionCol = src_model_->getHorizontalHeaderCol("评比系数");
+    const auto basicTimeCol = src_model_->getHorizontalHeaderCol("基本时间");
+    const auto rateCol = src_model_->getHorizontalHeaderCol("宽放率");
+    const auto stdTimeCol = src_model_->getHorizontalHeaderCol("标准工时");
+    const auto appreciationCol = src_model_->getHorizontalHeaderCol("增值/非增值");
+    const auto typeCol = src_model_->getHorizontalHeaderCol("操作类型");
+
+    bool isOk = false;
+
+    for(int row = 0; row < src_model_->rowCount(); row++)
+    {
+        QVariantMap map;
+        {
+            const auto index = src_model_->index(row, averageTimeCol);
+            const auto var = index.data();
+            if(!var.isNull())
+            {
+                map["平均时间"] = var.toDouble(&isOk); assert(isOk);
+            }
+            else
+            {
+                map["平均时间"] = static_cast<double>(0);
+            }
+        }
+
+        {
+            const auto index = src_model_->index(row, comparsionCol);
+            const auto var = index.data();
+
+            map["评比系数"] = var.toDouble(&isOk); assert(isOk);
+        }
+
+        {
+            const auto index = src_model_->index(row, basicTimeCol);
+            const auto var = index.data();
+            if(!var.isNull())
+            {
+                map["基本时间"] = var.toDouble(&isOk); assert(isOk);
+            }
+            else
+            {
+                map["基本时间"] = static_cast<double>(0);
+            }
+        }
+
+        {
+            const auto index = src_model_->index(row, rateCol);
+            const auto var = index.data();
+
+            map["宽放率"] = var.toString();
+        }
+
+        {
+            const auto index = src_model_->index(row, stdTimeCol);
+            const auto var = index.data();
+            if(!var.isNull())
+            {
+                map["标准时间"] = var.toDouble(&isOk); assert(isOk);
+            }
+            else
+            {
+                map["标准时间"] = static_cast<double>(0);
+            }
+        }
+
+        {
+            const auto index = src_model_->index(row, appreciationCol);
+            const auto var = index.data();
+
+            map["增值/非增值"] = var.toString();
+        }
+
+        {
+            const auto index = src_model_->index(row, typeCol);
+            const auto var = index.data();
+
+            map["操作分类"] = var.toString();
+        }
+
+        resultList.push_back(map);
+    }
+
+    return resultList;
 }
 
 void form_widget::set_scrolls()
@@ -168,6 +315,19 @@ void form_widget::initConn()
 {
     connect(src_model_.get(), &QStandardItemModel::rowsInserted, this, &form_widget::initTable);
     connect(src_model_.get(), &QStandardItemModel::rowsRemoved, this, &form_widget::initTable);
+
+    connect (src_model_.get (), &video_form_model::dataChanged,
+             this, &form_widget::data_changed);
+
+    connect (src_model_.get (), &video_form_model::dataChanged, [this]{
+        auto sum = src_model_->getStdSum ();
+        emit total_time_changed (sum);
+    });
+
+    for (const auto & iter : views_)
+    {
+        connect (iter, &QTableView::pressed, this, &form_widget::table_clicked);
+    }
 }
 
 void form_widget::initTable()
@@ -216,12 +376,6 @@ void form_widget::initTable()
 
 void form_widget::setTable()
 {
-    views_ = {ui->table_des, ui->table_data, ui->table_result};
-    set_scrolls ();
-
-    connect (src_model_.get (), &video_form_model::dataChanged,
-             this, &form_widget::data_changed);
-
     model_des_->setSourceModel (src_model_.get ());
     model_des_->set_range (0, 2);
     ui->table_des->setModel (model_des_.get ());
@@ -245,11 +399,6 @@ void form_widget::setTable()
 
     ui->table_result->verticalHeader()->setSectionResizeMode (QHeaderView::Fixed);
     ui->table_result->horizontalHeader ()->setSectionResizeMode (QHeaderView::Stretch);
-
-    for (const auto & iter : views_)
-    {
-        connect (iter, &QTableView::pressed, this, &form_widget::table_clicked);
-    }
 }
 
 //void form_widget::clear()
@@ -388,13 +537,27 @@ json form_widget::export_data()
     return video_data;
 }
 
+QVariant form_widget::dump()
+{
+    QVariantMap data;
+    QVariant task = taskData();
+    QVariant obs = observationTime();
+    QVariant result = resultData();
+
+    data["作业内容"] = task;
+    data["观测时间"] = obs;
+    data["结果"] = result;
+
+    return data;
+}
+
 
 void form_widget::set_row(int num)
 {
     src_model_->setRowCount(num);
     setTable();
-//    auto sum = src_model_->get_std_sum ();
-//    emit total_time_changed (sum);
+    const auto sum = src_model_->getStdSum();
+    emit total_time_changed (sum);
 }
 
 void form_widget::add_row(int num)

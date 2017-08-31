@@ -53,8 +53,10 @@ private:
     json task_data ();
     json observation_time ();
     json result_data ();
-    json map_to_json (const std::map <QString,QString>& map);
-    json info_pandect (const json& json_data, const std::string& video_path);
+
+    QVariant taskData();
+    QVariant observationTime();
+    QVariant resultData();
     void set_scrolls ();
 
     void initConn();
@@ -62,6 +64,7 @@ private:
     void setTable();
 public:
     json export_data ();
+    QVariant dump();
     void clear ();
 
 signals:

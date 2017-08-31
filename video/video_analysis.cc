@@ -601,6 +601,14 @@ json video_analysis::dump()
     return data;
 }
 
+QVariant video_analysis::Dump()
+{
+    QVariantMap data;
+    data["form"] = ui->form->dump();
+
+    return data;
+}
+
 void video_analysis::set_example_cycle(int cycle)
 {
     ui->example_cycle->setText (QString::number (cycle));

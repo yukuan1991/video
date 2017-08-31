@@ -59,6 +59,7 @@ public:
     QString task_man () const;
 
     json dump ();
+    QVariant Dump();
 
     void set_example_cycle (int cycle);
 

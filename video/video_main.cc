@@ -17,6 +17,7 @@
 #include <QInputDialog>
 #include <base/lang/not_null.h>
 #include <QInputDialog>
+#include <QJsonDocument>
 
 using namespace std;
 
@@ -391,14 +392,20 @@ void video_main::on_save()
             title_path == "未命名")
     {
         const auto path = QFileDialog::getSaveFileName(this, "文件保存", ".", tr ("Video Analysis File (*.vaf)"));
-        const auto data = w->dump ();
+        const auto dumpData = w->Dump();
+        QJsonDocument document = QJsonDocument::fromVariant(dumpData);
+        const auto text = document.toJson();
+        const auto data = QString(text).toStdString();
 
-        file::write_buffer (::utf_to_sys (path.toStdString ()).data (), data.dump (4));
+        file::write_buffer (::utf_to_sys (path.toStdString ()).data (), data);
     }
     else
     {
-        const auto data = w->dump ();
-        file::write_buffer (::utf_to_sys (title_path.toStdString ()).data (), data.dump (4));
+        const auto dumpData = w->Dump();
+        QJsonDocument document = QJsonDocument::fromVariant(dumpData);
+        const auto text = document.toJson();
+        const auto data = QString(text).toStdString();
+        file::write_buffer (::utf_to_sys (title_path.toStdString ()).data (), data);
     }
 
 }
