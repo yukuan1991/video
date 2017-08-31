@@ -186,74 +186,7 @@ bool video_analysis::eventFilter(QObject *, QEvent *event)
     return false;
 }
 
-void video_analysis::load (const json &data)
-{
-    const auto iter_form = data.find ("form");
-    assert (iter_form != end (data));
-    assert (iter_form->is_object ());
-    auto iter_task = iter_form->find ("作业内容");
-    assert (iter_task != iter_form->end ());
-    assert (iter_task->is_array ());
-    auto iter_data = iter_form->find ("观测时间");
-    assert (iter_data != iter_form->end () and iter_data->is_array ());
-    auto iter_result = iter_form->find ("结果");
-    assert (iter_result != iter_form->end () and iter_result->is_array ());
-
-    ui->form->set_row (static_cast<int> (iter_task->size ()));
-    ui->form->load_task (*iter_task);
-    ui->form->load_data (*iter_data);
-    ui->form->load_result (*iter_result);
-
-    const auto file = data.find ("video-file");
-    assert (iter_form != end (data));
-    assert (file->is_string ());
-    ui->video_player->set_file (QString::fromStdString (*file));
-    const auto invalid = data.find ("invalid");
-
-    if (invalid != end (data))
-    {
-        assert (invalid->is_array ());
-        invalid_data_.clear ();
-        invalid_data_.resize (invalid->size ());
-
-        size_t i = 0;
-        for (auto & it : invalid.value ())
-        {
-            invalid_data_.at (i) = it;
-            i ++;
-        }
-        ui->video_player->set_invalid(invalid_data_);
-    }
-
-    const auto measure_date = data.find ("measure-date");
-    if (measure_date != end (data) and measure_date->is_string ())
-    {
-        ui->measure_date->setText (QString::fromStdString (*measure_date));
-    }
-    const auto measure_man = data.find ("measure-man");
-    if (measure_man != end (data) and measure_man->is_string ())
-    {
-        ui->measure_man->setText (QString::fromStdString (*measure_man));
-    }
-    const auto task_man = data.find ("task-man");
-    if (task_man != end (data) and task_man->is_string ())
-    {
-        ui->task_man->setText (QString::fromStdString (*task_man));
-    }
-
-    const auto example_cycle = data.find ("example-cycle");
-    if (example_cycle != end (data) and example_cycle->is_number () and *example_cycle != 0)
-    {
-        const auto i_example_cycle = int (*example_cycle);
-        ui->example_cycle->setText (QString::number (i_example_cycle));
-    }
-    else
-    {
-        ui->example_cycle->setText ("无");
-    }
-}
-
-void video_analysis::Load(const QVariant &data)
+void video_analysis::load(const QVariant &data)
 {
     const auto totalMap = data.toMap();
     if(totalMap.size() == 0)
@@ -646,21 +579,8 @@ QString video_analysis::measure_date() const
     return ui->measure_date->text ();
 }
 
-json video_analysis::dump()
-{
-    json data;
-    data ["form"] = ui->form->export_data ();
-    data ["video-file"] = ui->video_player->file ().toStdString ();
-    data ["invalid"] = invalid_data_;
-    data ["measure-date"] = ui->measure_date->text ().toStdString ();
-    data ["measure-man"] = ui->measure_man->text ().toStdString ();
-    data ["task-man"] = ui->task_man->text ().toStdString ();
-    data ["example-cycle"] = ui->example_cycle->text ().toInt ();
 
-    return data;
-}
-
-QVariant video_analysis::Dump()
+QVariant video_analysis::dump()
 {
     QVariantMap data;
     std::vector<QVariant> var_vec;

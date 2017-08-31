@@ -128,21 +128,6 @@ void form_widget::table_clicked(const QModelIndex &)
     }
 }
 
-json form_widget::task_data()
-{
-    return {};
-}
-
-json form_widget::observation_time()
-{
-    return {};
-}
-
-json form_widget::result_data()
-{
-    return {};
-}
-
 QVariant form_widget::taskData()
 {
     QVariantList taskList;
@@ -422,106 +407,6 @@ void form_widget::setTable()
 //    ui->table_result->setModel (model_result_.get ());
 //}
 
-
-void form_widget::load_task(const json &task)
-{
-    //assert (task.is_array ());
-    //int max_rows = static_cast<int> (task.size ());
-    //QModelIndex index;
-    //QVariant val;
-    //std::string task_str;
-
-    //for (int i = 0; i < max_rows; ++ i)
-    //{
-    //    index = src_model_->index (i,1);
-    //    auto& task_index_ref = task.at (static_cast<size_t> (i));
-    //    assert (task_index_ref.is_string ());
-    //    task_str = task_index_ref;
-    //    val.setValue (QString (task_str.data ()));
-    //    src_model_->setData (index, val);
-    //}
-}
-
-void form_widget::load_data(const json &data)
-{
-    //assert (data.is_array ());
-    //QModelIndex index;
-    //QVariant vat;
-    //double T;
-
-    //for (unsigned i = 0; i<data.size (); ++i)
-    //{
-    //    auto& cir = data [i];
-    //    assert (cir.is_array ());
-    //    for (unsigned j=0; j < cir.size (); ++j)
-    //    {
-    //        auto row_data = cir [j];
-    //        assert (row_data.is_object ());
-
-    //        index = src_model_->index (j, 2 + i*2);
-    //        auto iter = row_data.find ("T");
-    //        assert (iter->is_number ());
-    //        T = *iter;
-    //        if (T == 0)
-    //        {
-    //            src_model_->setData (index, QVariant {});
-    //        }
-    //        else
-    //        {
-    //            vat.setValue (T);
-    //            src_model_->setData (index, vat);
-    //        }
-    //    }
-    //}
-}
-
-void form_widget::load_result(const json &result)
-{
-    //assert (result.is_array ());
-    //QModelIndex index;
-    //QVariant vat;
-    //int base_colume = 2+ 2*10;
-
-    //for (unsigned i=0; i<result.size (); ++i)
-    //{
-    //    auto& row_data = result [i];
-    //    assert (row_data.is_object ());
-
-    //    auto iter_rate = row_data.find ("评比系数");
-    //    assert (iter_rate != row_data.end () and iter_rate->is_number ());
-    //    double rate = *iter_rate;
-    //    index = src_model_->index (i, base_colume + 1);
-    //    vat.setValue (rate);
-    //    src_model_->setData (index, vat);
-
-    //    auto iter_allowance = row_data.find ("宽放率");
-    //    assert (iter_allowance != row_data.end () and iter_allowance->is_string ());
-    //    std::string allowance_str = *iter_allowance;
-    //    auto pos = allowance_str.find_first_of (" ");
-    //    allowance_str.erase (pos);
-    //    double allowance;
-    //    try
-    //    {
-    //        allowance = boost::lexical_cast<double> (allowance_str.data ());
-    //    }
-    //    catch (std::exception&)
-    //    {
-    //        assert (false);
-    //    }
-
-    //    index = src_model_->index (i, base_colume + 3);
-    //    vat.setValue (allowance);
-    //    src_model_->setData (index, vat);
-
-    //    auto iter_opt_type = row_data.find ("操作分类");
-    //    assert (iter_opt_type != row_data.end () and iter_opt_type->is_string ());
-    //    std::string opt_type = *iter_opt_type;
-    //    index = src_model_->index (i, base_colume + 6);
-    //    vat.setValue (QString (opt_type.data ()));
-    //    src_model_->setData (index, vat);
-    //}
-}
-
 void form_widget::loadTask(const QVariant &task)
 {
     if(task.isNull())
@@ -636,21 +521,6 @@ std::optional<overall_stats> form_widget::operation_stats() const
 std::vector<qreal> form_widget::cycle_times() const
 {
     return src_model_->cycle_times ();
-}
-
-json form_widget::export_data()
-{
-    json video_data = json::object ();
-
-    json task = task_data ();
-    json obs = observation_time ();
-    json result = result_data ();
-
-    video_data ["作业内容"] = task;
-    video_data ["观测时间"] = obs;
-    video_data ["结果"] = result;
-
-    return video_data;
 }
 
 QVariant form_widget::dump()

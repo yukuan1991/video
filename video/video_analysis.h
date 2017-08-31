@@ -29,8 +29,7 @@ public:
     ~video_analysis();
 
     void push_reaction (const QString& data);
-    void load (const json& data);
-    void Load(const QVariant& data);
+    void load(const QVariant& data);
 
     void set_video_file (const QString &video);
     void modify_invalid();
@@ -59,8 +58,7 @@ public:
     void set_task_man (const QString & data);
     QString task_man () const;
 
-    json dump ();
-    QVariant Dump();
+    QVariant dump();
 
     void set_example_cycle (int cycle);
 

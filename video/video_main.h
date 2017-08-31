@@ -40,7 +40,7 @@ private:
     void init_conn ();
     void change_task_count ();
 
-    void export_xlsx ();
+    void exportXlsx();
 
     void on_save ();
     void on_open ();

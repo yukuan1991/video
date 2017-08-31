@@ -42,9 +42,6 @@ public:
     void on_cut ();
     void on_del ();
 
-    void load_task (const json& task);
-    void load_data (const json& data);
-    void load_result (const json& result);
     void loadTask(const QVariant& task);
     void loadData(const QVariant& data);
     void loadResult(const QVariant& result);
@@ -57,9 +54,6 @@ private:
     std::optional<QModelIndex> get_next_index (const QModelIndex&) const;
 
     void table_clicked (const QModelIndex&);
-    json task_data ();
-    json observation_time ();
-    json result_data ();
 
     QVariant taskData();
     QVariant observationTime();
