@@ -284,7 +284,7 @@ QVariant form_widget::resultData()
             const auto index = src_model_->index(row, typeCol);
             const auto var = index.data();
 
-            map["操作分类"] = var.toString();
+            map["操作类型"] = var.toString();
         }
 
         resultList.push_back(map);
@@ -569,7 +569,7 @@ void form_widget::loadData(const QVariant &data)
         {
             bool isOk = false;
             const auto startCol = src_model_->getHorizontalHeaderCol("1T");
-            const auto index = src_model_->index(j, startCol + 2 * j);
+            const auto index = src_model_->index(j, startCol + 2 * i);
             const auto data = groupList.at(j).toMap()["T"].toDouble(&isOk);
             if(!isOk)
             {

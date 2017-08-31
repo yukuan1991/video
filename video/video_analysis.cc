@@ -668,7 +668,7 @@ QVariant video_analysis::Dump()
     const auto invalid_list =
             QVariantList::fromVector(QVector<QVariant>::fromStdVector (var_vec));
 
-    data["form"] = ui->form->dump();
+    data ["form"] = ui->form->dump();
     data ["video-file"] = ui->video_player->file ();
     data ["invalid"] = invalid_list;
     data ["measure-date"] = ui->measure_date->text ();
