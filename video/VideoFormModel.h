@@ -7,7 +7,7 @@ class VideoFormModel : public QStandardItemModel
 {
     Q_OBJECT
 public:
-    constexpr static int32_t maxRound_ = 10;
+    constexpr static int32_t maxRound_ = 5;
     constexpr static int32_t dataCol_ = maxRound_ * 2;
 public:
     template<typename ...ARGS>

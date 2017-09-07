@@ -90,25 +90,20 @@ optional<QModelIndex> form_widget::get_next_index(const QModelIndex & index) con
     int next_row = -1;
     int next_col = -1;
 
-    if (row == model->rowCount () - 1 and col >= model->columnCount () - 2)
+    if(row == model->rowCount() - 1 and col == model_data_->columnCount() - 1)
     {
         return {};
     }
 
-    if (col % 2 != 0)
+    if(col == model_data_->columnCount() - 1)
     {
-        col --;
-    }
-
-    if (row == model->rowCount () - 1)
-    {
-        next_col = col + 2;
-        next_row = 0;
+        next_col = 0;
+        next_row = row + 1;
     }
     else
     {
-        next_col = col;
-        next_row = row + 1;
+        next_col = col + 1;
+        next_row = row;
     }
 
     return model->index (next_row, next_col);

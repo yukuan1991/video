@@ -59,33 +59,33 @@ void set_style ()
 
 int main(int argc, char *argv[])
 {
-//    QApplication a(argc, argv);
+    QApplication a(argc, argv);
 
 
-    krys_application a(argc, argv);
-    if (!verification_process ())
-    {
-        return -1;
-    }
+//    krys_application a(argc, argv);
+//    if (!verification_process ())
+//    {
+//        return -1;
+//    }
 
     video_main v;
     v.resize (1366, 768);
     v.setWindowIcon (QPixmap ("icon.ico"));
     v.show ();
-    auto area = v.area ();
+//    auto area = v.area ();
 
-    for (auto & active : area->subWindowList ())
-    {
-        active->setWindowFilePath ("未命名");
-        active->setWindowIcon (v.style ()->standardIcon (QStyle::SP_FileIcon));
-    }
+//    for (auto & active : area->subWindowList ())
+//    {
+//        active->setWindowFilePath ("未命名");
+//        active->setWindowIcon (v.style ()->standardIcon (QStyle::SP_FileIcon));
+//    }
     set_style ();
 
-    QTimer timer;
-    timer.setInterval (1s);
-    timer.setSingleShot (true);
-    QObject::connect (&timer, &QTimer::timeout, [&] { check_date (); timer.start (); });
-    timer.start ();
+//    QTimer timer;
+//    timer.setInterval (1s);
+//    timer.setSingleShot (true);
+//    QObject::connect (&timer, &QTimer::timeout, [&] { check_date (); timer.start (); });
+//    timer.start ();
 
     return a.exec();
 }

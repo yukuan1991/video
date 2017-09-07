@@ -29,6 +29,7 @@ void VideoFormModel::init()
         else
         {
             cycleHeader += "R";
+            originDataColumns_ << cycleHeader.data();
         }
         horizontalHeaderColumns_ << cycleHeader.data();
     }
@@ -149,44 +150,36 @@ QVariant VideoFormModel::data(const QModelIndex &index, int role) const
         return {};
     }
 
+
     if(header.at(header.size() - 1) == "R")
     {
-        const auto row = index.row();
-        const auto col = index.column();
-
-        bool isCurrentOk =false;
-        const auto currentTime = data (this->index (row, col - 1), Qt::DisplayRole).toDouble(&isCurrentOk);
-        bool isLastOk = false;
-        const auto lastTime = previousData (index).toDouble(&isLastOk);
-
-        if (!isCurrentOk or !isLastOk)
+        bool isOk = false;
+        auto var = QStandardItemModel::data(index, role);
+        double data = var.toDouble(&isOk);
+        if(isOk)
         {
-            return {};
+            return QString::number(data, 'f', 2);
         }
-        else
-        {
-            return currentTime - lastTime;
-        }
+
+        return {};
     }
 
     if(header == "平均时间")
     {
-        std::vector<double> times;
-        counting_range (2, 2 + dataCol_)
-                | transformed ([&] (auto && c) { return this->index (index.row (), c); })
-                | filtered ([&] (auto && c) { return *(findHorizontalHeader (this, c).rbegin ()) == "R"; })
-                | filtered ([&] (auto && c) { return c.data (Qt::DisplayRole).type () == QVariant::Double; })
-                | transformed ([] (auto && c) { return c.data (Qt::DisplayRole).toDouble (); })
-                | append_to (times);
+        double averageTime = 0;
+        for(int col = 2; col < 2 + dataCol_; col += 2)
+        {
+            auto prevTime = this->index(index.row(), col).data(Qt::DisplayRole).toDouble();
+            auto nextTime = this->index(index.row(), col + 1).data(Qt::DisplayRole).toDouble();
 
-        if (times.empty ())
-        {
-            return {};
+            if(nextTime > 0 and prevTime > 0)
+            {
+                auto time = nextTime - prevTime;
+                averageTime += time;
+            }
         }
-        else
-        {
-            return QString::number( (times | accumulated (qreal {0})) / times.size (), 'f', 2);
-        }
+        return QString::number(averageTime);
+
     }
 
     if(header == "基本时间")
@@ -277,22 +270,18 @@ QVariant VideoFormModel::data(const QModelIndex &index, int role) const
 }
 
 QVariant VideoFormModel::previousData(const QModelIndex &index) const
-{
-    if (index.row () == 0)
+{    
+    if(index.column() == 3)
     {
-        if (index.column () == 3)
-        {
-            return qreal {0};
-        }
-        else
-        {
-            return data (this->index (rowCount () - 1, index.column () - 3), Qt::DisplayRole);
-        }
+        return qreal {0};
     }
-    else
+
+    if(index.column() > 3 or index.column()  <= dataCol_ + 2)
     {
-        return data (this->index (index.row () - 1, index.column () - 1));
+        return data(this->index(index.row(), index.column() - 1));
     }
+
+    return {};
 }
 
 std::optional<action_ratio> VideoFormModel::operation_ratio() const
@@ -330,10 +319,6 @@ std::optional<action_ratio> VideoFormModel::operation_ratio() const
         else if (type == "等待")
         {
             waiting += time;
-        }
-        else
-        {
-            assert (false);
         }
     }
 
