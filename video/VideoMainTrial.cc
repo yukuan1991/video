@@ -460,21 +460,4 @@ void VideoMainTrial::on_save_as()
     }
 }
 
-void VideoMainTrial::on_example_cycle()
-{
-    auto w = current_sub_window ();
-    if (w == null)
-    {
-        return;
-    }
 
-    const auto old_cycle = w->example_cycle ();
-    const auto cycle = QInputDialog::getInt (this, "实例循环", "设置示例循环", old_cycle, 1, 10);
-
-    if (cycle == w->example_cycle ())
-    {
-        return;
-    }
-
-    w->set_example_cycle (cycle);
-}

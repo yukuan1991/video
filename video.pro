@@ -68,7 +68,6 @@ HEADERS += \
     krys_application.hpp \
     algorithm_utils.h \
     video/whisker.h \
-    video/video_player.hpp \
     video/VideoFormModel.h \
     video/FormWidget.h \
     video/VideoAnalysis.h \

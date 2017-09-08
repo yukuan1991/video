@@ -385,27 +385,6 @@ void FormWidget::setTable()
     ui->table_result->horizontalHeader ()->setSectionResizeMode (QHeaderView::Stretch);
 }
 
-//void form_widget::clear()
-//{
-//    ui->table_data->setModel (nullptr);
-//    model_data_->setSourceModel (nullptr);
-//    ui->table_des->setModel (nullptr);
-//    model_des_->setSourceModel (nullptr);
-//    ui->table_result->setModel (nullptr);
-//    model_result_->setSourceModel (nullptr);
-
-//    src_model_->clear ();
-
-//    model_data_->setSourceModel (src_model_.get ());
-//    ui->table_data->setModel (model_data_.get ());
-
-//    model_des_->setSourceModel (src_model_.get ());
-//    ui->table_des->setModel (model_des_.get ());
-
-//    model_result_->setSourceModel (src_model_.get ());
-//    ui->table_result->setModel (model_result_.get ());
-//}
-
 void FormWidget::loadTask(const QVariant &task)
 {
     if(task.isNull())
