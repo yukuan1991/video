@@ -34,7 +34,7 @@ void VideoFormModel::init()
         horizontalHeaderColumns_ << cycleHeader.data();
     }
 
-    horizontalHeaderColumns_ << "平均时间" << "评比系数" << "基本时间" << "宽放率" << "标准工时" << "增值/非增值" << "操作类型";
+    horizontalHeaderColumns_ << "测量时间" << "评比系数" << "基本时间" << "宽放率" << "标准工时" << "增值/非增值" << "操作类型";
     originDataColumns_ << "评比系数" << "宽放率" << "操作类型";
     setHorizontalHeaderLabels(horizontalHeaderColumns_);
 }
@@ -164,7 +164,7 @@ QVariant VideoFormModel::data(const QModelIndex &index, int role) const
         return {};
     }
 
-    if(header == "平均时间")
+    if(header == "测量时间")
     {
         double averageTime = 0;
         for(int col = 2; col < 2 + dataCol_; col += 2)
@@ -178,7 +178,15 @@ QVariant VideoFormModel::data(const QModelIndex &index, int role) const
                 averageTime += time;
             }
         }
-        return QString::number(averageTime);
+
+        if(averageTime > 0)
+        {
+            return QString::number(averageTime);
+        }
+        else
+        {
+            return {};
+        }
 
     }
 
@@ -346,51 +354,71 @@ std::optional<action_ratio> VideoFormModel::operation_ratio() const
 
 std::optional<overall_stats> VideoFormModel::operation_stats() const
 {
-    bool b;
-    std::vector<qreal> cts;
-    cts.reserve (maxRound_);
+    const auto col = getHorizontalHeaderCol("测量时间");
+    const auto rows = rowCount();
 
-    for (int i = 0; i < maxRound_; i ++)
+    double ct_value = 0;
+    for(int row = 0; row < rows; row++)
     {
-        std::optional<qreal> total = 0.0;
-        for (int j = 0; j < this->rowCount (); j ++)
-        {
-            const auto time = getValueByKey(j, QString::number (i + 1) + "R").toDouble (&b);
-            if (!b)
-            {
-                total = {};
-                break;
-            }
-            total.value () += time;
-        }
+        const auto time = this->index(row, col).data(Qt::DisplayRole).toDouble();
 
-        if (total)
-        {
-            cts.emplace_back (total.value ());
-        }
+        ct_value += time;
     }
-
-    if (cts.empty ())
-    {
-        return {};
-    }
-
-    const auto max_val = *(max_element (std::begin (cts), std::end (cts)));
-    const auto min_val = *(min_element (std::begin (cts), std::end (cts)));
-    const auto average = accumulate (std::begin (cts), std::end (cts), qreal {0}) / cts.size ();
-
-    const auto square_total = accumulate (std::begin (cts), std::end (cts) , qreal {0}, [&] (qreal tmp, qreal it)
-    {  return tmp + (average - it) * (average - it); });
-
-    const auto deviation = ::sqrt (square_total / cts.size ());
 
     overall_stats ret;
-    ret.max_val = max_val;
-    ret.min_val = min_val;
-    ret.average = average;
-    ret.deviation = deviation;
+    if(ct_value > 0)
+    {
+        ret.ct_val = ct_value;
+        qDebug() << "ct_value:" << ct_value;
+    }
 
-    return std::move (ret);
+    return ret;
+
+//    bool b;
+//    std::vector<qreal> cts;
+//    cts.reserve (maxRound_);
+
+//    for (int i = 0; i < maxRound_; i ++)
+//    {
+//        std::optional<qreal> total = 0.0;
+//        for (int j = 0; j < this->rowCount (); j ++)
+//        {
+//            const auto time = getValueByKey(j, QString::number (i + 1) + "R").toDouble (&b);
+//            if (!b)
+//            {
+//                total = {};
+//                break;
+//            }
+//            total.value () += time;
+//        }
+
+//        if (total)
+//        {
+//            cts.emplace_back (total.value ());
+//        }
+//    }
+
+//    if (cts.empty ())
+//    {
+//        return {};
+//    }
+
+//    const auto max_val = *(max_element (std::begin (cts), std::end (cts)));
+//    const auto min_val = *(min_element (std::begin (cts), std::end (cts)));
+//    const auto average = accumulate (std::begin (cts), std::end (cts), qreal {0}) / cts.size ();
+
+//    const auto square_total = accumulate (std::begin (cts), std::end (cts) , qreal {0}, [&] (qreal tmp, qreal it)
+//    {  return tmp + (average - it) * (average - it); });
+
+//    const auto deviation = ::sqrt (square_total / cts.size ());
+
+//    overall_stats ret;
+//    ret.max_val = max_val;
+//    ret.min_val = min_val;
+//    ret.average = average;
+//    ret.deviation = deviation;
+
+//    return std::move (ret);
 }
 
 std::vector<qreal> VideoFormModel::cycle_times() const

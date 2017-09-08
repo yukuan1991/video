@@ -1,4 +1,4 @@
-﻿#include "video/VideoMainTrialh"
+﻿#include "video/VideoMainTrial.h"
 #include "video/VideoAnalysis.h"
 #include "ui_VideoMainTrial.h"
 #include <QMdiSubWindow>
@@ -223,7 +223,7 @@ void VideoMainTrial::init_conn()
     connect (ui->video_ribbon, &ribbon::measure_date, this, &VideoMainTrial::on_measure_date);
     connect (ui->video_ribbon, &ribbon::measure_man, this, &VideoMainTrial::on_measure_man);
     connect (ui->video_ribbon, &ribbon::task_man, this, &VideoMainTrial::on_task_man);
-    connect (ui->video_ribbon, &ribbon::change_example_cycle, this, &VideoMainTrial::on_example_cycle);
+//    connect (ui->video_ribbon, &ribbon::change_example_cycle, this, &VideoMainTrial::on_example_cycle);
 }
 
 void VideoMainTrial::change_task_count()

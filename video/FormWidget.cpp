@@ -142,7 +142,7 @@ QVariant FormWidget::observationTime()
 {
     QVariantList observationList;
     const auto startCol = src_model_->getHorizontalHeaderCol("1T");
-    const auto endCol = src_model_->getHorizontalHeaderCol("10R");
+    const auto endCol = src_model_->getHorizontalHeaderCol("5R");
 
     for(int col = startCol; col <= endCol; col += 2)
     {
@@ -187,7 +187,7 @@ QVariant FormWidget::observationTime()
 QVariant FormWidget::resultData()
 {
     QVariantList resultList;
-    const auto averageTimeCol = src_model_->getHorizontalHeaderCol("平均时间");
+    const auto averageTimeCol = src_model_->getHorizontalHeaderCol("测量时间");
     const auto comparsionCol = src_model_->getHorizontalHeaderCol("评比系数");
     const auto basicTimeCol = src_model_->getHorizontalHeaderCol("基本时间");
     const auto rateCol = src_model_->getHorizontalHeaderCol("宽放率");
@@ -205,11 +205,11 @@ QVariant FormWidget::resultData()
             const auto var = index.data();
             if(!var.isNull())
             {
-                map["平均时间"] = var.toDouble(&isOk); assert(isOk);
+                map["测量时间"] = var.toDouble(&isOk); assert(isOk);
             }
             else
             {
-                map["平均时间"] = static_cast<double>(0);
+                map["测量时间"] = static_cast<double>(0);
             }
         }
 
@@ -319,6 +319,11 @@ void FormWidget::initTable()
         {
             for(int col = 0; col < cols; col++)
             {
+                if(src_model_->item(row, col))
+                {
+                    continue;
+                }
+
                 src_model_->setItem(row, col, new QStandardItem);
                 src_model_->item(row, col)->setTextAlignment(Qt::AlignCenter);
             }
@@ -448,21 +453,34 @@ void FormWidget::loadData(const QVariant &data)
         for(int j = 0; j < groupList.size(); j++)
         {
             bool isOk = false;
-            const auto startCol = src_model_->getHorizontalHeaderCol("1T");
-            const auto index = src_model_->index(j, startCol + 2 * i);
-            const auto data = groupList.at(j).toMap()["T"].toDouble(&isOk);
+            const auto startColT = src_model_->getHorizontalHeaderCol("1T");
+            const auto indexT = src_model_->index(j, startColT + 2 * i);
+            const auto dataT = groupList.at(j).toMap()["T"].toDouble(&isOk);
+
+            const auto startColR = src_model_->getHorizontalHeaderCol("1R");
+            const auto indexR = src_model_->index(j, startColR + 2 * i);
+            const auto dataR = groupList.at(j).toMap()["R"].toDouble(&isOk);
             if(!isOk)
             {
                 continue;
             }
 
-            if(data > 0)
+            if(dataT > 0)
             {
-                src_model_->setData(index, data);
+                src_model_->setData(indexT, dataT);
             }
             else
             {
-                src_model_->setData(index, QVariant{});
+                src_model_->setData(indexT, QVariant{});
+            }
+
+            if(dataR > 0)
+            {
+                src_model_->setData(indexR, dataR);
+            }
+            else
+            {
+                src_model_->setData(indexR, QVariant{});
             }
         }
     }

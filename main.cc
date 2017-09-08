@@ -7,7 +7,7 @@
 #include <QComboBox>
 #include <boost/filesystem.hpp>
 #include <boost/range/adaptors.hpp>
-#include "video/VideoMainTrialh"
+#include "video/VideoMainTrial.h"
 #include <QPixmap>
 #include <QStyle>
 #include <QIcon>

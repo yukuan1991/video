@@ -157,9 +157,9 @@ std::unique_ptr<QWidget> ribbon::ui_edit ()
         connect (btn.get (), &QToolButton::clicked, this, &ribbon::change_task_count);
         upper_layout->addWidget (btn.release ());
 
-        btn = make_button (QPixmap ("png/测量日期.png").scaled (len, len), "更改样例循环");
-        connect (this, &ribbon::mdi_active, btn.get (), &QToolButton::setEnabled);
-        connect (btn.get (), &QToolButton::clicked, this, &ribbon::change_example_cycle);
+//        btn = make_button (QPixmap ("png/测量日期.png").scaled (len, len), "更改样例循环");
+//        connect (this, &ribbon::mdi_active, btn.get (), &QToolButton::setEnabled);
+//        connect (btn.get (), &QToolButton::clicked, this, &ribbon::change_example_cycle);
         upper_layout->addWidget (btn.release ());
     }
 

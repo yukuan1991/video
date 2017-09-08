@@ -72,7 +72,7 @@ HEADERS += \
     video/VideoFormModel.h \
     video/FormWidget.h \
     video/VideoAnalysis.h \
-    video/VideoMainTrialh
+    video/VideoMainTrial.h
 
 FORMS += \
     video/first_dlg.ui \

@@ -9,7 +9,7 @@ struct action_ratio
 
 struct overall_stats
 {
-    qreal max_val = 0, min_val = 0, average = 0, deviation = 0;
+    qreal max_val = 0, min_val = 0, average = 0, deviation = 0, ct_val = 0;
 };
 
 #endif // UTILS_HPP

@@ -63,6 +63,8 @@ VideoAnalysis::VideoAnalysis(QWidget *parent)
     this->setStyle (QStyleFactory::create ("fusion"));
 
     init_chart ();
+
+    ui->video_player->set_mark_enabled(false);
 }
 
 VideoAnalysis::~VideoAnalysis()
@@ -234,15 +236,15 @@ void VideoAnalysis::load(const QVariant &data)
     const auto taskMan = totalMap["task-man"].toString();
     ui->task_man->setText(taskMan);
 
-    const auto exampleCycle = totalMap["example-cycle"].toInt();
-    if(exampleCycle > 0)
-    {
-        ui->example_cycle->setText(QString::number(exampleCycle));
-    }
-    else
-    {
-        ui->example_cycle->setText("无");
-    }
+//    const auto exampleCycle = totalMap["example-cycle"].toInt();
+//    if(exampleCycle > 0)
+//    {
+//        ui->example_cycle->setText(QString::number(exampleCycle));
+//    }
+//    else
+//    {
+//        ui->example_cycle->setText("无");
+//    }
 
 }
 
@@ -495,58 +497,63 @@ void VideoAnalysis::refresh_chart (action_ratio ratio)
 
 void VideoAnalysis::refresh_stats(overall_stats stats)
 {
-    ui->ct_max->setText (QString::number (stats.max_val, 'f', 2));
-    ui->ct_min->setText (QString::number (stats.min_val, 'f', 2));
-    ui->ct_average->setText (QString::number (stats.average, 'f', 2));
-    ui->ct_deviation->setText (QString::number (stats.deviation, 'f', 2));
+//    ui->ct_max->setText (QString::number (stats.max_val, 'f', 2));
+//    ui->ct_min->setText (QString::number (stats.min_val, 'f', 2));
+//    ui->ct_average->setText (QString::number (stats.average, 'f', 2));
+//    ui->ct_deviation->setText (QString::number (stats.deviation, 'f', 2));
+    if(stats.ct_val > 0)
+    {
+        ui->ct_value->setText(QString::number(stats.ct_val, 'f', 2));
+    }
+
 }
 
 void VideoAnalysis::update_box(gsl::span<qreal> data)
 {
-    if (data.size () <= 3)
-    {
-        return;
-    }
-    sort (begin (data), end (data), greater <>());
+//    if (data.size () <= 3)
+//    {
+//        return;
+//    }
+//    sort (begin (data), end (data), greater <>());
 
-    whisker_data wh_data;
-    wh_data.top = data.at (0);
-    wh_data.bottom = data.at (data.size () - 1);
-    if (data.size () % 2 == 0)
-    {
-        wh_data.mid = (data.at (data.size () / 2) + data.at (data.size () / 2 + 1)) / 2;
-        const auto size = data.size () / 2 + 1;
-        if (size % 2 == 0)
-        {
-            wh_data.bottom_quarter = (data.at (data.size () / 2 + size / 2 - 1) + data.at (data.size () / 2 + size / 2)) / 2;
-            wh_data.top_quarter = (data.at (size / 2 - 1) + data.at (data.size () / 2)) / 2;
-        }
-        else
-        {
-            wh_data.bottom_quarter = data.at (data.size () / 2 + size / 2);
-            wh_data.top_quarter = data.at (size / 2);
-        }
-    }
-    else
-    {
-        wh_data.mid = data.at (data.size () / 2);
-        const auto size = data.size () / 2 + 1;
-        if (size % 2 == 0)
-        {
-            wh_data.bottom_quarter = (data.at (data.size () / 2 + size / 2 - 1) + data.at (data.size () / 2 + size / 2)) / 2;
-            wh_data.top_quarter = (data.at (size / 2 - 1) + data.at (data.size () / 2)) / 2;
-        }
-        else
-        {
-            wh_data.bottom_quarter = data.at (data.size () / 2 + size / 2);
-            wh_data.top_quarter = data.at (size / 2);
-        }
-    }
+//    whisker_data wh_data;
+//    wh_data.top = data.at (0);
+//    wh_data.bottom = data.at (data.size () - 1);
+//    if (data.size () % 2 == 0)
+//    {
+//        wh_data.mid = (data.at (data.size () / 2) + data.at (data.size () / 2 + 1)) / 2;
+//        const auto size = data.size () / 2 + 1;
+//        if (size % 2 == 0)
+//        {
+//            wh_data.bottom_quarter = (data.at (data.size () / 2 + size / 2 - 1) + data.at (data.size () / 2 + size / 2)) / 2;
+//            wh_data.top_quarter = (data.at (size / 2 - 1) + data.at (data.size () / 2)) / 2;
+//        }
+//        else
+//        {
+//            wh_data.bottom_quarter = data.at (data.size () / 2 + size / 2);
+//            wh_data.top_quarter = data.at (size / 2);
+//        }
+//    }
+//    else
+//    {
+//        wh_data.mid = data.at (data.size () / 2);
+//        const auto size = data.size () / 2 + 1;
+//        if (size % 2 == 0)
+//        {
+//            wh_data.bottom_quarter = (data.at (data.size () / 2 + size / 2 - 1) + data.at (data.size () / 2 + size / 2)) / 2;
+//            wh_data.top_quarter = (data.at (size / 2 - 1) + data.at (data.size () / 2)) / 2;
+//        }
+//        else
+//        {
+//            wh_data.bottom_quarter = data.at (data.size () / 2 + size / 2);
+//            wh_data.top_quarter = data.at (size / 2);
+//        }
+//    }
 
-    ui->upper_quarter->setText (QString::number (wh_data.top_quarter, 'f', 2));
-    ui->lower_quarter->setText (QString::number (wh_data.bottom_quarter, 'f', 2));
-    ui->mid->setText (QString::number (wh_data.mid, 'f', 2));
-    ui->wh_chart->set_data (wh_data);
+//    ui->upper_quarter->setText (QString::number (wh_data.top_quarter, 'f', 2));
+//    ui->lower_quarter->setText (QString::number (wh_data.bottom_quarter, 'f', 2));
+//    ui->mid->setText (QString::number (wh_data.mid, 'f', 2));
+//    ui->wh_chart->set_data (wh_data);
 }
 
 void VideoAnalysis::set_measure_date(const QDate &date)
@@ -594,17 +601,18 @@ QVariant VideoAnalysis::dump()
     data ["measure-date"] = ui->measure_date->text ();
     data ["measure-man"] = ui->measure_man->text ();
     data ["task-man"] = ui->task_man->text ();
-    data ["example-cycle"] = ui->example_cycle->text ();
+//    data ["example-cycle"] = ui->example_cycle->text ();
     return data;
 }
 
 void VideoAnalysis::set_example_cycle(int cycle)
 {
-    ui->example_cycle->setText (QString::number (cycle));
+//    ui->example_cycle->setText (QString::number (cycle));
 }
 
 int VideoAnalysis::example_cycle() const noexcept
 {
-    return ui->example_cycle->text ().toInt ();
+//    return ui->example_cycle->text ().toInt ();
+    return {};
 }
 
