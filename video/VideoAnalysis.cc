@@ -1,7 +1,6 @@
 ﻿#include "video/VideoAnalysis.h"
 #include "ui_VideoAnalysis.h"
 #include <QInputDialog>
-#include <QDebug>
 #include "video/first_dlg.h"
 #include <QMessageBox>
 #include <QMenu>

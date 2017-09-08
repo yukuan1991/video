@@ -2,7 +2,6 @@
 #include "ui_FormWidget.h"
 #include <QMessageBox>
 #include <memory>
-#include <QDebug>
 #include <QScrollBar>
 #include <QDir>
 #include <boost/lexical_cast.hpp>

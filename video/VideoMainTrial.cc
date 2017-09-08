@@ -3,7 +3,6 @@
 #include "ui_VideoMainTrial.h"
 #include <QMdiSubWindow>
 #include <QStyle>
-#include <QDebug>
 #include <QFileDialog>
 #include <QFileInfo>
 #include <functional>

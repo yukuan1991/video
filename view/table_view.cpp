@@ -1,5 +1,4 @@
 ﻿#include "table_view.h"
-#include <QDebug>
 #include <QClipboard>
 #include <string.h>
 #include <QMouseEvent>

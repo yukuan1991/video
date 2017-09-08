@@ -3,7 +3,6 @@
 #include "verification_dlg.h"
 #include <QMessageBox>
 #include "encryption.h"
-#include <QDebug>
 #include "net_utils.h"
 #include <memory>
 #include <string_view>

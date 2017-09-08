@@ -19,7 +19,6 @@
 #include "verification.h"
 #include "krys_application.hpp"
 #include <chrono>
-#include <QDebug>
 #include <QTimer>
 
 

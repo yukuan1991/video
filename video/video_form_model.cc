@@ -1,5 +1,4 @@
 ﻿#include "video_form_model.h"
-#include <QDebug>
 #include <QFont>
 #include <boost/algorithm/string.hpp>
 #include <boost/scope_exit.hpp>

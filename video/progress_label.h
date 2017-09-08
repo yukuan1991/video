@@ -3,7 +3,6 @@
 #include <memory>
 #include <QLabel>
 #include <QMenu>
-#include <QDebug>
 
 
 class progress_label : public QLabel

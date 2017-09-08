@@ -1,7 +1,6 @@
 ﻿#include "video_delegate.h"
 #include <QComboBox>
 #include <QSortFilterProxyModel>
-#include <QDebug>
 #include <QDoubleSpinBox>
 #include <QLineEdit>
 #include "video/video_form_model.h"

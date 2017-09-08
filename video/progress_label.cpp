@@ -4,7 +4,6 @@
 #include <QPainter>
 #include <QMenu>
 #include <algorithm>
-#include <QDebug>
 #include <QMouseEvent>
 #include <assert.h>
 

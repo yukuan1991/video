@@ -5,7 +5,6 @@
 #include <base/lang/range.hpp>
 #include <base/lang/scope.hpp>
 
-#include <QDebug>
 
 using namespace std;
 using namespace boost::adaptors;
@@ -369,56 +368,9 @@ std::optional<overall_stats> VideoFormModel::operation_stats() const
     if(ct_value > 0)
     {
         ret.ct_val = ct_value;
-        qDebug() << "ct_value:" << ct_value;
     }
 
     return ret;
-
-//    bool b;
-//    std::vector<qreal> cts;
-//    cts.reserve (maxRound_);
-
-//    for (int i = 0; i < maxRound_; i ++)
-//    {
-//        std::optional<qreal> total = 0.0;
-//        for (int j = 0; j < this->rowCount (); j ++)
-//        {
-//            const auto time = getValueByKey(j, QString::number (i + 1) + "R").toDouble (&b);
-//            if (!b)
-//            {
-//                total = {};
-//                break;
-//            }
-//            total.value () += time;
-//        }
-
-//        if (total)
-//        {
-//            cts.emplace_back (total.value ());
-//        }
-//    }
-
-//    if (cts.empty ())
-//    {
-//        return {};
-//    }
-
-//    const auto max_val = *(max_element (std::begin (cts), std::end (cts)));
-//    const auto min_val = *(min_element (std::begin (cts), std::end (cts)));
-//    const auto average = accumulate (std::begin (cts), std::end (cts), qreal {0}) / cts.size ();
-
-//    const auto square_total = accumulate (std::begin (cts), std::end (cts) , qreal {0}, [&] (qreal tmp, qreal it)
-//    {  return tmp + (average - it) * (average - it); });
-
-//    const auto deviation = ::sqrt (square_total / cts.size ());
-
-//    overall_stats ret;
-//    ret.max_val = max_val;
-//    ret.min_val = min_val;
-//    ret.average = average;
-//    ret.deviation = deviation;
-
-//    return std::move (ret);
 }
 
 std::vector<qreal> VideoFormModel::cycle_times() const
