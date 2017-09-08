@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>video_analysis</class>
- <widget class="video_analysis" name="video_analysis">
+ <class>VideoAnalysis</class>
+ <widget class="VideoAnalysis" name="VideoAnalysis">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -27,7 +27,7 @@
     <number>8</number>
    </property>
    <item>
-    <widget class="form_widget" name="form" native="true"/>
+    <widget class="FormWidget" name="form" native="true"/>
    </item>
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="6,10">
@@ -606,15 +606,15 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>video_analysis</class>
+   <class>VideoAnalysis</class>
    <extends>QWidget</extends>
-   <header>video/video_analysis.h</header>
+   <header>video/VideoAnalysis.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>form_widget</class>
+   <class>FormWidget</class>
    <extends>QWidget</extends>
-   <header>video/form_widget.h</header>
+   <header>video/FormWidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>

@@ -1,5 +1,5 @@
-﻿#include "form_widget.h"
-#include "ui_form_widget.h"
+﻿#include "FormWidget.h"
+#include "ui_FormWidget.h"
 #include <QMessageBox>
 #include <memory>
 #include <QDebug>
@@ -11,9 +11,9 @@
 
 using namespace std;
 
-form_widget::form_widget(QWidget *parent) :
+FormWidget::FormWidget(QWidget *parent) :
     QWidget(parent),
-    ui(new Ui::form_widget)
+    ui(new Ui::FormWidget)
 {
     ui->setupUi(this);
 
@@ -22,12 +22,12 @@ form_widget::form_widget(QWidget *parent) :
     initConn();
 }
 
-form_widget::~form_widget()
+FormWidget::~FormWidget()
 {
     delete ui;
 }
 
-void form_widget::mark(long long time_val)
+void FormWidget::mark(long long time_val)
 {
     if (current_view_ != ui->table_data)
     {
@@ -76,7 +76,7 @@ void form_widget::mark(long long time_val)
     }
 }
 
-optional<QModelIndex> form_widget::get_next_index(const QModelIndex & index) const
+optional<QModelIndex> FormWidget::get_next_index(const QModelIndex & index) const
 {
     if (!index.isValid())
     {
@@ -109,7 +109,7 @@ optional<QModelIndex> form_widget::get_next_index(const QModelIndex & index) con
     return model->index (next_row, next_col);
 }
 
-void form_widget::table_clicked(const QModelIndex &)
+void FormWidget::table_clicked(const QModelIndex &)
 {
     auto src = sender (); assert (src);
     current_view_ = dynamic_cast<table_view*>(src); assert (current_view_);
@@ -123,7 +123,7 @@ void form_widget::table_clicked(const QModelIndex &)
     }
 }
 
-QVariant form_widget::taskData()
+QVariant FormWidget::taskData()
 {
     QVariantList taskList;
     const auto col = src_model_->getHorizontalHeaderCol("作业内容");
@@ -138,7 +138,7 @@ QVariant form_widget::taskData()
 
 }
 
-QVariant form_widget::observationTime()
+QVariant FormWidget::observationTime()
 {
     QVariantList observationList;
     const auto startCol = src_model_->getHorizontalHeaderCol("1T");
@@ -184,7 +184,7 @@ QVariant form_widget::observationTime()
     return observationList;
 }
 
-QVariant form_widget::resultData()
+QVariant FormWidget::resultData()
 {
     QVariantList resultList;
     const auto averageTimeCol = src_model_->getHorizontalHeaderCol("平均时间");
@@ -273,7 +273,7 @@ QVariant form_widget::resultData()
     return resultList;
 }
 
-void form_widget::set_scrolls()
+void FormWidget::set_scrolls()
 {
     for (auto& item : views_)
     {
@@ -291,13 +291,13 @@ void form_widget::set_scrolls()
     }
 }
 
-void form_widget::initConn()
+void FormWidget::initConn()
 {
-    connect(src_model_.get(), &QStandardItemModel::rowsInserted, this, &form_widget::initTable);
-    connect(src_model_.get(), &QStandardItemModel::rowsRemoved, this, &form_widget::initTable);
+    connect(src_model_.get(), &QStandardItemModel::rowsInserted, this, &FormWidget::initTable);
+    connect(src_model_.get(), &QStandardItemModel::rowsRemoved, this, &FormWidget::initTable);
 
     connect (src_model_.get (), &video_form_model::dataChanged,
-             this, &form_widget::data_changed);
+             this, &FormWidget::data_changed);
 
     connect (src_model_.get (), &video_form_model::dataChanged, [this]{
         auto sum = src_model_->getStdSum ();
@@ -306,11 +306,11 @@ void form_widget::initConn()
 
     for (const auto & iter : views_)
     {
-        connect (iter, &QTableView::pressed, this, &form_widget::table_clicked);
+        connect (iter, &QTableView::pressed, this, &FormWidget::table_clicked);
     }
 }
 
-void form_widget::initTable()
+void FormWidget::initTable()
 {
     const auto rows = src_model_->rowCount();
     const auto cols = src_model_->columnCount();
@@ -354,7 +354,7 @@ void form_widget::initTable()
     }
 }
 
-void form_widget::setTable()
+void FormWidget::setTable()
 {
     model_des_->setSourceModel (src_model_.get ());
     model_des_->set_range (0, 2);
@@ -402,7 +402,7 @@ void form_widget::setTable()
 //    ui->table_result->setModel (model_result_.get ());
 //}
 
-void form_widget::loadTask(const QVariant &task)
+void FormWidget::loadTask(const QVariant &task)
 {
     if(task.isNull())
     {
@@ -426,7 +426,7 @@ void form_widget::loadTask(const QVariant &task)
     }
 }
 
-void form_widget::loadData(const QVariant &data)
+void FormWidget::loadData(const QVariant &data)
 {
     if(data.isNull())
     {
@@ -468,7 +468,7 @@ void form_widget::loadData(const QVariant &data)
     }
 }
 
-void form_widget::loadResult(const QVariant &result)
+void FormWidget::loadResult(const QVariant &result)
 {
     if(result.isNull())
     {
@@ -503,22 +503,22 @@ void form_widget::loadResult(const QVariant &result)
 
 }
 
-std::optional<action_ratio> form_widget::operation_ratio() const
+std::optional<action_ratio> FormWidget::operation_ratio() const
 {
     return src_model_->operation_ratio ();
 }
 
-std::optional<overall_stats> form_widget::operation_stats() const
+std::optional<overall_stats> FormWidget::operation_stats() const
 {
     return src_model_->operation_stats ();
 }
 
-std::vector<qreal> form_widget::cycle_times() const
+std::vector<qreal> FormWidget::cycle_times() const
 {
     return src_model_->cycle_times ();
 }
 
-QVariant form_widget::dump()
+QVariant FormWidget::dump()
 {
     QVariantMap data;
     QVariant task = taskData();
@@ -533,7 +533,7 @@ QVariant form_widget::dump()
 }
 
 
-void form_widget::set_row(int num)
+void FormWidget::set_row(int num)
 {
     src_model_->setRowCount(num);
     setTable();
@@ -541,19 +541,19 @@ void form_widget::set_row(int num)
     emit total_time_changed (sum);
 }
 
-void form_widget::add_row(int num)
+void FormWidget::add_row(int num)
 {
     auto current_row = row ();
     set_row (num+current_row);
 }
 
-void form_widget::reduce_row(int num)
+void FormWidget::reduce_row(int num)
 {
     auto current_row = row ();
     set_row (num-current_row);
 }
 
-bool form_widget::task_content_check()
+bool FormWidget::task_content_check()
 {
     auto rows = src_model_->rowCount ();
     for (int i = 0; i < rows; ++i)
@@ -568,13 +568,13 @@ bool form_widget::task_content_check()
     return true;
 }
 
-void form_widget::scroll_to_index(const QModelIndex& index)
+void FormWidget::scroll_to_index(const QModelIndex& index)
 {
     assert (index.isValid ());
     ui->table_data->scrollTo (index);
 }
 
-void form_widget::on_paste()
+void FormWidget::on_paste()
 {
     if (current_view_ != nullptr)
     {
@@ -582,7 +582,7 @@ void form_widget::on_paste()
     }
 }
 
-void form_widget::on_copy()
+void FormWidget::on_copy()
 {
     if (current_view_ != nullptr)
     {
@@ -590,7 +590,7 @@ void form_widget::on_copy()
     }
 }
 
-void form_widget::on_cut()
+void FormWidget::on_cut()
 {
     if (current_view_ != nullptr)
     {
@@ -598,7 +598,7 @@ void form_widget::on_cut()
     }
 }
 
-void form_widget::on_del()
+void FormWidget::on_del()
 {
     if (current_view_ != nullptr)
     {
@@ -606,7 +606,7 @@ void form_widget::on_del()
     }
 }
 
-int form_widget::row()
+int FormWidget::row()
 {
     return src_model_->rowCount ();
 }

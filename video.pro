@@ -29,10 +29,7 @@ SOURCES += \
 	main.cc \
     video/ribbon.cc \
     video/first_dlg.cpp \
-    video/form_widget.cpp \
     video/progress_label.cpp \
-    video/video_main.cc \
-    video/video_analysis.cc \
     video/video_delegate.cc \
     video/video_form_model.cc \
     video/video_form_split.cc \
@@ -46,18 +43,18 @@ SOURCES += \
     des.cc \
     algorithm_utils.cc \
     video/whisker.cc \
-    video/VideoFormModel.cc
+    video/VideoFormModel.cc \
+    video/FormWidget.cpp \
+    video/VideoAnalysis.cc \
+    video/VideoMainTrial.cc
 
 HEADERS += \
     video/first_dlg.h \
-    video/form_widget.h \
     video/progress_label.h \
     video/ribbon.h \
-    video/video_analysis.h \
     video/video_delegate.h \
     video/video_form_model.h \
     video/video_form_split.h \
-    video/video_main.h \
     video/video_widget.h \
     video/video_player.hpp \
     model/json_model.h \
@@ -72,15 +69,18 @@ HEADERS += \
     algorithm_utils.h \
     video/whisker.h \
     video/video_player.hpp \
-    video/VideoFormModel.h
+    video/VideoFormModel.h \
+    video/FormWidget.h \
+    video/VideoAnalysis.h \
+    video/VideoMainTrialh
 
 FORMS += \
     video/first_dlg.ui \
-    video/form_widget.ui \
-    video/video_analysis.ui \
-    video/video_main.ui \
     video/video_widget.ui \
-    verification_dlg.ui
+    verification_dlg.ui \
+    video/FormWidget.ui \
+    video/VideoAnalysis.ui \
+    video/VideoMainTrial.ui
 
 QMAKE_CXXFLAGS += -Wextra
 QMAKE_CXXFLAGS += -Wno-deprecated-declarations

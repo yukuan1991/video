@@ -7,14 +7,14 @@
 #include <QComboBox>
 #include <boost/filesystem.hpp>
 #include <boost/range/adaptors.hpp>
-#include "video/video_main.h"
+#include "video/VideoMainTrialh"
 #include <QPixmap>
 #include <QStyle>
 #include <QIcon>
 #include <QMdiArea>
 #include <QWidget>
 #include <QMdiArea>
-#include "video/video_analysis.h"
+#include "video/VideoAnalysis.h"
 #include <QMdiSubWindow>
 #include "verification.h"
 #include "krys_application.hpp"
@@ -68,7 +68,7 @@ int main(int argc, char *argv[])
 //        return -1;
 //    }
 
-    video_main v;
+    VideoMainTrial v;
     v.resize (1366, 768);
     v.setWindowIcon (QPixmap ("icon.ico"));
     v.show ();

@@ -1,7 +1,7 @@
 ﻿#pragma once
 
 #include <QWidget>
-#include "form_widget.h"
+#include "FormWidget.h"
 #include "video/first_dlg.h"
 #include "video_player.hpp"
 #include <memory>
@@ -15,18 +15,18 @@ class QPieSeries;
 }
 
 namespace Ui {
-class video_analysis;
+class VideoAnalysis;
 }
 
-class video_analysis : public QWidget
+class VideoAnalysis : public QWidget
 {
     Q_OBJECT
 signals:
     void marked(long long int);
 
 public:
-    explicit video_analysis(QWidget *parent = 0);
-    ~video_analysis();
+    explicit VideoAnalysis(QWidget *parent = 0);
+    ~VideoAnalysis();
 
     void push_reaction (const QString& data);
     void load(const QVariant& data);
@@ -91,7 +91,7 @@ private:
 protected:
     bool eventFilter (QObject* obj, QEvent* event) override;
 private:
-    Ui::video_analysis *ui;
+    Ui::VideoAnalysis *ui;
 
     std::vector<qint64> invalid_data_;
 

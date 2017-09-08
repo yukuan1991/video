@@ -1,5 +1,5 @@
-﻿#include "video/video_analysis.h"
-#include "ui_video_analysis.h"
+﻿#include "video/VideoAnalysis.h"
+#include "ui_VideoAnalysis.h"
 #include <QInputDialog>
 #include <QDebug>
 #include "video/first_dlg.h"
@@ -22,9 +22,9 @@
 using namespace QtCharts;
 using namespace std;
 
-video_analysis::video_analysis(QWidget *parent)
+VideoAnalysis::VideoAnalysis(QWidget *parent)
     :QWidget(parent)
-    ,ui(new Ui::video_analysis)
+    ,ui(new Ui::VideoAnalysis)
     ,operation_type_ (new QPieSeries)
     ,efficiency_ (new QPieSeries)
 
@@ -35,13 +35,13 @@ video_analysis::video_analysis(QWidget *parent)
     ui->button_sec_forward->setIcon(this->style()->standardIcon(QStyle::SP_MediaSkipForward));
 
     connect(ui->video_player, &video_widget::file_changed, [=] (const QString&) {ui->video_player->clear_invalid (); });
-    connect (this, &video_analysis::marked, this, &video_analysis::on_marked);
+    connect (this, &VideoAnalysis::marked, this, &VideoAnalysis::on_marked);
 
     connect (ui->video_player, &video_widget::stepped_into_invalid, [=] (qint64, qint64 end)
     {
         ui->video_player->set_position(end);
     });
-    connect (ui->form, &form_widget::data_changed, [this]
+    connect (ui->form, &FormWidget::data_changed, [this]
     {
         const auto ratio = ui->form->operation_ratio ();
         const auto stats = ui->form->operation_stats ();
@@ -65,14 +65,14 @@ video_analysis::video_analysis(QWidget *parent)
     init_chart ();
 }
 
-video_analysis::~video_analysis()
+VideoAnalysis::~VideoAnalysis()
 {
     delete ui;
 }
 
 
 
-void video_analysis::set_video_file(const QString & video)
+void VideoAnalysis::set_video_file(const QString & video)
 {
     ui->video_player->set_file (video);
     file_opening_ = true;
@@ -81,7 +81,7 @@ void video_analysis::set_video_file(const QString & video)
 
 
 
-void video_analysis::init_video_widget(const json &video_detail)
+void VideoAnalysis::init_video_widget(const json &video_detail)
 {
     auto iter_path = video_detail.find ("视频路径");
     assert (iter_path != video_detail.end ());
@@ -104,7 +104,7 @@ void video_analysis::init_video_widget(const json &video_detail)
     ui->video_player->set_invalid (vec);
 }
 
-void video_analysis::init_chart()
+void VideoAnalysis::init_chart()
 {
     const auto effic_chart = new QChart;
     const auto op_type_chart = new QChart;
@@ -155,7 +155,7 @@ void video_analysis::init_chart()
 
 }
 
-bool video_analysis::eventFilter(QObject *, QEvent *event)
+bool VideoAnalysis::eventFilter(QObject *, QEvent *event)
 {
     if (event->type () == QEvent::KeyPress)
     {
@@ -186,7 +186,7 @@ bool video_analysis::eventFilter(QObject *, QEvent *event)
     return false;
 }
 
-void video_analysis::load(const QVariant &data)
+void VideoAnalysis::load(const QVariant &data)
 {
     const auto totalMap = data.toMap();
     if(totalMap.size() == 0)
@@ -246,12 +246,12 @@ void video_analysis::load(const QVariant &data)
 
 }
 
-void video_analysis::on_combo_second_activated(int index)
+void VideoAnalysis::on_combo_second_activated(int index)
 {
     ui->video_player->set_position(ui->video_player->position() + index);
 }
 
-void video_analysis::on_video_player_state_changed(video_player::state_enum state)
+void VideoAnalysis::on_video_player_state_changed(video_player::state_enum state)
 {
     if (state == video_player::stopped_state)
     {
@@ -274,7 +274,7 @@ void video_analysis::on_video_player_state_changed(video_player::state_enum stat
     }
 }
 
-void video_analysis::on_button_sec_backward_clicked()
+void VideoAnalysis::on_button_sec_backward_clicked()
 {
     float current_backward_second;
     try
@@ -293,7 +293,7 @@ void video_analysis::on_button_sec_backward_clicked()
     ui->video_player->set_position(current_position - micro_second);
 }
 
-void video_analysis::on_button_sec_forward_clicked()
+void VideoAnalysis::on_button_sec_forward_clicked()
 {
     float current_position;
     try
@@ -312,12 +312,12 @@ void video_analysis::on_button_sec_forward_clicked()
     ui->video_player->set_position(current_pos + micro_second);
 }
 
-void video_analysis::on_spinbox_rate_valueChanged(double arg1)
+void VideoAnalysis::on_spinbox_rate_valueChanged(double arg1)
 {
     ui->video_player->set_speed(arg1);
 }
 
-void video_analysis::modify_invalid ()
+void VideoAnalysis::modify_invalid ()
 {
     ui->video_player->stop_video();
     if (ui->video_player->file ().isEmpty ())
@@ -349,12 +349,12 @@ void video_analysis::modify_invalid ()
 }
 
 
-void video_analysis::on_video_player_stepped_into_invalid(qint64, qint64 pos_out)
+void VideoAnalysis::on_video_player_stepped_into_invalid(qint64, qint64 pos_out)
 {
     ui->video_player->set_position(pos_out);
 }
 
-void video_analysis::on_button_mark_clicked()
+void VideoAnalysis::on_button_mark_clicked()
 {
     assert(invalid_data_.size() % 2 == 0);
     auto cur_pos = ui->video_player->position();
@@ -381,14 +381,14 @@ void video_analysis::on_button_mark_clicked()
     emit marked(valid_spent_time);
 }
 
-void video_analysis::on_marked(long long msec)
+void VideoAnalysis::on_marked(long long msec)
 {
 
     ui->form->mark (msec);
 }
 
 
-void video_analysis::on_button_setting_rows_clicked()
+void VideoAnalysis::on_button_setting_rows_clicked()
 {
     QInputDialog dlg;
     dlg.setWindowTitle ("更改作业内容步数");
@@ -408,13 +408,13 @@ void video_analysis::on_button_setting_rows_clicked()
 
 
 
-void video_analysis::on_paste()
+void VideoAnalysis::on_paste()
 {
     ui->form->on_paste ();
 }
 
 
-void video_analysis::set_task_count ()
+void VideoAnalysis::set_task_count ()
 {
     QInputDialog dlg;
     dlg.setWindowTitle ("新建");
@@ -433,22 +433,22 @@ void video_analysis::set_task_count ()
 }
 
 
-void video_analysis::on_copy()
+void VideoAnalysis::on_copy()
 {
     ui->form->on_copy ();
 }
 
-void video_analysis::on_cut()
+void VideoAnalysis::on_cut()
 {
     ui->form->on_cut ();
 }
 
-void video_analysis::on_del()
+void VideoAnalysis::on_del()
 {
     ui->form->on_del ();
 }
 
-void video_analysis::refresh_chart (action_ratio ratio)
+void VideoAnalysis::refresh_chart (action_ratio ratio)
 {
     {
         const auto slices = operation_type_->slices ();
@@ -493,7 +493,7 @@ void video_analysis::refresh_chart (action_ratio ratio)
     }
 }
 
-void video_analysis::refresh_stats(overall_stats stats)
+void VideoAnalysis::refresh_stats(overall_stats stats)
 {
     ui->ct_max->setText (QString::number (stats.max_val, 'f', 2));
     ui->ct_min->setText (QString::number (stats.min_val, 'f', 2));
@@ -501,7 +501,7 @@ void video_analysis::refresh_stats(overall_stats stats)
     ui->ct_deviation->setText (QString::number (stats.deviation, 'f', 2));
 }
 
-void video_analysis::update_box(gsl::span<qreal> data)
+void VideoAnalysis::update_box(gsl::span<qreal> data)
 {
     if (data.size () <= 3)
     {
@@ -549,38 +549,38 @@ void video_analysis::update_box(gsl::span<qreal> data)
     ui->wh_chart->set_data (wh_data);
 }
 
-void video_analysis::set_measure_date(const QDate &date)
+void VideoAnalysis::set_measure_date(const QDate &date)
 {
     ui->measure_date->setText (date.toString ("yyyy-MM-dd"));
 }
 
-void video_analysis::set_measure_man(const QString &data)
+void VideoAnalysis::set_measure_man(const QString &data)
 {
     ui->measure_man->setText (data);
 }
 
-QString video_analysis::measure_man() const
+QString VideoAnalysis::measure_man() const
 {
     return ui->measure_man->text ();
 }
 
-void video_analysis::set_task_man(const QString &data)
+void VideoAnalysis::set_task_man(const QString &data)
 {
     ui->task_man->setText (data);
 }
 
-QString video_analysis::task_man() const
+QString VideoAnalysis::task_man() const
 {
     return ui->task_man->text ();
 }
 
-QString video_analysis::measure_date() const
+QString VideoAnalysis::measure_date() const
 {
     return ui->measure_date->text ();
 }
 
 
-QVariant video_analysis::dump()
+QVariant VideoAnalysis::dump()
 {
     QVariantMap data;
     std::vector<QVariant> var_vec;
@@ -598,12 +598,12 @@ QVariant video_analysis::dump()
     return data;
 }
 
-void video_analysis::set_example_cycle(int cycle)
+void VideoAnalysis::set_example_cycle(int cycle)
 {
     ui->example_cycle->setText (QString::number (cycle));
 }
 
-int video_analysis::example_cycle() const noexcept
+int VideoAnalysis::example_cycle() const noexcept
 {
     return ui->example_cycle->text ().toInt ();
 }
