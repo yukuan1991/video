@@ -16,7 +16,7 @@
 #include <QMdiArea>
 #include "video/video_analysis.h"
 #include <QMdiSubWindow>
-#include "verification.h"
+#include "verification/verification.h"
 #include "krys_application.hpp"
 #include <chrono>
 #include <QDebug>
@@ -63,10 +63,10 @@ int main(int argc, char *argv[])
 
 
     krys_application a(argc, argv);
-//    if (!verification_process ())
-//    {
-//        return -1;
-//    }
+    if (!verification_process ())
+    {
+        return -1;
+    }
 
     video_main v;
     v.resize (1366, 768);
@@ -81,11 +81,11 @@ int main(int argc, char *argv[])
 //    }
     set_style ();
 
-//    QTimer timer;
-//    timer.setInterval (1s);
-//    timer.setSingleShot (true);
-//    QObject::connect (&timer, &QTimer::timeout, [&] { check_date (); timer.start (); });
-//    timer.start ();
+    QTimer timer;
+    timer.setInterval (1s);
+    timer.setSingleShot (true);
+    QObject::connect (&timer, &QTimer::timeout, [&] { check_date (); timer.start (); });
+    timer.start ();
 
     return a.exec();
 }

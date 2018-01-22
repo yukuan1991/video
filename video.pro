@@ -39,14 +39,12 @@ SOURCES += \
     video/video_widget.cc \
     model/json_model.cc \
     view/table_view.cpp \
-    verification.cc \
-    encryption.cc \
-    verification_dlg.cc \
-    net_utils.cc \
-    des.cc \
     algorithm_utils.cc \
     video/whisker.cc \
-    video/VideoFormModel.cc
+    video/VideoFormModel.cc \
+    verification/des.cc \
+    verification/encryption.cc \
+    verification/verification.cpp
 
 HEADERS += \
     video/first_dlg.h \
@@ -63,24 +61,22 @@ HEADERS += \
     model/json_model.h \
     view/table_view.h \
     video/utils.hpp \
-    verification.h \
-    verification_dlg.h \
-    encryption.h \
-    net_utils.h \
-    des.h \
     krys_application.hpp \
     algorithm_utils.h \
     video/whisker.h \
     video/video_player.hpp \
-    video/VideoFormModel.h
+    video/VideoFormModel.h \
+    verification/des.h \
+    verification/encryption.h \
+    verification/json.hpp \
+    verification/verification.h
 
 FORMS += \
     video/first_dlg.ui \
     video/form_widget.ui \
     video/video_analysis.ui \
     video/video_main.ui \
-    video/video_widget.ui \
-    verification_dlg.ui
+    video/video_widget.ui
 
 QMAKE_CXXFLAGS += -Wextra
 QMAKE_CXXFLAGS += -Wno-deprecated-declarations
