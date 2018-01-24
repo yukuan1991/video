@@ -186,15 +186,26 @@ void video_main::video_import()
 
     if (QFile::exists (dest_path))
     {
-        QFile::remove (dest_path);
+        QFileInfo dest_info(dest_path);
+        const auto src_absolute_path = info.absoluteFilePath();
+        const auto dest_absolute_path = dest_info.absoluteFilePath();
+        if(src_absolute_path != dest_absolute_path)
+        {
+            QFile::remove (dest_path);
+            if (not QFile::copy (file, dest_path))
+            {
+                QMessageBox::information (this, "导入", "无法导入视频,拷贝文件失败");
+                return;
+            }
+        }
     }
-
-//    QMessageBox::information (this, "xxx", "去看看删了没有");
-
-    if (not QFile::copy (file, dest_path))
+    else
     {
-        QMessageBox::information (this, "导入", "无法导入视频,拷贝文件失败");
-        return;
+        if (not QFile::copy (file, dest_path))
+        {
+            QMessageBox::information (this, "导入", "无法导入视频,拷贝文件失败");
+            return;
+        }
     }
 
     auto w = current_sub_window ();
