@@ -405,6 +405,7 @@ void video_main::on_save()
             title_path == "未命名")
     {
         const auto path = QFileDialog::getSaveFileName(this, "文件保存", ".", tr ("Video Analysis File (*.vaf)"));
+        active->setWindowTitle(path);
         const auto dumpData = w->dump();
         QJsonDocument document = QJsonDocument::fromVariant(dumpData);
         const auto text = document.toJson();
@@ -463,6 +464,7 @@ void video_main::on_save_as()
     if (w != null)
     {
         const auto path = QFileDialog::getSaveFileName(this, "文件保存", ".", tr ("Video Analysis File (*.vaf)"));
+        w->setWindowTitle(path);
         const auto dumpData = w->dump();
         QJsonDocument document = QJsonDocument::fromVariant(dumpData);
         const auto text = document.toJson();
