@@ -107,44 +107,44 @@ std::unique_ptr<QWidget> ribbon::ui_edit ()
 
     constexpr auto len = 39;
 
-    {
-        auto btn = make_button (QPixmap ("png/剪切.png").scaled (len, len), "剪切");
-        connect (btn.get (), &QToolButton::clicked, this, &ribbon::cut);
-        connect (this, &ribbon::mdi_active, btn.get (), &QToolButton::setEnabled);
-        upper_layout->addWidget (btn.release ());
-    }
+//    {
+//        auto btn = make_button (QPixmap ("png/剪切.png").scaled (len, len), "剪切");
+//        connect (btn.get (), &QToolButton::clicked, this, &ribbon::cut);
+//        connect (this, &ribbon::mdi_active, btn.get (), &QToolButton::setEnabled);
+//        upper_layout->addWidget (btn.release ());
+//    }
 
-    {
-        auto btn = make_button (QPixmap ("png/复制.png").scaled (len, len), "复制");
-        connect (btn.get (), &QToolButton::clicked, this, &ribbon::copy);
-        connect (this, &ribbon::mdi_active, btn.get (), &QToolButton::setEnabled);
-        upper_layout->addWidget (btn.release ());
-    }
+//    {
+//        auto btn = make_button (QPixmap ("png/复制.png").scaled (len, len), "复制");
+//        connect (btn.get (), &QToolButton::clicked, this, &ribbon::copy);
+//        connect (this, &ribbon::mdi_active, btn.get (), &QToolButton::setEnabled);
+//        upper_layout->addWidget (btn.release ());
+//    }
 
-    {
-        auto btn = make_button (QPixmap ("png/粘贴.png").scaled (len, len), "粘贴");
-        connect (btn.get (), &QToolButton::clicked, this, &ribbon::paste);
-        connect (this, &ribbon::mdi_active, btn.get (), &QToolButton::setEnabled);
-        upper_layout->addWidget (btn.release ());
-    }
+//    {
+//        auto btn = make_button (QPixmap ("png/粘贴.png").scaled (len, len), "粘贴");
+//        connect (btn.get (), &QToolButton::clicked, this, &ribbon::paste);
+//        connect (this, &ribbon::mdi_active, btn.get (), &QToolButton::setEnabled);
+//        upper_layout->addWidget (btn.release ());
+//    }
 
-    {
-        auto btn = make_button (QPixmap ("png/删除.png").scaled (len, len), "删除");
-        connect (btn.get (), &QToolButton::clicked, this, &ribbon::del);
-        connect (this, &ribbon::mdi_active, btn.get (), &QToolButton::setEnabled);
-        upper_layout->addWidget (btn.release ());
-    }
+//    {
+//        auto btn = make_button (QPixmap ("png/删除.png").scaled (len, len), "删除");
+//        connect (btn.get (), &QToolButton::clicked, this, &ribbon::del);
+//        connect (this, &ribbon::mdi_active, btn.get (), &QToolButton::setEnabled);
+//        upper_layout->addWidget (btn.release ());
+//    }
 
-    block1_layout->addLayout (upper_layout.release ());
-    auto label = new QLabel ("第一类");
-    label->setAlignment (Qt::AlignHCenter | Qt::AlignBottom);
-    block1_layout->addWidget (label);
-    layout->addLayout (block1_layout.release (), 0);
+//    block1_layout->addLayout (upper_layout.release ());
+//    auto label = new QLabel ("第一类");
+//    label->setAlignment (Qt::AlignHCenter | Qt::AlignBottom);
+//    block1_layout->addWidget (label);
+//    layout->addLayout (block1_layout.release (), 0);
 
-    auto line = new QFrame(widget.get ());
-    line->setFrameShape(QFrame::VLine);
-    line->setFrameShadow(QFrame::Sunken);
-    layout->addWidget (line);
+//    auto line = new QFrame(widget.get ());
+//    line->setFrameShape(QFrame::VLine);
+//    line->setFrameShadow(QFrame::Sunken);
+//    layout->addWidget (line);
 
     auto block2_layout = make_unique<QVBoxLayout> ();
 
@@ -152,26 +152,21 @@ std::unique_ptr<QWidget> ribbon::ui_edit ()
     upper_layout->setContentsMargins(10, 0, 10, 0);
 
     {
-        auto btn = make_button (QPixmap ("png/作业项数.png").scaled (len, len), "改变作业项数");
+        auto btn = make_button (QPixmap ("png/作业项数.png").scaled (len, len), "更改作业项数");
         connect (this, &ribbon::mdi_active, btn.get (), &QToolButton::setEnabled);
         connect (btn.get (), &QToolButton::clicked, this, &ribbon::change_task_count);
-        upper_layout->addWidget (btn.release ());
-
-        btn = make_button (QPixmap ("png/测量日期.png").scaled (len, len), "更改样例循环");
-        connect (this, &ribbon::mdi_active, btn.get (), &QToolButton::setEnabled);
-        connect (btn.get (), &QToolButton::clicked, this, &ribbon::change_example_cycle);
         upper_layout->addWidget (btn.release ());
     }
 
     block2_layout->addLayout (upper_layout.release ());
 
-    label = new QLabel ("第二类");
+    auto label = new QLabel ("表格");
     label->setAlignment (Qt::AlignHCenter | Qt::AlignBottom);
     block2_layout->addWidget (label);
 
     layout->addLayout (block2_layout.release (), 0);
 
-    line = new QFrame(widget.get ());
+    auto line = new QFrame(widget.get ());
     line->setFrameShape(QFrame::VLine);
     line->setFrameShadow(QFrame::Sunken);
     layout->addWidget (line);
@@ -207,7 +202,7 @@ std::unique_ptr<QWidget> ribbon::ui_video()
     upper_layout->addWidget (btn.release ());
 
     block1_layout->addLayout (upper_layout.release ());
-    auto label = new QLabel ("第一类");
+    auto label = new QLabel ("文件(video source)");
     label->setAlignment (Qt::AlignHCenter | Qt::AlignBottom);
     block1_layout->addWidget (label);
     layout->addLayout (block1_layout.release (), 0);
@@ -230,7 +225,7 @@ std::unique_ptr<QWidget> ribbon::ui_video()
     upper_layout->addWidget (btn.release ());
 
     block2_layout->addLayout (upper_layout.release ());
-    label = new QLabel ("第二类");
+    label = new QLabel ("视频相关");
     label->setAlignment (Qt::AlignHCenter | Qt::AlignBottom);
     block2_layout->addWidget (label);
     layout->addLayout (block2_layout.release (), 0);
@@ -327,8 +322,16 @@ std::unique_ptr<QWidget> ribbon::ui_settings()
             upper_layout->addWidget (btn.release ());
         }
 
+        {
+            auto btn = make_button (QPixmap ("png/样例循环.png").scaled (len, len), "更改样例循环");
+            connect (this, &ribbon::mdi_active, btn.get (), &QToolButton::setEnabled);
+            connect (btn.get (), &QToolButton::clicked, this, &ribbon::change_example_cycle);
+            upper_layout->addWidget (btn.release ());
+        }
+
+
         block_layout->addLayout (upper_layout.release ());
-        auto label = new QLabel ("第三类");
+        auto label = new QLabel ("属性设置");
         label->setAlignment (Qt::AlignHCenter | Qt::AlignBottom);
         block_layout->addWidget (label);
         layout->addLayout (block_layout.release (), 0);
