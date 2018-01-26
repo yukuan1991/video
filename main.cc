@@ -82,7 +82,7 @@ int main(int argc, char *argv[])
     set_style ();
 
     QTimer timer;
-    timer.setInterval (1s);
+    timer.setInterval (900s);
     timer.setSingleShot (true);
     QObject::connect (&timer, &QTimer::timeout, [&] { check_date (); timer.start (); });
     timer.start ();
