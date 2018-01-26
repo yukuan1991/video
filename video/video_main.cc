@@ -29,6 +29,7 @@ video_main::video_main(QWidget *parent)
     ui->setupUi(this);
     ui->mdi->setViewMode (QMdiArea::TabbedView);
     init_conn ();
+    setWindowTitle("Video");
     setStyle (QStyleFactory::create ("fusion"));
 }
 
